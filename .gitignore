@@ -24,6 +24,9 @@ hs_err_pid*
 
 # Idea files
 **/.idea
+**.ipr
+**.iws
+**.iml
 
 # Gradle build files and libraries
 **/.gradle
