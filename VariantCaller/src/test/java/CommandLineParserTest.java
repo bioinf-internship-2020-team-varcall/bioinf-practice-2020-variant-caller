@@ -1,7 +1,7 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import joptsimple.OptionParser;
+import com.example.CommandLineParser;
 import joptsimple.OptionSet;
 import org.junit.jupiter.api.Test;
 

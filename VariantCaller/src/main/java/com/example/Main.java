@@ -1,4 +1,4 @@
-import joptsimple.*;
+package com.example;
 
 public class Main {
 

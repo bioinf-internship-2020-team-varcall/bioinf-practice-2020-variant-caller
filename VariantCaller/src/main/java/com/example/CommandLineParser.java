@@ -1,3 +1,5 @@
+package com.example;
+
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
