@@ -31,3 +31,5 @@ hs_err_pid*
 # Gradle build files and libraries
 **/.gradle
 **/build
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
