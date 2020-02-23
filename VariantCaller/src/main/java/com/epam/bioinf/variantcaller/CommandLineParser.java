@@ -12,15 +12,11 @@ public class CommandLineParser {
     private OptionSpec<String> a;
     private OptionSet options;
 
-    public CommandLineParser(String[] args) {
-        try {
-            parser = new OptionParser();
-            parser.accepts("a");
-            a = parser.accepts("a").withRequiredArg();
-            options = parser.parse(args);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public CommandLineParser(String[] args) throws Exception {
+        parser = new OptionParser();
+        parser.accepts("a");
+        a = parser.accepts("a").withRequiredArg();
+        options = parser.parse(args);
     }
 
     public OptionSet getOptions() {
