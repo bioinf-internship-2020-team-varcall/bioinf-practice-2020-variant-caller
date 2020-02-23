@@ -1,4 +1,4 @@
-package com.example;
+package com.epam.bioinf.variantcaller;
 
 public class Main {
 
@@ -6,7 +6,5 @@ public class Main {
         //program arguments are set in configurations(if you are using intelliJ IDEA)
         CommandLineParser myParser = new CommandLineParser(args);
         System.out.println(myParser.getA());
-        System.out.println(myParser.getB());
-        System.out.println(myParser.getC());
     }
 }
