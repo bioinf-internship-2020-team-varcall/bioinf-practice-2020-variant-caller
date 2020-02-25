@@ -5,7 +5,7 @@
 JDK - версия 1.11.
 [Инструкция по установке](https://docs.oracle.com/en/java/javase/11/install/)
 
-Gradle - версия 4.6 и выше.
+Gradle - версия 6.1.1.
 [Инструкция по установке](https://docs.gradle.org/current/userguide/installation.html)
 
 Git - любая версия.
