@@ -1,0 +1,33 @@
+plugins {
+    id 'idea'
+    id 'eclipse'
+    id 'java'
+    id 'application'
+}
+
+mainClassName = "com.epam.bioinf.variantcaller.Main"
+
+group 'com.epam.bioinf.variantcaller'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
+
+    //jopt - library for command line arguments analysis
+    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.5'
+}
+
+jar {
+    manifest.attributes("Main-Class": mainClassName)
+}
+
+test {
+    useJUnitPlatform()
+}
