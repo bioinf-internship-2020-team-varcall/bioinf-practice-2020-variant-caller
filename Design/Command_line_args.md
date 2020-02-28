@@ -78,9 +78,9 @@ package com.epam.bioinf.variantcaller;
 
 class ParsedData {
   static ParsedData createParsedDataFrom(String[] args); //Factory method, возвращает объект ParsedData на основе данных полученных от парсера, либо null, если произошла ошибка.
-  File getResultFasta(); //возвращает '.fasta' файл, полученный от parser, либо null если Launcher еще не получил значение от parser.
-  File getResultBed(); //возвращает список из '.bed' файлов, полученных от parser, либо null если Launcher еще не получил значение от parser.
-  List<File> getResultSam(); //возвращает список из одного или нескольких '.sam' файлов, полученных от parser, либо null если Launcher еще не получил значение от parser.
+  File getResultFasta(); //возвращает '.fasta' файл, полученный от parser.
+  File getResultBed(); //возвращает список из '.bed' файлов, полученных от parser.
+  List<File> getResultSam(); //возвращает список из одного или нескольких '.sam' файлов, полученных от parser.
 }
 
 ```
@@ -120,8 +120,8 @@ public class Main {
 
 |Номер теста|Название теста|Описание теста|
 |---|---|---|
-|1|launcherMustNotReturnNullWithValidParameters|Экземпляр ParsedData был успешно создан при верных параметрах|
-|2|launcherMustReturnNullWithInvalidParameters|Класс ParsedData вернул null в при неверных параметрах|
+|1|parsedDataMustNotReturnNullWithValidParameters|Экземпляр ParsedData был успешно создан при верных параметрах|
+|2|parsedDataMustReturnNullWithInvalidParameters|Класс ParsedData вернул null в при неверных параметрах|
 
 ## Таблица интеграционных тестов программы
 
