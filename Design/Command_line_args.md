@@ -120,15 +120,14 @@ public class Main {
 
 |Номер теста|Название теста|Описание теста|
 |---|---|---|
-|1|parsedDataMustNotReturnNullWithValidParameters|Экземпляр ParsedData был успешно создан при верных параметрах|
-|2|parsedDataMustReturnNullWithInvalidParameters|Класс ParsedData вернул null в при неверных параметрах|
+|1|parsedDataMustFailWithInvalidParameterss|Класс ParsedData бросил Exception в при неверных параметрах|
 
 ## Таблица интеграционных тестов программы
 
 |Номер теста|Название теста|Описание теста|
 |---|---|---|
 |1|programMustWorkWithCorrectArguments|Экземпляр ParsedData был успешно создан при верных параметрах, и результаты, полученные CommandLineParser соответствуют ожидаемым|
-|2|programMustWorkWithInvalidArguments|Класс ParsedData вернул null в при неверных параметрах, а результаты не были получены|
+|2|programMustFailWithInvalidArguments|Класс ParsedData бросил Exception и результаты не были получены|
 
 
 
