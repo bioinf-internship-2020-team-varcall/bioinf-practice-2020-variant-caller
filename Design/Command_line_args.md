@@ -78,9 +78,9 @@ package com.epam.bioinf.variantcaller;
 
 class ParsedData {
   static ParsedData createParsedDataFrom(String[] args); //Factory method, возвращает объект ParsedData на основе данных полученных от парсера, либо null, если произошла ошибка.
-  File getResultFasta(); //возвращает '.fasta' файл, полученный от parser.
-  File getResultBed(); //возвращает список из '.bed' файлов, полученных от parser.
-  List<File> getResultSam(); //возвращает список из одного или нескольких '.sam' файлов, полученных от parser.
+  Path getResultFasta(); //возвращает '.fasta' файл, полученный от parser.
+  List<Path> getResultBed(); //возвращает список из '.bed' файлов, полученных от parser.
+  List<Path> getResultSam(); //возвращает список из одного или нескольких '.sam' файлов, полученных от parser.
 }
 
 ```
