@@ -18,12 +18,14 @@ repositories {
     mavenCentral()
 }
 testSets {
-    integrationTest { dirName = 'integrationTest' }
+    integrationTest {
+        dirName = 'integrationTest'
+    }
 }
 
 dependencies {
     //jopt - library for command line arguments analysis
-    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.5'
+    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-3'
 
     //integration tests libs
     testCompile('junit:junit:4.12')
@@ -36,6 +38,12 @@ dependencies {
 
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test
+
+run {
+    if ( project.hasProperty("testArgs") ) {
+        args Eval.me(testArgs)
+    }
+}
 
 jar {
     manifest.attributes("Main-Class": mainClassName)

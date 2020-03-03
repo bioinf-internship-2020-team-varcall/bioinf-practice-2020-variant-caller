@@ -1,5 +1,6 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
-import static com.epam.bioinf.variantcaller.cmdline.CommandLineMessages.*;
+
+import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import joptsimple.OptionSet;
 import org.junit.jupiter.api.Test;
 import org.junit.Rule;
@@ -10,256 +11,88 @@ import static org.junit.rules.ExpectedException.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandLineParserTest {
-  private final String currentPathString = Paths.get("src/test/resources").toAbsolutePath().toString();
+  private final String TEST_RESOURCES_ROOT = Paths.get("src/test/resources").toAbsolutePath().toString();
 
   @Rule
   public final ExpectedException thrown = none();
 
   @Test
   public void parserMustAcceptValidParameters() {
-    try {
-      String[] correctTestArgs = {
-          "--fasta", currentPathString + "/test1.fasta",
-          "--bed", currentPathString + "/test1.bed",
-          "--sam", currentPathString + "/test1.sam"
-      };
-      CommandLineParser result = CommandLineParser.parse(correctTestArgs);
-      OptionSet parserOptions = result.getOptions();
-
-      assertTrue(parserOptions.has("fasta"), "Parser must accept --fasta parameter");
-      assertTrue(parserOptions.has("bed"), "Parser must accept --bed parameter");
-      assertTrue(parserOptions.has("sam"), "Parser must accept --sam parameter");
-    } catch (Exception e) {
-      fail(e.getLocalizedMessage());
-    }
-  }
-
-  @Test
-  public void parserMustFailIfInvalidParameters() {
-    String[] invalidTestArgs = {
-        "-p", currentPathString + "/test1.fasta",
-        "-ap", currentPathString + "/test1.bed",
-        "-hp", currentPathString + "/test1.sam"
-    };
-    try {
-      CommandLineParser.parse(invalidTestArgs);
-    } catch (Exception e) {
-      thrown.expect(OptionException.class);
-    }
-  }
-
-  @Test
-  public void parserMustAcceptMultipleArguments() {
     String[] correctTestArgs = {
-        "--fasta", currentPathString + "/test1.fasta",
-        "--bed", currentPathString + "/test1.bed" + ":" + currentPathString + "/test2.bed",
-        "--sam", currentPathString + "/test1.sam" + ":" + currentPathString + "/test2.sam"
+        "--fasta", TEST_RESOURCES_ROOT + "/test1.fasta",
+        "--bed", TEST_RESOURCES_ROOT + "/test1.bed",
+        "--sam", TEST_RESOURCES_ROOT + "/test1.sam"
     };
-    try {
-      CommandLineParser result = CommandLineParser.parse(correctTestArgs);
-      String expectedFastaPath = currentPathString + "/test1.fasta";
-      String[] expectedBedPaths = {currentPathString + "/test1.bed", currentPathString + "/test2.bed"};
-      String[] expectedSamPaths = {currentPathString + "/test1.sam", currentPathString + "/test2.sam"};
-      Arrays.sort(expectedBedPaths);
-      Arrays.sort(expectedSamPaths);
+    CommandLineParser parser = CommandLineParser.build(correctTestArgs);
+    OptionSet parserOptions = parser.getOptions();
 
-      String parsedFastaPath = result.getFastaPath().toString();
-      List<String> parsedBedPaths = result.getBedPaths().stream().map(Path::toString).sorted().collect(Collectors.toList());
-      List<String> parsedSamPaths = result.getSamPaths().stream().map(Path::toString).sorted().collect(Collectors.toList());
-
-      assertEquals(expectedFastaPath, parsedFastaPath, "Expected fasta path is not equal to parsed one");
-      for (int i = 0; i < 2; i++) {
-        assertEquals(expectedBedPaths[i], parsedBedPaths.get(i), "Expected bed path is not equal to parsed one");
-        assertEquals(expectedSamPaths[i], parsedSamPaths.get(i), "Expected sam path is not equal to parsed one");
-      }
-    } catch (Exception e) {
-      fail(e.getLocalizedMessage());
-    }
+    assertTrue(parserOptions.has("fasta"), "Parser must accept --fasta parameter");
+    assertTrue(parserOptions.has("bed"), "Parser must accept --bed parameter");
+    assertTrue(parserOptions.has("sam"), "Parser must accept --sam parameter");
   }
 
   @Test
-  public void parserMustFailIfMoreThanOneFastaPathProvided() {
-    String[] invalidTestArgs = {
-        "--fasta", currentPathString + "/test1.fasta" + ":" + currentPathString + "/test2.fasta",
-        "--bed", currentPathString + "/test1.bed" + ":" + currentPathString + "/test2.bed",
-        "--sam", currentPathString + "/test1.sam" + ":" + currentPathString + "/test2.sam"
+  public void parserMustBeBuiltWithValidParameters() {
+    String[] correctTestArgs = {
+        "--fasta", TEST_RESOURCES_ROOT + "/test1.fasta",
+        "--bed", TEST_RESOURCES_ROOT + "/test1.bed",
+        "--sam", TEST_RESOURCES_ROOT + "/test1.sam"
     };
-    try {
-      CommandLineParser.parse(invalidTestArgs);
-    } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), FASTA_ARGS_COUNT_EXC, "Exception was thrown but its message is not equal to 'FASTA_ARGS_COUNT_EXC' constant");
-      thrown.expect(OptionException.class);
-    }
+    CommandLineParser.build(correctTestArgs);
   }
 
   @Test
-  public void parserMustFailIfLessThanOneFastaPathProvided() {
+  public void parserMustFailWithInvalidParameters() {
     String[] invalidTestArgs = {
-        "--fasta",
-        "--bed", currentPathString + "/test1.bed" + ":" + currentPathString + "/test2.bed",
-        "--sam", currentPathString + "/test1.sam" + ":" + currentPathString + "/test2.sam"
+        "-p", TEST_RESOURCES_ROOT + "/test1.fasta",
+        "-ap", TEST_RESOURCES_ROOT + "/test1.bed",
+        "-hp", TEST_RESOURCES_ROOT + "/test1.sam"
     };
     try {
-      CommandLineParser.parse(invalidTestArgs);
+      CommandLineParser.build(invalidTestArgs);
+      fail();
     } catch (Exception e) {
       thrown.expect(OptionException.class);
     }
   }
 
   @Test
-  public void parserMustFailIfLessThanOneBedPathProvided() {
-    String[] invalidTestArgs = {
-        "--fasta", currentPathString + "/test1.fasta",
-        "--bed",
-        "--sam", currentPathString + "/test1.sam" + ":" + currentPathString + "/test2.sam"
+  public void parserMustReturnCorrectParsedArgumentsWithValidArguments() {
+    String[] correctTestArgs = {
+        "--fasta", TEST_RESOURCES_ROOT + "/test1.fasta",
+        "--bed", TEST_RESOURCES_ROOT + "/test1.bed",
+        "--sam", TEST_RESOURCES_ROOT + "/test1.sam"
     };
-    try {
-      CommandLineParser.parse(invalidTestArgs);
-    } catch (Exception e) {
-      thrown.expect(OptionException.class);
-    }
+    ParsedArguments result = CommandLineParser.build(correctTestArgs).getParsedArguments();
+    assertEquals(result.getFastaPath(), Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta"));
+    assertEquals(result.getBedPaths().get(0), Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"));
+    assertEquals(result.getSamPaths().get(0), Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"));
   }
 
   @Test
-  public void parserMustFailIfLessThanOneSamPathProvided() {
-    String[] invalidTestArgs = {
-        "--fasta", currentPathString + "/test1.fasta",
-        "--bed", currentPathString + "/test1.bed" + ":" + currentPathString + "/test2.bed",
-        "--sam"
+  public void parserMustReturnCorrectParsedArgumentsIfMultipleArgumentsProvided() {
+    String[] correctTestArgs = {
+        "--fasta", TEST_RESOURCES_ROOT + "/test1.fasta",
+        "--bed", TEST_RESOURCES_ROOT + "/test1.bed" + ":" + TEST_RESOURCES_ROOT + "/test2.bed",
+        "--sam", TEST_RESOURCES_ROOT + "/test1.sam" + ":" + TEST_RESOURCES_ROOT + "/test2.sam"
     };
-    try {
-      CommandLineParser.parse(invalidTestArgs);
-    } catch (Exception e) {
-      thrown.expect(OptionException.class);
-    }
-  }
+    ParsedArguments result = CommandLineParser.build(correctTestArgs).getParsedArguments();
+    String expectedFastaPath = TEST_RESOURCES_ROOT + "/test1.fasta";
+    List<Path> expectedBedPaths = List.of(Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"), Paths.get(TEST_RESOURCES_ROOT, "/test2.bed"));
+    List<Path> expectedSamPaths = List.of(Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"), Paths.get(TEST_RESOURCES_ROOT, "/test2.sam"));
 
-  @Test
-  public void parserMustRemoveDuplicatedPaths() {
-    String[] invalidTestArgs = {
-        "--fasta", currentPathString + "/test1.fasta" + ":" + currentPathString + "/test1.fasta",
-        "--bed", currentPathString + "/test1.bed" + ":" + currentPathString + "/test1.bed" + ":" + currentPathString + "/test2.bed",
-        "--sam", currentPathString + "/test1.sam" + ":" + currentPathString + "/test1.sam" + ":" + currentPathString + "/test2.sam"
-    };
-    try {
-      CommandLineParser result = CommandLineParser.parse(invalidTestArgs);
+    String parsedFastaPath = result.getFastaPath().toString();
+    List<Path> parsedBedPaths = result.getBedPaths();
+    List<Path> parsedSamPaths = result.getSamPaths();
 
-      String expectedFastaPath = currentPathString + "/test1.fasta";
-      String[] expectedBedPaths = {currentPathString + "/test1.bed", currentPathString + "/test2.bed"};
-      String[] expectedSamPaths = {currentPathString + "/test1.sam", currentPathString + "/test2.sam"};
-
-      assertNotNull(result.getFastaPath(), "Parser returned null instead of fasta path");
-      assertEquals(result.getBedPaths().size(), 2, "Amount of parsed bed paths is not equal to expected");
-      assertEquals(result.getSamPaths().size(), 2, "Amount of parsed sam paths is not equal to expected");
-
-      String parsedFastaPath = result.getFastaPath().toString();
-      List<String> parsedBedPaths = result.getBedPaths().stream().map(Path::toString).sorted().collect(Collectors.toList());
-      List<String> parsedSamPaths = result.getSamPaths().stream().map(Path::toString).sorted().collect(Collectors.toList());
-
-      assertEquals(expectedFastaPath, parsedFastaPath, "Expected fasta path is not equal to parsed");
-      for (int i = 0; i < 2; i++) {
-        assertEquals(expectedBedPaths[i], parsedBedPaths.get(i), "Expected bed path is not equal to parsed");
-        assertEquals(expectedSamPaths[i], parsedSamPaths.get(i), "Expected sam path is not equal to parsed");
-      }
-    } catch (Exception e) {
-      fail(e.getLocalizedMessage());
-    }
-  }
-
-  @Test
-  public void parserMustFailIfFastaPathHasInvalidExtension() {
-    String[] invalidTestArgs = {
-        "--fasta", currentPathString + "/test1.fas",
-        "--bed", currentPathString + "/test1.bed" + ":" + currentPathString + "/test2.bed",
-        "--sam", currentPathString + "/test1.sam" + ":" + currentPathString + "/test2.sam"
-    };
-    try {
-      CommandLineParser.parse(invalidTestArgs);
-    } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), FASTA_EXTENSION_EXC, "Exception was thrown but its message is not equal to 'FASTA_EXTENSION_EXC' constant");
-      thrown.expect(OptionException.class);
-    }
-  }
-
-  @Test
-  public void parserMustFailIfSomeBedPathHasInvalidExtension() {
-    String[] invalidTestArgs = {
-        "--fasta", currentPathString + "/test1.fasta",
-        "--bed", currentPathString + "/test1.bed" + ":" + currentPathString + "/test2.sam",
-        "--sam", currentPathString + "/test1.sam" + ":" + currentPathString + "/test2.sam"
-    };
-    try {
-      CommandLineParser.parse(invalidTestArgs);
-    } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), BED_EXTENSION_EXC, "Exception was thrown but its message is not equal to 'BED_EXTENSION_EXC' constant");
-      thrown.expect(OptionException.class);
-    }
-  }
-
-  @Test
-  public void parserMustFailIfSomeSamPathHasInvalidExtension() {
-    String[] invalidTestArgs = {
-        "--fasta", currentPathString + "/test1.fasta",
-        "--bed", currentPathString + "/test1.bed" + ":" + currentPathString + "/test2.bed",
-        "--sam", currentPathString + "/test1.sam" + ":" + currentPathString + "/test2.fasta"
-    };
-    try {
-      CommandLineParser.parse(invalidTestArgs);
-    } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), SAM_EXTENSION_EXC, "Exception was thrown but its message is not equal to 'SAM_EXTENSION_EXC' constant");
-      thrown.expect(OptionException.class);
-    }
-  }
-
-  @Test
-  public void parserMustFailIfFastaFileDoesNotExist() {
-    String[] invalidTestArgs = {
-        "--fasta", currentPathString + "/testOne.fasta",
-        "--bed", currentPathString + "/test1.bed" + ":" + currentPathString + "/test2.bed",
-        "--sam", currentPathString + "/test1.sam" + ":" + currentPathString + "/test2.sam"
-    };
-    try {
-      CommandLineParser.parse(invalidTestArgs);
-    } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), FASTA_PATH_NOT_EXISTS_EXC, "Exception was thrown but its message is not equal to 'FASTA_PATH_NOT_EXISTS_EXC' constant");
-      thrown.expect(OptionException.class);
-    }
-  }
-
-  @Test
-  public void parserMustFailIfSomeBedFileDoesNotExist() {
-    String[] invalidTestArgs = {
-        "--fasta", currentPathString + "/test1.fasta",
-        "--bed", currentPathString + "/test1.bed" + ":" + currentPathString + "/testTwo.bed",
-        "--sam", currentPathString + "/test1.sam" + ":" + currentPathString + "/test2.sam"
-    };
-    try {
-      CommandLineParser.parse(invalidTestArgs);
-    } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), BED_PATH_NOT_EXISTS_EXC, "Exception was thrown but its message is not equal to 'BED_PATH_NOT_EXISTS_EXC' constant");
-      thrown.expect(OptionException.class);
-    }
-  }
-
-  @Test
-  public void parserMustFailIfSomeSamFileDoesNotExist() {
-    String[] invalidTestArgs = {
-        "--fasta", currentPathString + "/test1.fasta",
-        "--bed", currentPathString + "/test1.bed" + ":" + currentPathString + "/test2.bed",
-        "--sam", currentPathString + "/testOne.sam" + ":" + currentPathString + "/test2.sam"
-    };
-    try {
-      CommandLineParser.parse(invalidTestArgs);
-    } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), SAM_PATH_NOT_EXISTS_EXC, "Exception was thrown but its message is not equal to 'SAM_PATH_NOT_EXISTS_EXC' constant");
-      thrown.expect(OptionException.class);
-    }
+    assertEquals(expectedFastaPath, parsedFastaPath, "Expected fasta path is not equal to parsed one");
+    assertEquals(Set.copyOf(expectedBedPaths), Set.copyOf(parsedBedPaths), "Unexpected BED file paths");
+    assertEquals(Set.copyOf(expectedSamPaths), Set.copyOf(parsedSamPaths), "Unexpected SAM file paths");
   }
 }
