@@ -42,7 +42,13 @@ public class CommandLineArgsrIntegTest {
     assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: " + FASTA_ARGS_COUNT_EXC, errorString);
   }
 
-  //method returns an error string which is got from launched process
+  /**
+   * Launches process and if it fails gets error
+   *
+   * @param joinedArgs the prepared command line arguments joined to string and separated by comma
+   * @return the string which holds error if process creates one or is empty otherwise
+   * @throws IOException the exception which is thrown when process fails to launch
+   */
   private String launchProcessWithArgs(String joinedArgs) throws IOException {
     String command = System.getProperty("user.dir") + "/gradlew run -PtestArgs=[" + joinedArgs + "]";
     Runtime r = Runtime.getRuntime();
