@@ -6,13 +6,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.epam.bioinf.variantcaller.cmdline.CommandLineMessages.*;
+import static com.epam.bioinf.variantcaller.cmdline.CommandLineParser.CommandLineMessages.*;
 
 //this class holds validated data
 public class ParsedArguments {
-  List<Path> fastaPaths;
-  List<Path> bedPaths;
-  List<Path> samPaths;
+  private final Path fastaPath;
+  private final List<Path> bedPaths;
+  private final List<Path> samPaths;
 
   public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths, List<Path> samPaths) {
     List<Path> processedFasta = withRemovedDuplicates(fastaPaths);
@@ -21,7 +21,7 @@ public class ParsedArguments {
 
     validate(processedFasta, processedBed, processedSam);
 
-    this.fastaPaths = processedFasta;
+    this.fastaPath = processedFasta.get(0);
     this.bedPaths = processedBed;
     this.samPaths = processedSam;
   }
@@ -56,7 +56,7 @@ public class ParsedArguments {
   }
 
   public Path getFastaPath() {
-    return fastaPaths.get(0);
+    return fastaPath;
   }
 
   public List<Path> getBedPaths() {

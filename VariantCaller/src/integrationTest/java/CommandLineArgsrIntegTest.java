@@ -1,4 +1,4 @@
-import static com.epam.bioinf.variantcaller.cmdline.CommandLineMessages.*;
+import static com.epam.bioinf.variantcaller.cmdline.CommandLineParser.CommandLineMessages.*;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,12 +26,7 @@ public class CommandLineArgsrIntegTest {
         "'--sam'", "'" + INTEG_TEST_RECOURCES_ROOT + "/test1.sam'"
     };
     String joinedInvalidArgs = String.join(",", invalidTestArgs);
-    String command = System.getProperty("user.dir") + "/gradlew run -PtestArgs=[" + joinedInvalidArgs + "]";
-
-    Runtime r = Runtime.getRuntime();
-    Process p = r.exec(command);
-    BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-    String errorString = error.readLine();
+    String errorString = launchProcessWithArgs(joinedInvalidArgs);
     assertTrue(errorString.isEmpty());
   }
 
@@ -43,12 +38,16 @@ public class CommandLineArgsrIntegTest {
         "'--sam'", "'" + INTEG_TEST_RECOURCES_ROOT + "/test1.sam'"
     };
     String joinedInvalidArgs = String.join(",", invalidTestArgs);
-    String command = System.getProperty("user.dir") + "/gradlew run -PtestArgs=[" + joinedInvalidArgs + "]";
+    String errorString = launchProcessWithArgs(joinedInvalidArgs);
+    assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: " + FASTA_ARGS_COUNT_EXC, errorString);
+  }
 
+  //method returns an error string which is got from launched process
+  private String launchProcessWithArgs(String joinedArgs) throws IOException {
+    String command = System.getProperty("user.dir") + "/gradlew run -PtestArgs=[" + joinedArgs + "]";
     Runtime r = Runtime.getRuntime();
     Process p = r.exec(command);
     BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-    String errorString = error.readLine();
-    assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: " + FASTA_ARGS_COUNT_EXC, errorString);
+    return error.readLine();
   }
 }

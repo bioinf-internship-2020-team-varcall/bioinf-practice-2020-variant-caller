@@ -1,4 +1,4 @@
-import static com.epam.bioinf.variantcaller.cmdline.CommandLineMessages.*;
+import static com.epam.bioinf.variantcaller.cmdline.CommandLineParser.CommandLineMessages.*;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import org.junit.jupiter.api.Test;
@@ -23,9 +23,17 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsMustBeCreatedWithValidParameters() {
-    List<Path> correctFasta = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.fasta"));
-    List<Path> correctBed = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.bed"), Paths.get(TEST_RESOURCES_ROOT + "/test2.bed"));
-    List<Path> correctSam = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.sam"), Paths.get(TEST_RESOURCES_ROOT + "/test2.sam"));
+    List<Path> correctFasta = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta")
+    );
+    List<Path> correctBed = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> correctSam = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
     ParsedArguments parsedArguments = new ParsedArguments(correctFasta, correctBed, correctSam);
 
     assertEquals(correctFasta.get(0), parsedArguments.getFastaPath());
@@ -36,8 +44,14 @@ public class ParsedArgumentsTest {
   @Test
   public void parsedArgumentsMustFailIfLessThanOneFastaPathProvided() {
     List<Path> invalidFasta = List.of();
-    List<Path> correctBed = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.bed"), Paths.get(TEST_RESOURCES_ROOT + "/test2.bed"));
-    List<Path> correctSam = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.sam"), Paths.get(TEST_RESOURCES_ROOT + "/test2.sam"));
+    List<Path> correctBed = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> correctSam = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
     try {
       new ParsedArguments(invalidFasta, correctBed, correctSam);
       fail();
@@ -48,9 +62,14 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsMustFailIfLessThanOneBedPathProvided() {
-    List<Path> correctFasta = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.fasta"));
+    List<Path> correctFasta = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta")
+    );
     List<Path> invalidBed = List.of();
-    List<Path> correctSam = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.sam"), Paths.get(TEST_RESOURCES_ROOT + "/test2.sam"));
+    List<Path> correctSam = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
     try {
       new ParsedArguments(correctFasta, invalidBed, correctSam);
       fail();
@@ -61,8 +80,13 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsMustFailIfLessThanOneSamPathProvided() {
-    List<Path> correctFasta = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.fasta"));
-    List<Path> correctBed = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.bed"), Paths.get(TEST_RESOURCES_ROOT + "/test2.bed"));
+    List<Path> correctFasta = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta")
+    );
+    List<Path> correctBed = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
     List<Path> invalidSam = List.of();
     try {
       new ParsedArguments(correctFasta, correctBed, invalidSam);
@@ -74,9 +98,18 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsFailIfMoreThanOneFastaPathProvided() {
-    List<Path> invalidFasta = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.fasta"), Paths.get(TEST_RESOURCES_ROOT + "/test2.fasta"));
-    List<Path> correctBed = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.bed"), Paths.get(TEST_RESOURCES_ROOT + "/test2.bed"));
-    List<Path> correctSam = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.sam"), Paths.get(TEST_RESOURCES_ROOT + "/test2.sam"));
+    List<Path> invalidFasta = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.fasta")
+    );
+    List<Path> correctBed = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> correctSam = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
     try {
       new ParsedArguments(invalidFasta, correctBed, correctSam);
       fail();
@@ -88,17 +121,30 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsMustBeBuiltWithRemovedDuplicatedPaths() {
-    List<Path> dupllicatedFasta = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.fasta"), Paths.get(TEST_RESOURCES_ROOT + "/test1.fasta"));
-    List<Path> duplicatedBed = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.bed"),
-        Paths.get(TEST_RESOURCES_ROOT + "/test1.bed"),
-        Paths.get(TEST_RESOURCES_ROOT + "/test2.bed"));
-    List<Path> duplicatedSam = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.sam"),
-        Paths.get(TEST_RESOURCES_ROOT + "/test1.sam"),
-        Paths.get(TEST_RESOURCES_ROOT + "/test2.sam"));
+    List<Path> dupllicatedFasta = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta")
+    );
+    List<Path> duplicatedBed = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> duplicatedSam = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
 
-    Path expectedFastaPath = Paths.get(TEST_RESOURCES_ROOT + "/test1.fasta");
-    List<Path> expectedBedPaths = List.of(Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"), Paths.get(TEST_RESOURCES_ROOT, "/test2.bed"));
-    List<Path> expectedSamPaths = List.of(Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"), Paths.get(TEST_RESOURCES_ROOT, "/test2.sam"));
+    Path expectedFastaPath = Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta");
+    List<Path> expectedBedPaths = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> expectedSamPaths = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
 
     ParsedArguments result = new ParsedArguments(dupllicatedFasta, duplicatedBed, duplicatedSam);
 
@@ -117,9 +163,17 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsMustFailIfFastaPathHasInvalidExtension() {
-    List<Path> fastaWithInvalidExt = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.fas"));
-    List<Path> correctBed = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.bed"), Paths.get(TEST_RESOURCES_ROOT + "/test2.bed"));
-    List<Path> correctSam = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.sam"), Paths.get(TEST_RESOURCES_ROOT + "/test2.sam"));
+    List<Path> fastaWithInvalidExt = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.fas")
+    );
+    List<Path> correctBed = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> correctSam = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
     try {
       new ParsedArguments(fastaWithInvalidExt, correctBed, correctSam);
       fail();
@@ -131,9 +185,17 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsMustFailIfSomeBedPathHasInvalidExtension() {
-    List<Path> correctFasta = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.fasta"));
-    List<Path> bedWithInvalidExt = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.bek"), Paths.get(TEST_RESOURCES_ROOT + "/test2.bed"));
-    List<Path> correctSam = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.sam"), Paths.get(TEST_RESOURCES_ROOT + "/test2.sam"));
+    List<Path> correctFasta = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta")
+    );
+    List<Path> bedWithInvalidExt = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bek"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> correctSam = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
     try {
       new ParsedArguments(correctFasta, bedWithInvalidExt, correctSam);
       fail();
@@ -145,9 +207,17 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsMustFailIfSomeSamPathHasInvalidExtension() {
-    List<Path> correctFasta = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.fasta"));
-    List<Path> correctBed = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.bed"), Paths.get(TEST_RESOURCES_ROOT + "/test2.bed"));
-    List<Path> samWithInvalidExt = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.samuel"), Paths.get(TEST_RESOURCES_ROOT + "/test2.sam"));
+    List<Path> correctFasta = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta")
+    );
+    List<Path> correctBed = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> samWithInvalidExt = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.samuel"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
     try {
       new ParsedArguments(correctFasta, correctBed, samWithInvalidExt);
       fail();
@@ -159,9 +229,17 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsMustFailIfFastaFileDoesNotExist() {
-    List<Path> notExistingFasta = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test217.fasta"));
-    List<Path> correctBed = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.bed"), Paths.get(TEST_RESOURCES_ROOT + "/test2.bed"));
-    List<Path> correctSam = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.sam"), Paths.get(TEST_RESOURCES_ROOT + "/test2.sam"));
+    List<Path> notExistingFasta = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test217.fasta")
+    );
+    List<Path> correctBed = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> correctSam = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
     try {
       new ParsedArguments(notExistingFasta, correctBed, correctSam);
       fail();
@@ -173,9 +251,17 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsMustFailIfSomeBedFileDoesNotExist() {
-    List<Path> correctFasta = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.fasta"));
-    List<Path> notExistingBed = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test217.bed"), Paths.get(TEST_RESOURCES_ROOT + "/test2.bed"));
-    List<Path> correctSam = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.sam"), Paths.get(TEST_RESOURCES_ROOT + "/test2.sam"));
+    List<Path> correctFasta = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta")
+    );
+    List<Path> notExistingBed = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test217.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> correctSam = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
     try {
       new ParsedArguments(correctFasta, notExistingBed, correctSam);
       fail();
@@ -187,9 +273,17 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsMustFailIfSomeSamFileDoesNotExist() {
-    List<Path> correctFasta = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.fasta"));
-    List<Path> correctBed = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test1.bed"), Paths.get(TEST_RESOURCES_ROOT + "/test2.bed"));
-    List<Path> notExistingSam = List.of(Paths.get(TEST_RESOURCES_ROOT + "/test217.sam"), Paths.get(TEST_RESOURCES_ROOT + "/test2.sam"));
+    List<Path> correctFasta = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta")
+    );
+    List<Path> correctBed = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> notExistingSam = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test217.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
     try {
       new ParsedArguments(correctFasta, correctBed, notExistingSam);
       fail();

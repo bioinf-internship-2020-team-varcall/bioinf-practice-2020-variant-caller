@@ -1,7 +1,6 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
-import joptsimple.OptionSet;
 import org.junit.jupiter.api.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -23,28 +22,13 @@ public class CommandLineParserTest {
   public final ExpectedException thrown = none();
 
   @Test
-  public void parserMustAcceptValidParameters() {
-    String[] correctTestArgs = {
-        "--fasta", TEST_RESOURCES_ROOT + "/test1.fasta",
-        "--bed", TEST_RESOURCES_ROOT + "/test1.bed",
-        "--sam", TEST_RESOURCES_ROOT + "/test1.sam"
-    };
-    CommandLineParser parser = CommandLineParser.build(correctTestArgs);
-    OptionSet parserOptions = parser.getOptions();
-
-    assertTrue(parserOptions.has("fasta"), "Parser must accept --fasta parameter");
-    assertTrue(parserOptions.has("bed"), "Parser must accept --bed parameter");
-    assertTrue(parserOptions.has("sam"), "Parser must accept --sam parameter");
-  }
-
-  @Test
   public void parserMustBeBuiltWithValidParameters() {
     String[] correctTestArgs = {
         "--fasta", TEST_RESOURCES_ROOT + "/test1.fasta",
         "--bed", TEST_RESOURCES_ROOT + "/test1.bed",
         "--sam", TEST_RESOURCES_ROOT + "/test1.sam"
     };
-    CommandLineParser.build(correctTestArgs);
+    CommandLineParser.parse(correctTestArgs);
   }
 
   @Test
@@ -55,7 +39,7 @@ public class CommandLineParserTest {
         "-hp", TEST_RESOURCES_ROOT + "/test1.sam"
     };
     try {
-      CommandLineParser.build(invalidTestArgs);
+      CommandLineParser.parse(invalidTestArgs);
       fail();
     } catch (Exception e) {
       thrown.expect(OptionException.class);
@@ -69,7 +53,7 @@ public class CommandLineParserTest {
         "--bed", TEST_RESOURCES_ROOT + "/test1.bed",
         "--sam", TEST_RESOURCES_ROOT + "/test1.sam"
     };
-    ParsedArguments result = CommandLineParser.build(correctTestArgs).getParsedArguments();
+    ParsedArguments result = CommandLineParser.parse(correctTestArgs);
     assertEquals(result.getFastaPath(), Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta"));
     assertEquals(result.getBedPaths().get(0), Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"));
     assertEquals(result.getSamPaths().get(0), Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"));
@@ -82,10 +66,16 @@ public class CommandLineParserTest {
         "--bed", TEST_RESOURCES_ROOT + "/test1.bed" + ":" + TEST_RESOURCES_ROOT + "/test2.bed",
         "--sam", TEST_RESOURCES_ROOT + "/test1.sam" + ":" + TEST_RESOURCES_ROOT + "/test2.sam"
     };
-    ParsedArguments result = CommandLineParser.build(correctTestArgs).getParsedArguments();
+    ParsedArguments result = CommandLineParser.parse(correctTestArgs);
     String expectedFastaPath = TEST_RESOURCES_ROOT + "/test1.fasta";
-    List<Path> expectedBedPaths = List.of(Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"), Paths.get(TEST_RESOURCES_ROOT, "/test2.bed"));
-    List<Path> expectedSamPaths = List.of(Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"), Paths.get(TEST_RESOURCES_ROOT, "/test2.sam"));
+    List<Path> expectedBedPaths = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+    );
+    List<Path> expectedSamPaths = List.of(
+        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
+        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+    );
 
     String parsedFastaPath = result.getFastaPath().toString();
     List<Path> parsedBedPaths = result.getBedPaths();
