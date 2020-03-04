@@ -1,14 +1,13 @@
 package com.epam.bioinf.variantcaller;
 
+import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
+import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+
 public class Main {
-  //this program is temporary and will be replaced in future versions
   public static void main(String[] args) {
-    //program arguments are set in configurations(if you are using intelliJ IDEA)
-    try {
-      CommandLineParser myParser = new CommandLineParser(args);
-      System.out.println(myParser.getA());
-    } catch (Exception e) {
-      System.err.println("Programs arguments are invalid, please use only -a arguments");
-    }
+    ParsedArguments parsedArguments = CommandLineParser.parse(args);
+    System.out.println("Parsed fasta path = " + parsedArguments.getFastaPath());
+    System.out.println("Parsed bed paths = " + parsedArguments.getBedPaths());
+    System.out.println("Parsed sam paths = " + parsedArguments.getSamPaths());
   }
 }

@@ -53,7 +53,7 @@
 package com.epam.bioinf.variantcaller.cmdline;
 
 class CommandLineParser {
-  static CommandLineParser parse(String[] args); //Factory method, возвращает парсер и отвечает за валидацию аргументов, переданных ему в параметре, а также делегацию самого процесса парсинга объекту класса OptionParser из библиотеки jopt.
+  static CommandLineParser build(String[] args); //Factory method, возвращает парсер и отвечает за делегацию самого процесса парсинга объекту класса OptionParser из библиотеки jopt, а валидацию и хранение полученных данных ParsedData.
   OptionSet getOptions(); //возвращает объект OptionSet, который содержит в себе аргументы, разобранные в соответствии с параметрами parser, а также эти параметры
   Path getFastaPath(); //возвращает '.fasta' файл, полученный из переданного методу parse значения параметра --fasta, либо null если парсеру еще не удалось получить значение.
   List<Path> getBedPaths(); //возвращает список из одного или нескольких '.bed' файлов, полученных из переданного методу parse значения параметра --bed, либо null если парсеру еще не удалось получить значения 
@@ -71,16 +71,16 @@ class CommandLineMessages {} //отвечает за хранение конст
 
 ```
 
-* ParsedData
+* ParsedArguments
 
 ```java
 package com.epam.bioinf.variantcaller;
 
-class ParsedData {
-  static ParsedData createParsedDataFrom(String[] args); //Factory method, возвращает объект ParsedData на основе данных полученных от парсера, либо null, если произошла ошибка.
-  Path getResultFasta(); //возвращает '.fasta' файл, полученный от parser.
-  List<Path> getResultBed(); //возвращает список из '.bed' файлов, полученных от parser.
-  List<Path> getResultSam(); //возвращает список из одного или нескольких '.sam' файлов, полученных от parser.
+class ParsedArguments {
+  ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths, List<Path> samPaths); //Создает объект на основе данных, полученных от парсера, а также валидирует эти данные
+  Path getFastaPath(); //возвращает '.fasta' файл, полученный от parser.
+  List<Path> getBedPaths(); //возвращает список из '.bed' файлов, полученных от parser.
+  List<Path> getSamPath(); //возвращает список из одного или нескольких '.sam' файлов, полученных от parser.
 }
 
 ```
@@ -102,33 +102,34 @@ public class Main {
 |Номер теста|Название теста|Описание теста|
 |---|---|---|
 |1|parserMustAcceptValidParameters|Настройки CommandLineParser по допустимым аргументам были выставлены правильно|
-|2|parserMustFailIfInvalidParameters|CommandLineParser бросает OptionException, при передаче недопустимых параметров|
-|3|parserMustAcceptMultipleArguments|CommandLineParser может принимать несколько значений параметров ---bed и ---sam|
-|4|parserMustFailIfMoreThanOneFastaPathProvided|CommandLineParser бросает OptionException при передаче нескольких значений параметра --fasta|
-|5|parserMustFailIfLessThanOneFastaPathProvided|CommandLineParser бросает OptionException при отсутствии значений параметра --fasta|
-|6|parserMustFailIfLessThanOneBedPathProvided|CommandLineParser бросает OptionException при отсутствии значений параметра --bed|
-|7|parserMustFailIfLessThanOneSamPathProvided|CommandLineParser бросает OptionException при отсутствии значений параметра --sam|
-|8|parserMustRemoveDuplicatedPaths|CommandLineParser корректно удаляет дупликаты путей к файлам|
-|9|parserMustFailIfFastaPathHasInvalidExtension|CommandLineParser бросает OptionException, если значение параметра --fasta имеет не '.fasta' расширение|
-|10|parserMustFailIfSomeBedPathHasInvalidExtension|CommandLineParser бросает OptionException, если хоть одно значение параметра --bed имеет не '.bed' расширение|
-|11|parserMustFailIfSomeSamPathHasInvalidExtension|CommandLineParser бросает OptionException, если хоть одно значение параметра --sam имеет не '.sam' расширение|
-|12|parserMustFailIfFastaFileDoesNotExist|CommandLineParser бросает OptionException, если путь, указанный в параметре --fasta, не представляет собой путь к существующему '.fasta' файлу|
-|13|parserMustFailIfSomeBedFileDoesNotExist|CommandLineParser бросает OptionException, если хоть один из путей, указанных в параметре --bed, не представляет собой путь к существующему '.bed' файлу|
-|14|parserMustFailIfSomeSamFileDoesNotExist|CommandLineParser бросает OptionException, если хоть один из путей, указанных в параметре --sam, не представляет собой путь к существующему '.sam' файлу|
+|2|parserMustBeBuiltWithValidParameters|CommandLineParser успешно создан при верных параметрах|
+|3|parserMustFailWithInvalidParameters|CommandLineParser бросил Exception при неверных параметрах|
+|4|parserMustReturnCorrectParsedArgumentsWithValidArguments|При верных параметрах CommandLineParser возвращает корректный ParsedArguments|
+|5|parserMustReturnCorrectParsedArgumentsIfMultipleArgumentsProvided|При верных нескольких параметрах CommandLineParser возвращает корректный ParsedArguments|
 
-## Таблица тестов для класса ParsedData
+## Таблица тестов для класса ParsedArguments
 
 |Номер теста|Название теста|Описание теста|
 |---|---|---|
-|1|parsedDataMustNotReturnNullWithValidParameters|Экземпляр ParsedData был успешно создан при верных параметрах|
-|2|parsedDataMustReturnNullWithInvalidParameters|Класс ParsedData вернул null в при неверных параметрах|
+|1|parsedArgumentsMustBeCreatedWithValidParameters|Экземпляр класса ParsedArguments был успешно создан при верных параметрах|
+|2|parsedArgumentsMustFailIfLessThanOneBedPathProvided|ParsedData бросил Exception при отсутствии значений параметра --bed|
+|3|parsedArgumentsMustFailIfLessThanOneSamPathProvided|ParsedData бросил Exception при отсутствии значений параметра --sam|
+|4|parsedArgumentsMustFailIfLessThanOneFastaPathProvided|ParsedData бросил Exception при отсутствии значений параметра --fasta|
+|5|parsedArgumentsFailIfMoreThanOneFastaPathProvided|ParsedData бросил Exception при нескольких значениях параметра --fasta|
+|6|parsedArgumentsMustBeBuiltWithRemovedDuplicatedPaths|Экземпляр ParsedArguments был успешно создан, а копии были удалены|
+|7|parsedArgumentsMustFailIfFastaPathHasInvalidExtension|ParsedData бросил Exception, если значение параметра --fasta имеет не '.fasta' расширение|
+|8|parsedArgumentsMustFailIfSomeBedPathHasInvalidExtension|ParsedData бросил Exception, если хоть одно значение параметра --bed имеет не '.bed' расширение|
+|9|parsedArgumentsMustFailIfSomeSamPathHasInvalidExtension|ParsedData бросил Exception, если хоть одно значение параметра --sam имеет не '.sam' расширение|
+|10|parsedArgumentsMustFailIfFastaFileDoesNotExist|ParsedData бросил Exception, если путь, указанный в параметре --fasta, не представляет собой путь к существующему '.fasta' файлу|
+|11|parsedArgumentsMustFailIfSomeBedFileDoesNotExist|ParsedData бросил Exception, если хоть один путь, указанный в параметре --bed, не представляет собой путь к существующему '.bed' файлу|
+|12|parsedArgumentsMustFailIfSomeSamFileDoesNotExist|ParsedData бросил Exception, если хоть один путь, указанный в параметре --sam, не представляет собой путь к существующему '.sam' файлу|
 
 ## Таблица интеграционных тестов программы
 
 |Номер теста|Название теста|Описание теста|
 |---|---|---|
-|1|programMustWorkWithCorrectArguments|Экземпляр ParsedData был успешно создан при верных параметрах, и результаты, полученные CommandLineParser соответствуют ожидаемым|
-|2|programMustWorkWithInvalidArguments|Класс ParsedData вернул null в при неверных параметрах, а результаты не были получены|
+|1|programMustWorkWithCorrectArguments|Программа отработала без исключений при верных параметрах|
+|2|programMustFailWithInvalidArguments|При неверных аргументах, программа бросила исключение с сообщением о неверном числе значений параметра --fasta|
 
 
 

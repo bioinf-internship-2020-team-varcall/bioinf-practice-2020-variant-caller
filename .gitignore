@@ -32,3 +32,6 @@ hs_err_pid*
 # Gradle build files and libraries
 **/.gradle
 **/build
+
+# Temporary files
+**/out
