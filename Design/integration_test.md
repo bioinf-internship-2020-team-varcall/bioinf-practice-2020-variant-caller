@@ -28,7 +28,6 @@
  - IntegrationTestTask
  ```groovy
 class IntegrationTestTask extends DefaultsTask {
-	@Option(option = "args", description = "int test")//Описание задачи
 	@TaskAction
 		def start()//запускает выполнение процесса.
 }
