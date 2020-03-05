@@ -1,6 +1,7 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+import com.epam.bioinf.variantcaller.helpers.OsCheck;
 import org.junit.jupiter.api.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandLineParserTest {
   private final String TEST_RESOURCES_ROOT = Paths.get("src/test/resources").toAbsolutePath().toString();
+  private final char separator = OsCheck.getOS() == OsCheck.OS.WINDOWS ? ';' : ':';
 
   @Rule
   public final ExpectedException thrown = none();
@@ -63,11 +65,11 @@ public class CommandLineParserTest {
   public void parserMustReturnCorrectParsedArgumentsIfMultipleArgumentsProvided() {
     String[] correctTestArgs = {
         "--fasta", TEST_RESOURCES_ROOT + "/test1.fasta",
-        "--bed", TEST_RESOURCES_ROOT + "/test1.bed" + ":" + TEST_RESOURCES_ROOT + "/test2.bed",
-        "--sam", TEST_RESOURCES_ROOT + "/test1.sam" + ":" + TEST_RESOURCES_ROOT + "/test2.sam"
+        "--bed", TEST_RESOURCES_ROOT + "/test1.bed" + separator + TEST_RESOURCES_ROOT + "/test2.bed",
+        "--sam", TEST_RESOURCES_ROOT + "/test1.sam" + separator + TEST_RESOURCES_ROOT + "/test2.sam"
     };
     ParsedArguments result = CommandLineParser.parse(correctTestArgs);
-    String expectedFastaPath = TEST_RESOURCES_ROOT + "/test1.fasta";
+    Path expectedFastaPath = Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta");
     List<Path> expectedBedPaths = List.of(
         Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
         Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
@@ -77,7 +79,7 @@ public class CommandLineParserTest {
         Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
     );
 
-    String parsedFastaPath = result.getFastaPath().toString();
+    Path parsedFastaPath = result.getFastaPath();
     List<Path> parsedBedPaths = result.getBedPaths();
     List<Path> parsedSamPaths = result.getSamPaths();
 

@@ -1,5 +1,6 @@
 import static com.epam.bioinf.variantcaller.cmdline.CommandLineParser.CommandLineMessages.*;
 
+import com.epam.bioinf.variantcaller.helpers.OsCheck;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,7 +14,8 @@ import java.io.InputStreamReader;
 import java.nio.file.Paths;
 
 public class CommandLineArgsrIntegTest {
-  private final String INTEG_TEST_RECOURCES_ROOT = Paths.get("src/integrationTest/resources").toAbsolutePath().toString();
+  private final String INTEG_TEST_RECOURCES_ROOT = Paths.get("src/integrationTest/resources").toAbsolutePath().toString().replace("\\", "/");
+  private final char separator = OsCheck.getOS() == OsCheck.OS.WINDOWS ? ';' : ':';
 
   @Rule
   public final ExpectedException thrown = none();
@@ -27,13 +29,14 @@ public class CommandLineArgsrIntegTest {
     };
     String joinedInvalidArgs = String.join(",", invalidTestArgs);
     String errorString = launchProcessWithArgs(joinedInvalidArgs);
+    errorString = errorString == null ? "" : errorString;
     assertTrue(errorString.isEmpty());
   }
 
   @Test
   public void programMustFailWithInvalidArguments() throws IOException {
     String[] invalidTestArgs = {
-        "'--fasta'", "'" + INTEG_TEST_RECOURCES_ROOT + "/test1.fasta:" + INTEG_TEST_RECOURCES_ROOT + "/test2.fasta'",
+        "'--fasta'", "'" + INTEG_TEST_RECOURCES_ROOT + "/test1.fasta" + separator + INTEG_TEST_RECOURCES_ROOT + "/test2.fasta'",
         "'--bed'", "'" + INTEG_TEST_RECOURCES_ROOT + "/test1.bed'",
         "'--sam'", "'" + INTEG_TEST_RECOURCES_ROOT + "/test1.sam'"
     };
@@ -50,7 +53,8 @@ public class CommandLineArgsrIntegTest {
    * @throws IOException the exception which is thrown when process fails to launch
    */
   private String launchProcessWithArgs(String joinedArgs) throws IOException {
-    String command = System.getProperty("user.dir") + "/gradlew run -PtestArgs=[" + joinedArgs + "]";
+    String gradleWrapperCallCommand = OsCheck.getOS() == OsCheck.OS.WINDOWS ? "gradlew.bat" : "gradlew";
+    String command = Paths.get(System.getProperty("user.dir"), "/" + gradleWrapperCallCommand).toString() + " run -PtestArgs=[" + joinedArgs + "]";
     Runtime r = Runtime.getRuntime();
     Process p = r.exec(command);
     BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
