@@ -17,7 +17,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandLineParserTest {
-  private final String TEST_RESOURCES_ROOT = Paths.get("src/test/resources").toAbsolutePath().toString();
+  private static final Path TEST_RESOURCES_ROOT = Path.of("src", "test", "resources").toAbsolutePath();
   private final char separator = File.pathSeparatorChar;
 
   @Rule
@@ -26,9 +26,9 @@ public class CommandLineParserTest {
   @Test
   public void parserMustBeBuiltWithValidParameters() {
     String[] correctTestArgs = {
-        "--fasta", TEST_RESOURCES_ROOT + "/test1.fasta",
-        "--bed", TEST_RESOURCES_ROOT + "/test1.bed",
-        "--sam", TEST_RESOURCES_ROOT + "/test1.sam"
+        "--fasta", testFilePath("test1.fasta"),
+        "--bed", testFilePath("test1.bed"),
+        "--sam", testFilePath("test1.sam")
     };
     CommandLineParser.parse(correctTestArgs);
   }
@@ -36,9 +36,9 @@ public class CommandLineParserTest {
   @Test
   public void parserMustFailWithInvalidParameters() {
     String[] invalidTestArgs = {
-        "-p", TEST_RESOURCES_ROOT + "/test1.fasta",
-        "-ap", TEST_RESOURCES_ROOT + "/test1.bed",
-        "-hp", TEST_RESOURCES_ROOT + "/test1.sam"
+        "-p", testFilePath("test1.fasta"),
+        "-ap", testFilePath("test1.bed"),
+        "-hp", testFilePath("test1.sam")
     };
     try {
       CommandLineParser.parse(invalidTestArgs);
@@ -51,32 +51,32 @@ public class CommandLineParserTest {
   @Test
   public void parserMustReturnCorrectParsedArgumentsWithValidArguments() {
     String[] correctTestArgs = {
-        "--fasta", TEST_RESOURCES_ROOT + "/test1.fasta",
-        "--bed", TEST_RESOURCES_ROOT + "/test1.bed",
-        "--sam", TEST_RESOURCES_ROOT + "/test1.sam"
+        "--fasta", testFilePath("test1.fasta"),
+        "--bed", testFilePath("test1.bed"),
+        "--sam", testFilePath("test1.sam")
     };
     ParsedArguments result = CommandLineParser.parse(correctTestArgs);
-    assertEquals(result.getFastaPath(), Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta"));
-    assertEquals(result.getBedPaths().get(0), Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"));
-    assertEquals(result.getSamPaths().get(0), Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"));
+    assertEquals(result.getFastaPath(), Paths.get(testFilePath("test1.fasta")));
+    assertEquals(result.getBedPaths().get(0), Paths.get(testFilePath("test1.bed")));
+    assertEquals(result.getSamPaths().get(0), Paths.get(testFilePath("test1.sam")));
   }
 
   @Test
   public void parserMustReturnCorrectParsedArgumentsIfMultipleArgumentsProvided() {
     String[] correctTestArgs = {
-        "--fasta", TEST_RESOURCES_ROOT + "/test1.fasta",
-        "--bed", TEST_RESOURCES_ROOT + "/test1.bed" + separator + TEST_RESOURCES_ROOT + "/test2.bed",
-        "--sam", TEST_RESOURCES_ROOT + "/test1.sam" + separator + TEST_RESOURCES_ROOT + "/test2.sam"
+        "--fasta", testFilePath("test1.fasta"),
+        "--bed", testFilePath("test1.bed") + separator + testFilePath("test2.bed"),
+        "--sam", testFilePath("test1.sam") + separator + testFilePath("test2.sam")
     };
     ParsedArguments result = CommandLineParser.parse(correctTestArgs);
-    Path expectedFastaPath = Paths.get(TEST_RESOURCES_ROOT, "/test1.fasta");
+    Path expectedFastaPath = Paths.get(testFilePath("test1.fasta"));
     List<Path> expectedBedPaths = List.of(
-        Paths.get(TEST_RESOURCES_ROOT, "/test1.bed"),
-        Paths.get(TEST_RESOURCES_ROOT, "/test2.bed")
+        Paths.get(testFilePath("test1.bed")),
+        Paths.get(testFilePath("test2.bed"))
     );
     List<Path> expectedSamPaths = List.of(
-        Paths.get(TEST_RESOURCES_ROOT, "/test1.sam"),
-        Paths.get(TEST_RESOURCES_ROOT, "/test2.sam")
+        Paths.get(testFilePath("test1.sam")),
+        Paths.get(testFilePath("test2.sam"))
     );
 
     Path parsedFastaPath = result.getFastaPath();
@@ -86,5 +86,9 @@ public class CommandLineParserTest {
     assertEquals(expectedFastaPath, parsedFastaPath, "Expected fasta path is not equal to parsed one");
     assertEquals(Set.copyOf(expectedBedPaths), Set.copyOf(parsedBedPaths), "Unexpected BED file paths");
     assertEquals(Set.copyOf(expectedSamPaths), Set.copyOf(parsedSamPaths), "Unexpected SAM file paths");
+  }
+
+  private static String testFilePath(String fileName) {
+    return TEST_RESOURCES_ROOT.resolve(fileName).toString();
   }
 }
