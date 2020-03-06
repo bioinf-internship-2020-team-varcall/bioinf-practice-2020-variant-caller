@@ -9,13 +9,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.rules.ExpectedException.none;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
 
 public class CommandLineArgsrIntegTest {
   private final String INTEG_TEST_RECOURCES_ROOT = Paths.get("src/integrationTest/resources").toAbsolutePath().toString().replace("\\", "/");
-  private final char separator = OsCheck.getOS() == OsCheck.OS.WINDOWS ? ';' : ':';
+  private final char separator = File.pathSeparatorChar;
 
   @Rule
   public final ExpectedException thrown = none();
@@ -29,7 +30,6 @@ public class CommandLineArgsrIntegTest {
     };
     String joinedInvalidArgs = String.join(",", invalidTestArgs);
     String errorString = launchProcessWithArgs(joinedInvalidArgs);
-    errorString = errorString == null ? "" : errorString;
     assertTrue(errorString.isEmpty());
   }
 
@@ -53,11 +53,12 @@ public class CommandLineArgsrIntegTest {
    * @throws IOException the exception which is thrown when process fails to launch
    */
   private String launchProcessWithArgs(String joinedArgs) throws IOException {
-    String gradleWrapperCallCommand = OsCheck.getOS() == OsCheck.OS.WINDOWS ? "gradlew.bat" : "gradlew";
+    String gradleWrapperCallCommand = OsCheck.getGradleExecutable();
     String command = Paths.get(System.getProperty("user.dir"), "/" + gradleWrapperCallCommand).toString() + " run -PtestArgs=[" + joinedArgs + "]";
     Runtime r = Runtime.getRuntime();
     Process p = r.exec(command);
     BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-    return error.readLine();
+    String errorString = error.readLine();
+    return errorString == null ? "" : errorString;
   }
 }

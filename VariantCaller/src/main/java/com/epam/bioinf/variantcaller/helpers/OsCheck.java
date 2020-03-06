@@ -23,4 +23,8 @@ public class OsCheck {
     }
     return os;
   }
+
+  public static String getGradleExecutable() {
+    return OsCheck.getOS() == OS.WINDOWS ? "gradlew.bat" : "gradlew";
+  }
 }

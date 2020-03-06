@@ -1,7 +1,6 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
-import com.epam.bioinf.variantcaller.helpers.OsCheck;
 import org.junit.jupiter.api.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -9,6 +8,7 @@ import joptsimple.OptionException;
 
 import static org.junit.rules.ExpectedException.*;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandLineParserTest {
   private final String TEST_RESOURCES_ROOT = Paths.get("src/test/resources").toAbsolutePath().toString();
-  private final char separator = OsCheck.getOS() == OsCheck.OS.WINDOWS ? ';' : ':';
+  private final char separator = File.pathSeparatorChar;
 
   @Rule
   public final ExpectedException thrown = none();
