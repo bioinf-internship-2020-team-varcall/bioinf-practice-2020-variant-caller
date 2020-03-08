@@ -1,17 +1,16 @@
 import static com.epam.bioinf.variantcaller.cmdline.CommandLineParser.CommandLineMessages.*;
 
-import com.epam.bioinf.variantcaller.helpers.GradleHelper;
+import com.epam.bioinf.variantcaller.helpers.TestHelper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.INTEG_TEST_RECOURCES_ROOT;
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.separator;
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
+import static com.epam.bioinf.variantcaller.helpers.TestHelper.integTestFilePath;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.rules.ExpectedException.none;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -22,9 +21,9 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustWorkWithCorrectArguments() throws IOException {
     String[] invalidTestArgs = {
-        "'--fasta'", "'" + testFilePath(INTEG_TEST_RECOURCES_ROOT, "test1.fasta") + "'",
-        "'--bed'", "'" + testFilePath(INTEG_TEST_RECOURCES_ROOT, "test1.bed") + "'",
-        "'--sam'", "'" + testFilePath(INTEG_TEST_RECOURCES_ROOT, "test1.sam") + "'"
+        "'--fasta'", "'" + integTestFilePath("test1.fasta") + "'",
+        "'--bed'", "'" + integTestFilePath("test1.bed") + "'",
+        "'--sam'", "'" + integTestFilePath("test1.sam") + "'"
     };
     String joinedInvalidArgs = String.join(",", invalidTestArgs);
     String errorString = launchProcessWithArgs(joinedInvalidArgs);
@@ -34,9 +33,9 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustFailWithInvalidArguments() throws IOException {
     String[] invalidTestArgs = {
-        "'--fasta'", "'" + testFilePath(INTEG_TEST_RECOURCES_ROOT, "test1.fasta") + separator + testFilePath(INTEG_TEST_RECOURCES_ROOT, "test2.fasta") + "'",
-        "'--bed'", "'" + testFilePath(INTEG_TEST_RECOURCES_ROOT, "test1.bed") + "'",
-        "'--sam'", "'" + testFilePath(INTEG_TEST_RECOURCES_ROOT, "test1.sam") + "'"
+        "'--fasta'", "'" + integTestFilePath("test1.fasta") + File.pathSeparatorChar + integTestFilePath("test2.fasta") + "'",
+        "'--bed'", "'" + integTestFilePath("test1.bed") + "'",
+        "'--sam'", "'" + integTestFilePath("test1.sam") + "'"
     };
     String joinedInvalidArgs = String.join(",", invalidTestArgs);
     String errorString = launchProcessWithArgs(joinedInvalidArgs);
@@ -51,7 +50,7 @@ public class CommandLineArgsrIntegTest {
    * @throws IOException the exception which is thrown when process fails to launch
    */
   private String launchProcessWithArgs(String joinedArgs) throws IOException {
-    String command = GradleHelper.getGradleExecutable().toString() + " run -PtestArgs=[" + joinedArgs + "]";
+    String command = TestHelper.getGradleExecutable().toString() + " run -PtestArgs=[" + joinedArgs + "]";
     Runtime r = Runtime.getRuntime();
     Process p = r.exec(command);
     BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
