@@ -9,7 +9,7 @@ import joptsimple.OptionException;
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
 import static org.junit.rules.ExpectedException.*;
 
-import java.io.File;
+import static java.io.File.pathSeparatorChar;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -63,8 +63,8 @@ public class CommandLineParserTest {
   public void parserMustReturnCorrectParsedArgumentsIfMultipleArgumentsProvided() {
     String[] correctTestArgs = {
         "--fasta", testFilePath("test1.fasta"),
-        "--bed", testFilePath("test1.bed") + File.pathSeparatorChar + testFilePath("test2.bed"),
-        "--sam", testFilePath("test1.sam") + File.pathSeparatorChar + testFilePath("test2.sam")
+        "--bed", testFilePath("test1.bed") + pathSeparatorChar + testFilePath("test2.bed"),
+        "--sam", testFilePath("test1.sam") + pathSeparatorChar + testFilePath("test2.sam")
     };
     ParsedArguments result = CommandLineParser.parse(correctTestArgs);
     Path expectedFastaPath = Paths.get(testFilePath("test1.fasta"));

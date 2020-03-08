@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.rules.ExpectedException.none;
 
 import java.io.BufferedReader;
-import java.io.File;
+import static java.io.File.pathSeparatorChar;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -33,7 +33,7 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustFailWithInvalidArguments() throws IOException {
     String[] invalidTestArgs = {
-        "'--fasta'", "'" + integTestFilePath("test1.fasta") + File.pathSeparatorChar + integTestFilePath("test2.fasta") + "'",
+        "'--fasta'", "'" + integTestFilePath("test1.fasta") + pathSeparatorChar + integTestFilePath("test2.fasta") + "'",
         "'--bed'", "'" + integTestFilePath("test1.bed") + "'",
         "'--sam'", "'" + integTestFilePath("test1.sam") + "'"
     };

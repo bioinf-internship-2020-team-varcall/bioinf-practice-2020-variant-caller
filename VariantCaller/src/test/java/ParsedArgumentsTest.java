@@ -6,7 +6,6 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import joptsimple.OptionException;
 
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.TEST_RESOURCES_ROOT;
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
 import static org.junit.rules.ExpectedException.*;
 
