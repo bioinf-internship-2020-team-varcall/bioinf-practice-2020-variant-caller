@@ -11,6 +11,11 @@
  - Задача реализована как отдельный Gradle task на основе возможностей org.gradle.api,
  написанный на groovy.
 
+-----------
+##### Gradle Shadow jar plugin
+ - Используется для сборки выполняемого jar файла со всеми зависимостями
+ https://github.com/johnrengelman/shadow
+
 ------------
 
 ##### Структура
@@ -32,7 +37,7 @@ build.gradle
 class IntegrationTestTask extends DefaultsTask {
 	@TaskAction
 	def start() // запускает выполнение процесса.
-        Process.execute('gradle run --args') // запуск программы с аргументами
+        Process.execute('java -jar variantCaller.jar') // запуск jar файла с аргументами
 }
 ```
  - Результат запустка записывается и сверяется.
@@ -42,7 +47,7 @@ class IntegrationTestTask extends DefaultsTask {
 ------------
 
 ##### Временные данные
- - Создается выходной файл в *buildSrc/src/main/resources*
+ - Создается выходной файл в *src/test/resources*
  	после завершения работы теста и сравнения он удаляется.
 
 ------------
