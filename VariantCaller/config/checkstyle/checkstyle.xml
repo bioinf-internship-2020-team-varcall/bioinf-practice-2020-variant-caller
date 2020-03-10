@@ -53,7 +53,7 @@
         Checks if a line is too long.
         -->
         <module name="LineLength">
-            <property name="max" value="100"/>
+            <property name="max" value="130"/>
         </module>
 
         <!--
