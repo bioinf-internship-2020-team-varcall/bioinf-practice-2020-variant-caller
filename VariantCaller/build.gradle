@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'java'
     id 'application'
-    id 'checkstyle'
+    id "org.unbroken-dome.test-sets" version "2.2.1"
 }
 
 mainClassName = "com.epam.bioinf.variantcaller.Main"
@@ -17,12 +17,32 @@ targetCompatibility = 1.11
 repositories {
     mavenCentral()
 }
+testSets {
+    integrationTest {
+        dirName = 'integrationTest'
+    }
+}
 
 dependencies {
+    //jopt - library for command line arguments analysis
+    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-3'
+
+    //integration tests libs
+    testCompile('junit:junit:4.12')
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
 
-    //jopt - library for command line arguments analysis
-    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.5'
+    //integration tests libs
+    integrationTestCompile('junit:junit:4.12')
+    integrationTestImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+run {
+    if ( project.hasProperty("testArgs") ) {
+        args Eval.me(testArgs)
+    }
 }
 
 jar {
