@@ -2,6 +2,11 @@
 
 Все действия необходимо проводить в корневой папке проекта VariantCaller.
 
+## Анализ выбора Checkstyle ##
+
+Checkstyle интегрирован в различные другие инструменты, такие как IDE (например, Eclipse, NetBeans или IntelliJ), Maven, Gradle.
+Также Checkstyle удобен и прост, так как в нем уже есть много нужных и готовых проверок.
+
 ## Установка Checkstyle ##
 
 Для того, чтобы использовать плагин Checkstyle, необходимо добавить его в ``` build.gradle ``` следующим образом:
@@ -26,7 +31,12 @@ checkstyleTest {
 ```
 ## Запуск Checkstyle ##
 
-Для запуска Checkstyle используются следующие задачи: ```checkstyleMain``` и ```checkstyleTest```.
+Для запуска Checkstyle используются следующие задачи gradle: ```checkstyleMain``` и ```checkstyleTest```.
+
+## Анализ выбора SpotBugs ##
+
+SpotBugs проверяет наличие более 400 ошибок.
+Spotbugs удобен и прост, так как его можно подключить без конфигурационного файла.
 
 ## Установка SpotBugs ##
 
@@ -62,4 +72,4 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
 ```
 ## Запуск SpotBugs ##
 
-Для запуска SpotBugs используются следующие задачи: ```spotbugsMain``` и ```spotbugsTest```.
+Для запуска SpotBugs используются следующие задачи gradle: ```spotbugsMain``` и ```spotbugsTest```.

@@ -1,5 +1,8 @@
 # Описание конфигурационного файла Checkstyle #
 
+В проекте используется code style - java google style:
+https://checkstyle.org/styleguides/google-java-style-20180523/javaguide.html
+
 ## fileExtensions ##
 
 Проверяет только java файлы.
