@@ -17,7 +17,6 @@ sourceCompatibility = 1.11
 targetCompatibility = 1.11
 
 sourceSets {
-// we define `main` sourceSet here, so SpotBugs Gradle Plugin generates `spotbugsMain` task
     main {
         java.srcDirs = ['src/main/java']
     }
