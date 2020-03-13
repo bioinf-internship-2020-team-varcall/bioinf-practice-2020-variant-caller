@@ -4,6 +4,8 @@ plugins {
     id 'java'
     id 'application'
     id "org.unbroken-dome.test-sets" version "2.2.1"
+    id 'groovy'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 mainClassName = "com.epam.bioinf.variantcaller.Main"
@@ -24,6 +26,10 @@ testSets {
 }
 
 dependencies {
+
+    implementation gradleApi()
+    implementation localGroovy()
+
     //jopt - library for command line arguments analysis
     compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-3'
 
@@ -51,4 +57,22 @@ jar {
 
 test {
     useJUnitPlatform()
+}
+
+task cleanTempData (type: Delete) {
+    group = 'build'
+    description = 'Clean projects temporary files folder'
+    delete fileTree('temp_data') {
+        include('**/*')
+    }
+}
+
+clean {
+    cleanTempData
+}
+
+task intTest(type: IntegrationTestTask) {
+    group = 'build'
+    description = 'Run integration test for the project'
+    dependsOn shadowJar
 }

@@ -1,0 +1,3 @@
+Parsed fasta path = ./src/integrationTest/resources/test1.fasta
+Parsed bed paths = [./src/integrationTest/resources/test1.bed]
+Parsed sam paths = [./src/integrationTest/resources/test1.sam]
