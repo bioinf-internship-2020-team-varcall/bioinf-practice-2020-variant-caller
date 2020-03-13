@@ -21,3 +21,4 @@ Assembling and testing:
   * Assemble project - сборка проекта
   * Run unit tests - запуск юнит тестов
   * Run integrations test - запуск интерационных тестов
+  
