@@ -24,25 +24,27 @@ public class CommandLineArgsrIntegTest {
   public final ExpectedException thrown = none();
 
   @Test
-  public void programMustWorkWithCorrectArguments() throws IOException {
+  public void programMustWorkWithCorrectArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
         "--fasta", integTestFilePath("test1.fasta"),
         "--bed", integTestFilePath("test1.bed"),
         "--sam", integTestFilePath("test1.sam")
     };
-    String errorString = launchProcessWithArgs(invalidTestArgs);
-    assertTrue(errorString.isEmpty());
+    ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
+    assertTrue(processInfo.errorString.isEmpty());
+    assertEquals(0, processInfo.exitValue);
   }
 
   @Test
-  public void programMustFailWithInvalidArguments() throws IOException {
+  public void programMustFailWithInvalidArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
         "--fasta", integTestFilePath("test1.fasta") + pathSeparatorChar + integTestFilePath("test2.fasta"),
         "--bed", integTestFilePath("test1.bed"),
         "--sam", integTestFilePath("test1.sam")
     };
-    String errorString = launchProcessWithArgs(invalidTestArgs);
-    assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: " + FASTA_ARGS_COUNT_EXC, errorString);
+    ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
+    assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: " + FASTA_ARGS_COUNT_EXC, processInfo.errorString);
+    assertEquals(1, processInfo.exitValue);
   }
 
   /**
@@ -52,7 +54,7 @@ public class CommandLineArgsrIntegTest {
    * @return the string which holds error if process creates one or is empty otherwise
    * @throws IOException the exception which is thrown when process fails to launch
    */
-  private String launchProcessWithArgs(String[] args) throws IOException {
+  private ProcessInfo launchProcessWithArgs(String[] args) throws IOException, InterruptedException {
     List<String> command = new ArrayList<>();
     command.add("java");
     command.add("-jar");
@@ -62,7 +64,17 @@ public class CommandLineArgsrIntegTest {
     ProcessBuilder builder = new ProcessBuilder(command);
     Process p = builder.start();
     BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-    String errorString = error.readLine();
-    return errorString == null ? "" : errorString;
+    p.waitFor();
+    return new ProcessInfo(p.exitValue(), error.readLine());
+  }
+
+  private static final class ProcessInfo {
+    public int exitValue;
+    public String errorString;
+
+    public ProcessInfo(int exitValue, String errorString) {
+      this.exitValue = exitValue;
+      this.errorString = errorString == null ? "" : errorString;
+    }
   }
 }
