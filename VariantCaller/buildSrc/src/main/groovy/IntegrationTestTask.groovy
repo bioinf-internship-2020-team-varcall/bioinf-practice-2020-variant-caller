@@ -9,7 +9,7 @@ class IntegrationTestTask extends DefaultTask {
   Appendable sout = new StringBuilder();
 
   File outputFile = new File("./temp_data/output.txt")
-  File referenceFile = new File("./src/integrationTest/resources/reference.txt")
+  File referenceFile = new File("./src/integrationTest/resources/referenceOutput.txt")
 
   String command = 'java -jar build/libs/VariantCaller-1.0-SNAPSHOT-all.jar' +
       ' --fasta ./src/integrationTest/resources/test1.fasta' +
