@@ -45,6 +45,9 @@ dependencies {
 
     //spotbugs libs
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+
+    //https://mvnrepository.com/artifact/com.github.samtools/htsjdk
+    compile group: 'com.github.samtools', name: 'htsjdk', version: '2.21.3'
 }
 
 check.dependsOn integrationTest
