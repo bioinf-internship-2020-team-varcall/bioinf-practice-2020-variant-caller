@@ -5,7 +5,7 @@
 Операционная система тестирования - Linux.
 
 CI запускается при:
-  * push в любую ветку с изменениям файлов в VariantCaller для которой есть pullreqest.
+  * push в любую ветку с изменениям файлов в VariantCaller для которой есть pull request.
   * pull request в master ветку с изменениям файлов в VariantCaller.
 
 ## Файлы CI
