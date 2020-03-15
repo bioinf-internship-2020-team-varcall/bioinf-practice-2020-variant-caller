@@ -71,10 +71,4 @@ clean {
     cleanTempData
 }
 
-//task intTest(type: IntegrationTestTask) {
-//    group = 'build'
-//    description = 'Run integration test for the project'
-//    dependsOn shadowJar
-//}
-
 apply plugin: IntegrationTestsPlugin
