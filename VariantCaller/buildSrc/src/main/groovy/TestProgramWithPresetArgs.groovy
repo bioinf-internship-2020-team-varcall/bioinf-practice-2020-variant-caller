@@ -4,14 +4,17 @@ import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
 
 @CompileStatic
-class IntegrationTestTask extends DefaultTask {
+class TestProgramWithPresetArgs extends DefaultTask {
 
   Appendable sout = new StringBuilder();
 
   File outputFile = new File("./temp_data/output.txt")
   File referenceFile = new File("./src/integrationTest/resources/referenceOutput.txt")
 
-  String command = 'java -jar build/libs/VariantCaller-1.0-SNAPSHOT-all.jar' +
+  String projectName = project.getName();
+  String projectVersion = project.getVersion().toString();
+
+  String command = 'java -jar build/libs/' + projectName + '-' +  projectVersion + '-all.jar' +
       ' --fasta ./src/integrationTest/resources/test1.fasta' +
       ' --bed ./src/integrationTest/resources/test1.bed' +
       ' --sam ./src/integrationTest/resources/test1.sam'
