@@ -26,7 +26,8 @@ public class CommandLineParser {
     OptionSpec<Path> bed = getOptionSpecByParameter(optionParser, BED_KEY);
     OptionSpec<Path> sam = getOptionSpecByParameter(optionParser, SAM_KEY);
     OptionSet options = optionParser.parse(args);
-    parsedArguments = new ParsedArguments(options.valuesOf(fasta), options.valuesOf(bed), options.valuesOf(sam));
+    parsedArguments = new ParsedArguments(options.valuesOf(fasta), options.valuesOf(bed),
+        options.valuesOf(sam));
   }
 
   private OptionSpec<Path> getOptionSpecByParameter(OptionParser parser, String key) {
@@ -52,13 +53,19 @@ public class CommandLineParser {
       // restrict instantiation
     }
 
-    public static final String FASTA_ARGS_COUNT_EXC = "Multiple or no paths to '.fasta' files were presented, must be 1";
-    public static final String BED_ARGS_COUNT_EXC = "No paths to '.bed' files were presented, must be 1 or more";
-    public static final String SAM_ARGS_COUNT_EXC = "No paths to '.sam' files were presented, must be 1 or more";
+    public static final String FASTA_ARGS_COUNT_EXC = "Multiple or no paths to '.fasta' files " +
+        "were presented, must be 1";
+    public static final String BED_ARGS_COUNT_EXC = "No paths to '.bed' files were presented, " +
+        "must be 1 or more";
+    public static final String SAM_ARGS_COUNT_EXC = "No paths to '.sam' files were presented, " +
+        "must be 1 or more";
 
-    public static final String FASTA_EXTENSION_EXC = "'--fasta' parameters must contain a path to a file with '.fasta' extension";
-    public static final String BED_EXTENSION_EXC = "'--bed' parameters must contain a path to a file with '.bed' extension";
-    public static final String SAM_EXTENSION_EXC = "'--sam' parameters must contain a path to a file with '.sam' extension";
+    public static final String FASTA_EXTENSION_EXC = "'--fasta' parameters must contain a path " +
+        "to a file with '.fasta' extension";
+    public static final String BED_EXTENSION_EXC = "'--bed' parameters must contain a path " +
+        "to a file with '.bed' extension";
+    public static final String SAM_EXTENSION_EXC = "'--sam' parameters must contain a path " +
+        "to a file with '.sam' extension";
 
     public static final String FASTA_PATH_NOT_EXISTS_EXC = "The '.fasta' file does not exist";
     public static final String BED_PATH_NOT_EXISTS_EXC = "One or more '.bed' files do not exist";
