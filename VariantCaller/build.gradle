@@ -1,3 +1,5 @@
+import com.github.spotbugs.SpotBugsTask
+
 plugins {
   id 'idea'
   id 'eclipse'
@@ -49,9 +51,7 @@ dependencies {
   spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
 }
 
-check.dependsOn integrationTest
-shadowJar.mustRunAfter test
-integrationTest.mustRunAfter shadowJar
+integrationTest.dependsOn shadowJar
 
 shadowJar {
   baseName = 'VariantCaller'
@@ -82,7 +82,7 @@ spotbugs {
   includeFilter = file("$configDir/spotbugs/spotbugs.xml")
 }
 
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
+tasks.withType(SpotBugsTask) {
   reports {
     xml.enabled = true
     html.enabled = false
