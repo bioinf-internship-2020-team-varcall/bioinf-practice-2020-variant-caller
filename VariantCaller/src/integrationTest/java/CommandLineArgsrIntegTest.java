@@ -33,15 +33,13 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustFailWithInvalidArguments() throws IOException {
     String[] invalidTestArgs = {
-        "'--fasta'", "'" + integTestFilePath("test1.fasta") + pathSeparatorChar
-            + integTestFilePath("test2.fasta") + "'",
+        "'--fasta'", "'" + integTestFilePath("test1.fasta") + pathSeparatorChar + integTestFilePath("test2.fasta") + "'",
         "'--bed'", "'" + integTestFilePath("test1.bed") + "'",
         "'--sam'", "'" + integTestFilePath("test1.sam") + "'"
     };
     String joinedInvalidArgs = String.join(",", invalidTestArgs);
     String errorString = launchProcessWithArgs(joinedInvalidArgs);
-    assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: "
-        + FASTA_ARGS_COUNT_EXC, errorString);
+    assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: " + FASTA_ARGS_COUNT_EXC, errorString);
   }
 
   /**
@@ -52,8 +50,7 @@ public class CommandLineArgsrIntegTest {
    * @throws IOException the exception which is thrown when process fails to launch
    */
   private String launchProcessWithArgs(String joinedArgs) throws IOException {
-    String command = TestHelper.getGradleExecutable().toString() + " run -PtestArgs=["
-        + joinedArgs + "]";
+    String command = TestHelper.getGradleExecutable().toString() + " run -PtestArgs=[" + joinedArgs + "]";
     Runtime r = Runtime.getRuntime();
     Process p = r.exec(command);
     BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
