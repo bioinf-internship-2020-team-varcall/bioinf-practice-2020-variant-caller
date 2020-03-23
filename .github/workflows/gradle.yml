@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     
-    name: Assembling and testing
+    name: Building and testing
     
     runs-on: ubuntu-latest
 
