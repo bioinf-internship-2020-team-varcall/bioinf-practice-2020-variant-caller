@@ -81,11 +81,8 @@ public class CommandLineParserTest {
     List<Path> parsedBedPaths = result.getBedPaths();
     List<Path> parsedSamPaths = result.getSamPaths();
 
-    assertEquals(expectedFastaPath, parsedFastaPath,
-        "Expected fasta path is not equal to parsed one");
-    assertEquals(Set.copyOf(expectedBedPaths), Set.copyOf(parsedBedPaths),
-        "Unexpected BED file paths");
-    assertEquals(Set.copyOf(expectedSamPaths), Set.copyOf(parsedSamPaths),
-        "Unexpected SAM file paths");
+    assertEquals(expectedFastaPath, parsedFastaPath, "Expected fasta path is not equal to parsed one");
+    assertEquals(Set.copyOf(expectedBedPaths), Set.copyOf(parsedBedPaths), "Unexpected BED file paths");
+    assertEquals(Set.copyOf(expectedSamPaths), Set.copyOf(parsedSamPaths), "Unexpected SAM file paths");
   }
 }
