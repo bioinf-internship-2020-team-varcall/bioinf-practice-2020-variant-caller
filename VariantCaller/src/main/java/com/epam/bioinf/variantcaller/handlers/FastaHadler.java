@@ -13,13 +13,18 @@ public class FastaHadler {
   public FastaHadler(Path pathToFastaFile) {
     FastaSequenceFile fastaSequenceFile = new FastaSequenceFile(pathToFastaFile, true);
     sequence = fastaSequenceFile.nextSequence();
-    if (fastaSequenceFile.nextSequence() != null) throw new IllegalArgumentException(MULTIPLE_SEQUENCES_EXC);
+    if (fastaSequenceFile.nextSequence() != null)
+      throw new IllegalArgumentException(MULTIPLE_SEQUENCES_EXC);
     fastaSequenceFile.close();
   }
 
   public double getGcContent() {
     String s = sequence.getBaseString();
-    return (double) s.chars().filter(c -> c == 'G' || c == 'C').mapToObj(i -> (char) i).count() / (double) s.length() * 100;
+    return (double) s
+        .chars()
+        .filter(c -> c == 'G' || c == 'C')
+        .mapToObj(i -> (char) i)
+        .count() / (double) s.length() * 100;
   }
 
   public int countNucleotides() {
@@ -31,5 +36,7 @@ public class FastaHadler {
       // restrict instantiation
     }
 
-    public static final String MULTIPLE_SEQUENCES_EXC = "Multiple fasta sequences were provided, please make sure your fasta file contains only one sequence";}
+    public static final String MULTIPLE_SEQUENCES_EXC =
+        "Multiple fasta sequences were provided, fasta file must contain only one sequence";
+  }
 }
