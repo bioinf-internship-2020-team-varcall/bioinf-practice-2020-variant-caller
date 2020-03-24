@@ -3,7 +3,8 @@ package com.epam.bioinf.variantcaller.helpers;
 import java.nio.file.Path;
 
 public final class TestHelper {
-  public static Path INTEG_TEST_RECOURCES_ROOT = Path.of("src", "integrationTest", "resources").toAbsolutePath();
+  public static Path INTEG_TEST_RECOURCES_ROOT = Path.of("src", "integrationTest", "resources")
+      .toAbsolutePath();
   public static Path TEST_RESOURCES_ROOT = Path.of("src", "test", "resources").toAbsolutePath();
   public static Path PATH_TO_BUILT_JAR = Path.of("build", "libs", "VariantCaller.jar");
 

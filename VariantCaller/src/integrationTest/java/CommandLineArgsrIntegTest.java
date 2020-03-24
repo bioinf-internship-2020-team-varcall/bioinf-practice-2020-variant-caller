@@ -10,51 +10,80 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.rules.ExpectedException.none;
 
 import java.io.BufferedReader;
+
 import static java.io.File.pathSeparatorChar;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CommandLineArgsrIntegTest {
   @Rule
   public final ExpectedException thrown = none();
 
   @Test
-  public void programMustWorkWithCorrectArguments() throws IOException {
+  public void programMustWorkWithCorrectArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
         "--fasta", integTestFilePath("test1.fasta"),
         "--bed", integTestFilePath("test1.bed"),
         "--sam", integTestFilePath("test1.sam")
     };
-    String joinedInvalidArgs = String.join(" ", invalidTestArgs);
-    String errorString = launchProcessWithArgs(joinedInvalidArgs);
-    assertTrue(errorString.isEmpty());
+    ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
+    assertTrue(processInfo.errorString.isEmpty());
+    assertEquals(0, processInfo.exitValue);
   }
 
   @Test
-  public void programMustFailWithInvalidArguments() throws IOException {
+  public void programMustFailWithInvalidArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
-        "--fasta", integTestFilePath("test1.fasta") + pathSeparatorChar + integTestFilePath("test2.fasta"),
+        "--fasta", integTestFilePath("test1.fasta") + pathSeparatorChar
+          + integTestFilePath("test2.fasta"),
         "--bed", integTestFilePath("test1.bed"),
         "--sam", integTestFilePath("test1.sam")
     };
-    String joinedInvalidArgs = String.join(" ", invalidTestArgs);
-    String errorString = launchProcessWithArgs(joinedInvalidArgs);
-    assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: " + FASTA_ARGS_COUNT_EXC, errorString);
+    ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
+    assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: "
+        + FASTA_ARGS_COUNT_EXC, processInfo.errorString);
+    assertEquals(1, processInfo.exitValue);
   }
 
   /**
    * Launches process and if it fails gets error
    *
-   * @param joinedArgs the prepared command line arguments joined to string and separated by comma
+   * @param args command line arguments array
    * @return the string which holds error if process creates one or is empty otherwise
    * @throws IOException the exception which is thrown when process fails to launch
    */
-  private String launchProcessWithArgs(String joinedArgs) throws IOException {
-    String command = "java -jar " + PATH_TO_BUILT_JAR + " " + joinedArgs;
-    Runtime r = Runtime.getRuntime();
-    Process p = r.exec(command);
-    BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-    String errorString = error.readLine();
-    return errorString == null ? "" : errorString;
+  private ProcessInfo launchProcessWithArgs(String[] args) throws
+      IOException,
+      InterruptedException {
+    List<String> command = new ArrayList<>();
+    command.add("java");
+    command.add("-jar");
+    command.add(PATH_TO_BUILT_JAR.toString());
+    command.addAll(Arrays.asList(args));
+
+    ProcessBuilder builder = new ProcessBuilder(command);
+    Process p = builder.start();
+    BufferedReader error = new BufferedReader(
+        new InputStreamReader(p.getErrorStream(), StandardCharsets.UTF_8)
+    );
+    p.waitFor();
+    String errorLine = error.readLine();
+    error.close();
+    return new ProcessInfo(p.exitValue(), errorLine);
+  }
+
+  private static final class ProcessInfo {
+    public int exitValue;
+    public String errorString;
+
+    public ProcessInfo(int exitValue, String errorString) {
+      this.exitValue = exitValue;
+      this.errorString = errorString == null ? "" : errorString;
+    }
   }
 }
