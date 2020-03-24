@@ -1,97 +1,101 @@
+import com.github.spotbugs.SpotBugsTask
+
 plugins {
-    id 'idea'
-    id 'eclipse'
-    id 'java'
-    id 'application'
-    id "org.unbroken-dome.test-sets" version "2.2.1"
-    id 'checkstyle'
-    id "com.github.spotbugs" version "3.0.0"
+  id 'idea'
+  id 'eclipse'
+  id 'java'
+  id 'application'
+  id 'checkstyle'
+  id "com.github.spotbugs" version "3.0.0"
+  id "org.unbroken-dome.test-sets" version "2.2.1"
+  id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 
 mainClassName = "com.epam.bioinf.variantcaller.Main"
 
 group 'com.epam.bioinf.variantcaller'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
 
 sourceSets {
-    main {
-        java.srcDirs = ['src/main/java']
-    }
+  main {
+    java.srcDirs = ['src/main/java']
+  }
 }
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
+
 testSets {
-    integrationTest {
-        dirName = 'integrationTest'
-    }
+  integrationTest {
+    dirName = 'integrationTest'
+  }
 }
 
 dependencies {
-    //jopt - library for command line arguments analysis
-    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-3'
+  //jopt - library for command line arguments analysis
+  compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-3'
 
-    //integration tests libs
-    testCompile('junit:junit:4.12')
-    testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
+  //unit tests libs
+  testCompile('junit:junit:4.12')
+  testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
 
-    //integration tests libs
-    integrationTestCompile('junit:junit:4.12')
-    integrationTestImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
+  //integration tests libs
+  integrationTestCompile('junit:junit:4.12')
+  integrationTestImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
 
-    //spotbugs libs
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+  //spotbugs libs
+  spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
 
-    //https://mvnrepository.com/artifact/com.github.samtools/htsjdk
-    compile group: 'com.github.samtools', name: 'htsjdk', version: '2.21.3'
-    implementation 'org.jetbrains:annotations:15.0'
+  //https://mvnrepository.com/artifact/com.github.samtools/htsjdk
+  compile group: 'com.github.samtools', name: 'htsjdk', version: '2.21.3'
+  implementation 'org.jetbrains:annotations:15.0'
 }
 
-check.dependsOn integrationTest
-integrationTest.mustRunAfter test
+integrationTest.dependsOn shadowJar
 
-run {
-    if ( project.hasProperty("testArgs") ) {
-        args Eval.me(testArgs)
-    }
+shadowJar {
+  baseName = 'VariantCaller'
+  classifier = ''
+  archiveVersion = ''
 }
 
 jar {
-    manifest.attributes("Main-Class": mainClassName)
+  manifest.attributes("Main-Class": mainClassName)
 }
 
 test {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
 
 def configDir = "${project.rootDir}/config"
 checkstyle {
-    toolVersion '7.8.1'
-    configFile file("$configDir/checkstyle/checkstyle.xml")
-    configProperties.checkstyleSuppressionsPath = file("$configDir/checkstyle/suppressions.xml").absolutePath
+  toolVersion '7.8.1'
+  configFile file("$configDir/checkstyle/checkstyle.xml")
+  configProperties.checkstyleSuppressionsPath = file("$configDir/checkstyle/suppressions.xml").absolutePath
 }
 
 spotbugs {
-    toolVersion = '4.0.0'
-    ignoreFailures = false
-    effort = 'max'
-    showProgress = true
+  toolVersion = '4.0.0'
+  ignoreFailures = false
+  effort = 'max'
+  showProgress = true
+  includeFilter = file("$configDir/spotbugs/spotbugs.xml")
 }
 
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
-    reports {
-        xml.enabled = true
-        html.enabled = false
-    }
+tasks.withType(SpotBugsTask) {
+  reports {
+    xml.enabled = true
+    html.enabled = false
+  }
 }
 
 checkstyleMain {
-    source ='src/main/java'
+  source = 'src/main/java'
 }
 checkstyleTest {
-    source ='src/test/java'
+  source = 'src/test/java'
 }

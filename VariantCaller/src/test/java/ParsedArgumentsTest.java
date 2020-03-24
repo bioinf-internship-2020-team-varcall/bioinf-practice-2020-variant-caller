@@ -36,8 +36,16 @@ public class ParsedArgumentsTest {
     ParsedArguments parsedArguments = new ParsedArguments(correctFasta, correctBed, correctSam);
 
     assertEquals(correctFasta.get(0), parsedArguments.getFastaPath());
-    assertEquals(Set.copyOf(correctBed), Set.copyOf(parsedArguments.getBedPaths()), "Unexpected BED file paths");
-    assertEquals(Set.copyOf(correctSam), Set.copyOf(parsedArguments.getSamPaths()), "Unexpected SAM file paths");
+    assertEquals(
+        Set.copyOf(correctBed),
+        Set.copyOf(parsedArguments.getBedPaths()),
+        "Unexpected BED file paths"
+    );
+    assertEquals(
+        Set.copyOf(correctSam),
+        Set.copyOf(parsedArguments.getSamPaths()),
+        "Unexpected SAM file paths"
+    );
   }
 
   @Test
@@ -113,7 +121,11 @@ public class ParsedArgumentsTest {
       new ParsedArguments(invalidFasta, correctBed, correctSam);
       fail();
     } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), FASTA_ARGS_COUNT_EXC, "Exception was thrown but its message is not equal to 'FASTA_ARGS_COUNT_EXC' constant");
+      assertEquals(
+          e.getLocalizedMessage(),
+          FASTA_ARGS_COUNT_EXC,
+          "Exception was thrown but its message is not equal to 'FASTA_ARGS_COUNT_EXC' constant"
+      );
       thrown.expect(OptionException.class);
     }
   }
@@ -156,8 +168,16 @@ public class ParsedArgumentsTest {
     assertEquals(2, parsedSamPaths.size(), "Amount of parsed sam paths is not equal to expected");
 
     assertEquals(expectedFastaPath, parsedFastaPath, "Expected fasta path is not equal to parsed");
-    assertEquals(Set.copyOf(expectedBedPaths), Set.copyOf(parsedBedPaths), "Unexpected BED file paths");
-    assertEquals(Set.copyOf(expectedSamPaths), Set.copyOf(parsedSamPaths), "Unexpected SAM file paths");
+    assertEquals(
+        Set.copyOf(expectedBedPaths),
+        Set.copyOf(parsedBedPaths),
+        "Unexpected BED file paths"
+    );
+    assertEquals(
+        Set.copyOf(expectedSamPaths),
+        Set.copyOf(parsedSamPaths),
+        "Unexpected SAM file paths"
+    );
   }
 
   @Test
@@ -177,7 +197,11 @@ public class ParsedArgumentsTest {
       new ParsedArguments(fastaWithInvalidExt, correctBed, correctSam);
       fail();
     } catch (Exception e) {
-      assertEquals(FASTA_EXTENSION_EXC, e.getLocalizedMessage(), "Exception was thrown but its message is not equal to 'FASTA_EXTENSION_EXC' constant");
+      assertEquals(
+          FASTA_EXTENSION_EXC,
+          e.getLocalizedMessage(),
+          "Exception was thrown but its message is not equal to 'FASTA_EXTENSION_EXC' constant"
+      );
       thrown.expect(OptionException.class);
     }
   }
@@ -199,7 +223,11 @@ public class ParsedArgumentsTest {
       new ParsedArguments(correctFasta, bedWithInvalidExt, correctSam);
       fail();
     } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), BED_EXTENSION_EXC, "Exception was thrown but its message is not equal to 'BED_EXTENSION_EXC' constant");
+      assertEquals(
+          e.getLocalizedMessage(),
+          BED_EXTENSION_EXC,
+          "Exception was thrown but its message is not equal to 'BED_EXTENSION_EXC' constant"
+      );
       thrown.expect(OptionException.class);
     }
   }
@@ -221,7 +249,11 @@ public class ParsedArgumentsTest {
       new ParsedArguments(correctFasta, correctBed, samWithInvalidExt);
       fail();
     } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), SAM_EXTENSION_EXC, "Exception was thrown but its message is not equal to 'SAM_EXTENSION_EXC' constant");
+      assertEquals(
+          e.getLocalizedMessage(),
+          SAM_EXTENSION_EXC,
+          "Exception was thrown but its message is not equal to 'SAM_EXTENSION_EXC' constant"
+      );
       thrown.expect(OptionException.class);
     }
   }
@@ -243,7 +275,11 @@ public class ParsedArgumentsTest {
       new ParsedArguments(notExistingFasta, correctBed, correctSam);
       fail();
     } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), FASTA_PATH_NOT_EXISTS_EXC, "Exception was thrown but its message is not equal to 'FASTA_PATH_NOT_EXISTS_EXC' constant");
+      assertEquals(
+          e.getLocalizedMessage(),
+          FASTA_PATH_NOT_EXISTS_EXC,
+          "Exception was thrown but its msg is not equal to 'FASTA_PATH_NOT_EXISTS_EXC' constant"
+      );
       thrown.expect(OptionException.class);
     }
   }
@@ -265,7 +301,11 @@ public class ParsedArgumentsTest {
       new ParsedArguments(correctFasta, notExistingBed, correctSam);
       fail();
     } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), BED_PATH_NOT_EXISTS_EXC, "Exception was thrown but its message is not equal to 'BED_PATH_NOT_EXISTS_EXC' constant");
+      assertEquals(
+          e.getLocalizedMessage(),
+          BED_PATH_NOT_EXISTS_EXC,
+          "Exception was thrown but its message is not equal to 'BED_PATH_NOT_EXISTS_EXC' constant"
+      );
       thrown.expect(OptionException.class);
     }
   }
@@ -287,7 +327,11 @@ public class ParsedArgumentsTest {
       new ParsedArguments(correctFasta, correctBed, notExistingSam);
       fail();
     } catch (Exception e) {
-      assertEquals(e.getLocalizedMessage(), SAM_PATH_NOT_EXISTS_EXC, "Exception was thrown but its message is not equal to 'SAM_PATH_NOT_EXISTS_EXC' constant");
+      assertEquals(
+          e.getLocalizedMessage(),
+          SAM_PATH_NOT_EXISTS_EXC,
+          "Exception was thrown but its message is not equal to 'SAM_PATH_NOT_EXISTS_EXC' constant"
+      );
       thrown.expect(OptionException.class);
     }
   }
