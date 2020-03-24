@@ -1,10 +1,10 @@
 import static com.epam.bioinf.variantcaller.cmdline.CommandLineParser.CommandLineMessages.*;
 
-import com.epam.bioinf.variantcaller.helpers.TestHelper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static com.epam.bioinf.variantcaller.helpers.TestHelper.PATH_TO_BUILT_JAR;
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.integTestFilePath;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.rules.ExpectedException.none;
@@ -21,11 +21,11 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustWorkWithCorrectArguments() throws IOException {
     String[] invalidTestArgs = {
-        "'--fasta'", "'" + integTestFilePath("test1.fasta") + "'",
-        "'--bed'", "'" + integTestFilePath("test1.bed") + "'",
-        "'--sam'", "'" + integTestFilePath("test1.sam") + "'"
+        "--fasta", integTestFilePath("test1.fasta"),
+        "--bed", integTestFilePath("test1.bed"),
+        "--sam", integTestFilePath("test1.sam")
     };
-    String joinedInvalidArgs = String.join(",", invalidTestArgs);
+    String joinedInvalidArgs = String.join(" ", invalidTestArgs);
     String errorString = launchProcessWithArgs(joinedInvalidArgs);
     assertTrue(errorString.isEmpty());
   }
@@ -33,11 +33,11 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustFailWithInvalidArguments() throws IOException {
     String[] invalidTestArgs = {
-        "'--fasta'", "'" + integTestFilePath("test1.fasta") + pathSeparatorChar + integTestFilePath("test2.fasta") + "'",
-        "'--bed'", "'" + integTestFilePath("test1.bed") + "'",
-        "'--sam'", "'" + integTestFilePath("test1.sam") + "'"
+        "--fasta", integTestFilePath("test1.fasta") + pathSeparatorChar + integTestFilePath("test2.fasta"),
+        "--bed", integTestFilePath("test1.bed"),
+        "--sam", integTestFilePath("test1.sam")
     };
-    String joinedInvalidArgs = String.join(",", invalidTestArgs);
+    String joinedInvalidArgs = String.join(" ", invalidTestArgs);
     String errorString = launchProcessWithArgs(joinedInvalidArgs);
     assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: " + FASTA_ARGS_COUNT_EXC, errorString);
   }
@@ -50,7 +50,7 @@ public class CommandLineArgsrIntegTest {
    * @throws IOException the exception which is thrown when process fails to launch
    */
   private String launchProcessWithArgs(String joinedArgs) throws IOException {
-    String command = TestHelper.getGradleExecutable().toString() + " run -PtestArgs=[" + joinedArgs + "]";
+    String command = "java -jar " + PATH_TO_BUILT_JAR + " " + joinedArgs;
     Runtime r = Runtime.getRuntime();
     Process p = r.exec(command);
     BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));

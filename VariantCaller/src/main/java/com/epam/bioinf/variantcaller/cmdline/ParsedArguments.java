@@ -32,7 +32,9 @@ public class ParsedArguments {
     else if (bedValues.size() == 0) errorMessage = BED_ARGS_COUNT_EXC;
     else if (samValues.size() == 0) errorMessage = SAM_ARGS_COUNT_EXC;
 
-    else if (someExtensionIsInvalid(fastaValues, ".fasta")) errorMessage = FASTA_EXTENSION_EXC;
+    else if (someExtensionIsInvalid(fastaValues, ".fasta")
+        && someExtensionIsInvalid(fastaValues, ".fna")
+        && someExtensionIsInvalid(fastaValues, ".fa")) errorMessage = FASTA_EXTENSION_EXC;
     else if (someExtensionIsInvalid(bedValues, ".bed")) errorMessage = BED_EXTENSION_EXC;
     else if (someExtensionIsInvalid(samValues, ".sam")) errorMessage = SAM_EXTENSION_EXC;
 

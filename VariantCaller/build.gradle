@@ -1,54 +1,57 @@
 plugins {
-    id 'idea'
-    id 'eclipse'
-    id 'java'
-    id 'application'
-    id "org.unbroken-dome.test-sets" version "2.2.1"
+  id 'idea'
+  id 'eclipse'
+  id 'java'
+  id 'application'
+  id "org.unbroken-dome.test-sets" version "2.2.1"
+  id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 
 mainClassName = "com.epam.bioinf.variantcaller.Main"
 
 group 'com.epam.bioinf.variantcaller'
-version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
+
 testSets {
-    integrationTest {
-        dirName = 'integrationTest'
-    }
+  integrationTest {
+    dirName = 'integrationTest'
+  }
 }
 
 dependencies {
-    //jopt - library for command line arguments analysis
-    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-3'
+  //jopt - library for command line arguments analysis
+  compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-3'
 
-    //integration tests libs
-    testCompile('junit:junit:4.12')
-    testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
+  // https://mvnrepository.com/artifact/com.github.samtools/htsjdk
+  compile group: 'com.github.samtools', name: 'htsjdk', version: '2.21.3'
 
-    //integration tests libs
-    integrationTestCompile('junit:junit:4.12')
-    integrationTestImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
+  //unit tests libs
+  testCompile('junit:junit:4.12')
+  testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
+
+  //integration tests libs
+  integrationTestCompile('junit:junit:4.12')
+  integrationTestImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
 }
 
-check.dependsOn integrationTest
-integrationTest.mustRunAfter test
+integrationTest.dependsOn shadowJar
 
-run {
-    if ( project.hasProperty("testArgs") ) {
-        args Eval.me(testArgs)
-    }
+shadowJar {
+  baseName = 'VariantCaller'
+  classifier = ''
+  archiveVersion = ''
 }
 
 jar {
-    manifest.attributes("Main-Class": mainClassName)
+  manifest.attributes("Main-Class": mainClassName)
 }
 
 test {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }

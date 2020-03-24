@@ -1,13 +1,14 @@
 package com.epam.bioinf.variantcaller;
 
+import com.epam.bioinf.variantcaller.handlers.FastaHadler;
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 
 public class Main {
   public static void main(String[] args) {
     ParsedArguments parsedArguments = CommandLineParser.parse(args);
-    System.out.println("Parsed fasta path = " + parsedArguments.getFastaPath());
-    System.out.println("Parsed bed paths = " + parsedArguments.getBedPaths());
-    System.out.println("Parsed sam paths = " + parsedArguments.getSamPaths());
+    FastaHadler fastaHadler = new FastaHadler(parsedArguments.getFastaPath());
+    System.out.println("N of nucleotides " + fastaHadler.countNucleotides());
+    System.out.println("GC content " + fastaHadler.getGcContent());
   }
 }
