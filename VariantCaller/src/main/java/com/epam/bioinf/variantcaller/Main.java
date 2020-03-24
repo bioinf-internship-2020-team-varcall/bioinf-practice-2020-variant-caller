@@ -7,8 +7,6 @@ import com.epam.bioinf.variantcaller.handlers.SamHandler;
 public class Main {
   public static void main(String[] args) {
     ParsedArguments parsedArguments = CommandLineParser.parse(args);
-    SamHandler samReader = new SamHandler(parsedArguments.getSamPaths());
-    samReader.printReadsAmount();
 
     System.out.println("Parsed fasta path = " + parsedArguments.getFastaPath());
     System.out.println("Parsed bed paths = " + parsedArguments.getBedPaths());

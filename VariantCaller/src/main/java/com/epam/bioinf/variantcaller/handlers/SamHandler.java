@@ -21,15 +21,7 @@ public class SamHandler {
     this.samPaths = samPaths;
   }
 
-  /**
-   * Test method
-   */
-  public void printReadsAmount() {
-    computeReadsByPaths().forEach((path, amount) ->
-        System.out.println("In " + path + " : " + amount + " reads\n"));
-  }
-  
-  private Map<Path, Long> computeReadsByPaths() {
+  public Map<Path, Long> computeReadsByPaths() {
     Map<Path, Long> readsPathMap = new HashMap<>();
     samPaths.forEach(path -> readsPathMap.put(path, countReadsIn(path)));
     return readsPathMap;
@@ -39,5 +31,4 @@ public class SamHandler {
     SamReader reader = samFactory.open(samPath);
     return StreamSupport.stream(reader.spliterator(), true).count();
   }
-
 }
