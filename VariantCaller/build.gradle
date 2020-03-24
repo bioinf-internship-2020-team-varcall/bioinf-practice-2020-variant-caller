@@ -48,6 +48,7 @@ dependencies {
 
     //https://mvnrepository.com/artifact/com.github.samtools/htsjdk
     compile group: 'com.github.samtools', name: 'htsjdk', version: '2.21.3'
+    implementation 'org.jetbrains:annotations:15.0'
 }
 
 check.dependsOn integrationTest
