@@ -1,9 +1,9 @@
-name: Gradle CI
+name: Project building and testing
 
 on:
   
   pull_request:
-    types: [opened, edited, reopened, synchronize]
+    types: [opened, reopened, synchronize]
     branches:
     - master
     paths:
@@ -16,7 +16,7 @@ jobs:
     
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
