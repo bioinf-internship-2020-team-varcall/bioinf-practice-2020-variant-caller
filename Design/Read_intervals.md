@@ -22,10 +22,10 @@ package com.epam.bioinf.variantcaller.handlers;
 
 //Временная реализация для проверки работоспособности, она будет изменена в будущих версиях
 class IntervalsHandler {
-  IntervalsHandler(int[] interval); // Конструктор принимает интервал, параметром командной строки
-  IntervalsHandler(Path pathToFile); // Конструктор принимает путь к файлу и сохраняет в поле класса список интервалов.
+  IntervalsHandler(int[] interval); // Конструктор принимает интервал параметром командной строки
+  IntervalsHandler(List<Path> pathsToFiles); // Конструктор принимает пути к файлам и сохраняет в поле класса список интервалов.
   
-  BEDFeature[] intervals; // Хранение интервалов если задан файл
+  BEDFeature[] intervals; // Хранение интервалов если заданы файлы
   int[] interval; // // Хранение интервала
 
   void listIntervals(); // Вывод списка интервалов для проверки работоспособности
