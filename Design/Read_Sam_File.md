@@ -1,4 +1,4 @@
-# Чтение [SAM](https://en.wikipedia.org/wiki/SAM_(file_format) выровненных ридов.
+# Чтение [SAM](https://en.wikipedia.org/wiki/SAM_(file_format)) выровненных ридов.
 ## Используемая библиотека
 
 Используется библиотека [htsjdk](https://github.com/samtools/htsjdk), поскольку она является широко используемой Java библиотекой для работы с форматами данных биоинформатики и предоставляет удобный api.
