@@ -9,6 +9,9 @@ import java.nio.file.Path;
 
 import static java.io.File.pathSeparatorChar;
 
+/**
+ * Class parses arguments and creates ParsedArguments
+ */
 public class CommandLineParser {
   private final ParsedArguments parsedArguments;
   private final String FASTA_KEY = "fasta";
@@ -44,6 +47,9 @@ public class CommandLineParser {
         .withValuesSeparatedBy(pathSeparatorChar);
   }
 
+  /**
+   * Method returns ParsedArguments instance
+   */
   public static ParsedArguments parse(String[] args) {
     return new CommandLineParser(args).getParsedArguments();
   }
@@ -52,6 +58,9 @@ public class CommandLineParser {
     return parsedArguments;
   }
 
+  /**
+   * Class holds exception messages for CommandLineParser
+   */
   public static final class CommandLineMessages {
     private CommandLineMessages() {
       // restrict instantiation

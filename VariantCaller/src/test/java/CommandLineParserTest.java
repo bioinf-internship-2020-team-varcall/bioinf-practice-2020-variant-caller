@@ -2,14 +2,12 @@ import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import org.junit.jupiter.api.Test;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
 import joptsimple.OptionException;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
-import static org.junit.rules.ExpectedException.*;
 
 import static java.io.File.pathSeparatorChar;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -18,8 +16,6 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandLineParserTest {
-  @Rule
-  public final ExpectedException thrown = none();
 
   @Test
   public void parserMustBeBuiltWithValidParameters() {
@@ -38,12 +34,9 @@ public class CommandLineParserTest {
         "-ap", testFilePath("test1.bed"),
         "-hp", testFilePath("test1.sam")
     };
-    try {
-      CommandLineParser.parse(invalidTestArgs);
-      fail();
-    } catch (Exception e) {
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(OptionException.class, () ->
+        CommandLineParser.parse(invalidTestArgs)
+    );
   }
 
   @Test

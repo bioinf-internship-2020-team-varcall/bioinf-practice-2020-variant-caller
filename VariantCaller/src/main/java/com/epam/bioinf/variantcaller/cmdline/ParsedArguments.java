@@ -2,18 +2,25 @@ package com.epam.bioinf.variantcaller.cmdline;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.epam.bioinf.variantcaller.cmdline.CommandLineParser.CommandLineMessages.*;
+import static com.epam.bioinf.variantcaller.cmdline.ParsedArguments.AllowedExtensions.*;
 
-//this class holds validated data
+/**
+ * Class holds validated data
+ */
 public class ParsedArguments {
   private final Path fastaPath;
   private final List<Path> bedPaths;
   private final List<Path> samPaths;
 
+  /**
+   * Costructor validates and holds parsed arguments
+   */
   public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths, List<Path> samPaths) {
     List<Path> processedFasta = withRemovedDuplicates(fastaPaths);
     List<Path> processedBed = withRemovedDuplicates(bedPaths);
@@ -32,25 +39,32 @@ public class ParsedArguments {
     else if (bedValues.size() == 0) errorMessage = BED_ARGS_COUNT_EXC;
     else if (samValues.size() == 0) errorMessage = SAM_ARGS_COUNT_EXC;
 
-    else if (someExtensionIsInvalid(fastaValues, ".fasta")
-        && someExtensionIsInvalid(fastaValues, ".fna")
-        && someExtensionIsInvalid(fastaValues, ".fa")) errorMessage = FASTA_EXTENSION_EXC;
-    else if (someExtensionIsInvalid(bedValues, ".bed")) errorMessage = BED_EXTENSION_EXC;
-    else if (someExtensionIsInvalid(samValues, ".sam")) errorMessage = SAM_EXTENSION_EXC;
+    else if (checkIfSomeExtensionsIsInvalid(fastaValues, FASTA_EXTENSIONS))
+      errorMessage = FASTA_EXTENSION_EXC;
+    else if (checkIfSomeExtensionsIsInvalid(bedValues, BED_EXTENSIONS))
+      errorMessage = BED_EXTENSION_EXC;
+    else if (checkIfSomeExtensionsIsInvalid(samValues, SAM_EXTENSIONS))
+      errorMessage = SAM_EXTENSION_EXC;
 
-    else if (somePathDoesNotExist(fastaValues)) errorMessage = FASTA_PATH_NOT_EXISTS_EXC;
-    else if (somePathDoesNotExist(bedValues)) errorMessage = BED_PATH_NOT_EXISTS_EXC;
-    else if (somePathDoesNotExist(samValues)) errorMessage = SAM_PATH_NOT_EXISTS_EXC;
+    else if (checkIfSomePathDoesNotExist(fastaValues)) errorMessage = FASTA_PATH_NOT_EXISTS_EXC;
+    else if (checkIfSomePathDoesNotExist(bedValues)) errorMessage = BED_PATH_NOT_EXISTS_EXC;
+    else if (checkIfSomePathDoesNotExist(samValues)) errorMessage = SAM_PATH_NOT_EXISTS_EXC;
 
     if (!errorMessage.isEmpty()) throw new IllegalArgumentException(errorMessage);
   }
 
-  private boolean somePathDoesNotExist(List<Path> paths) {
+  private boolean checkIfSomePathDoesNotExist(List<Path> paths) {
     return paths.stream().anyMatch(path -> !Files.exists(path));
   }
 
-  private boolean someExtensionIsInvalid(List<Path> paths, String mustMatch) {
-    return paths.stream().anyMatch(path -> !path.toString().endsWith(mustMatch));
+  private boolean checkIfSomeExtensionsIsInvalid(List<Path> paths, String... allowedExts) {
+    if (paths.stream().allMatch(path -> path.toString().contains("."))) {
+      return paths
+          .stream()
+          .map(path -> path.toString().substring(path.toString().lastIndexOf(".") + 1))
+          .anyMatch(ext -> !Arrays.asList(allowedExts).contains(ext));
+    }
+    return true;
   }
 
   private List<Path> withRemovedDuplicates(List<Path> rawList) {
@@ -67,5 +81,15 @@ public class ParsedArguments {
 
   public List<Path> getSamPaths() {
     return Collections.unmodifiableList(samPaths);
+  }
+
+  public static final class AllowedExtensions {
+    private AllowedExtensions() {
+      // restrict instantiation
+    }
+
+    public static final String[] FASTA_EXTENSIONS = {"fasta", "fna", "fa"};
+    public static final String[] BED_EXTENSIONS = {"bed"};
+    public static final String[] SAM_EXTENSIONS = {"sam"};
   }
 }

@@ -1,13 +1,7 @@
-import static com.epam.bioinf.variantcaller.cmdline.CommandLineParser.CommandLineMessages.*;
-
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import org.junit.jupiter.api.Test;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
-import joptsimple.OptionException;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
-import static org.junit.rules.ExpectedException.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,8 +11,6 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParsedArgumentsTest {
-  @Rule
-  public final ExpectedException thrown = none();
 
   @Test
   public void parsedArgumentsMustBeCreatedWithValidParameters() {
@@ -59,12 +51,9 @@ public class ParsedArgumentsTest {
         Paths.get(testFilePath("test1.sam")),
         Paths.get(testFilePath("test2.sam"))
     );
-    try {
-      new ParsedArguments(invalidFasta, correctBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(invalidFasta, correctBed, correctSam)
+    );
   }
 
   @Test
@@ -77,12 +66,9 @@ public class ParsedArgumentsTest {
         Paths.get(testFilePath("test1.sam")),
         Paths.get(testFilePath("test2.sam"))
     );
-    try {
-      new ParsedArguments(correctFasta, invalidBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, invalidBed, correctSam)
+    );
   }
 
   @Test
@@ -95,12 +81,9 @@ public class ParsedArgumentsTest {
         Paths.get(testFilePath("test2.bed"))
     );
     List<Path> invalidSam = List.of();
-    try {
-      new ParsedArguments(correctFasta, correctBed, invalidSam);
-      fail();
-    } catch (Exception e) {
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, correctBed, invalidSam)
+    );
   }
 
   @Test
@@ -117,17 +100,9 @@ public class ParsedArgumentsTest {
         Paths.get(testFilePath("test1.sam")),
         Paths.get(testFilePath("test2.sam"))
     );
-    try {
-      new ParsedArguments(invalidFasta, correctBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          FASTA_ARGS_COUNT_EXC,
-          "Exception was thrown but its message is not equal to 'FASTA_ARGS_COUNT_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(invalidFasta, correctBed, correctSam)
+    );
   }
 
   @Test
@@ -193,17 +168,9 @@ public class ParsedArgumentsTest {
         Paths.get(testFilePath("test1.sam")),
         Paths.get(testFilePath("test2.sam"))
     );
-    try {
-      new ParsedArguments(fastaWithInvalidExt, correctBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          FASTA_EXTENSION_EXC,
-          e.getLocalizedMessage(),
-          "Exception was thrown but its message is not equal to 'FASTA_EXTENSION_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(fastaWithInvalidExt, correctBed, correctSam)
+    );
   }
 
   @Test
@@ -219,17 +186,9 @@ public class ParsedArgumentsTest {
         Paths.get(testFilePath("test1.sam")),
         Paths.get(testFilePath("test2.sam"))
     );
-    try {
-      new ParsedArguments(correctFasta, bedWithInvalidExt, correctSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          BED_EXTENSION_EXC,
-          "Exception was thrown but its message is not equal to 'BED_EXTENSION_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, bedWithInvalidExt, correctSam)
+    );
   }
 
   @Test
@@ -245,17 +204,9 @@ public class ParsedArgumentsTest {
         Paths.get(testFilePath("test1.samuel")),
         Paths.get(testFilePath("test2.sam"))
     );
-    try {
-      new ParsedArguments(correctFasta, correctBed, samWithInvalidExt);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          SAM_EXTENSION_EXC,
-          "Exception was thrown but its message is not equal to 'SAM_EXTENSION_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, correctBed, samWithInvalidExt)
+    );
   }
 
   @Test
@@ -271,17 +222,9 @@ public class ParsedArgumentsTest {
         Paths.get(testFilePath("test1.sam")),
         Paths.get(testFilePath("test2.sam"))
     );
-    try {
-      new ParsedArguments(notExistingFasta, correctBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          FASTA_PATH_NOT_EXISTS_EXC,
-          "Exception was thrown but its msg is not equal to 'FASTA_PATH_NOT_EXISTS_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(notExistingFasta, correctBed, correctSam)
+    );
   }
 
   @Test
@@ -297,17 +240,9 @@ public class ParsedArgumentsTest {
         Paths.get(testFilePath("test1.sam")),
         Paths.get(testFilePath("test2.sam"))
     );
-    try {
-      new ParsedArguments(correctFasta, notExistingBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          BED_PATH_NOT_EXISTS_EXC,
-          "Exception was thrown but its message is not equal to 'BED_PATH_NOT_EXISTS_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, notExistingBed, correctSam)
+    );
   }
 
   @Test
@@ -323,16 +258,8 @@ public class ParsedArgumentsTest {
         Paths.get(testFilePath("test217.sam")),
         Paths.get(testFilePath("test2.sam"))
     );
-    try {
-      new ParsedArguments(correctFasta, correctBed, notExistingSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          SAM_PATH_NOT_EXISTS_EXC,
-          "Exception was thrown but its message is not equal to 'SAM_PATH_NOT_EXISTS_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, correctBed, notExistingSam)
+    );
   }
 }
