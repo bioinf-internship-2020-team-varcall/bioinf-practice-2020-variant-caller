@@ -22,9 +22,9 @@ public class SamHandler {
   }
 
   public Map<Path, Long> computeReadsByPaths() {
-    Map<Path, Long> readsPathMap = new HashMap<>();
-    samPaths.forEach(path -> readsPathMap.put(path, countReadsIn(path)));
-    return readsPathMap;
+    Map<Path, Long> readsByPathsMap = new HashMap<>();
+    samPaths.forEach(path -> readsByPathsMap.put(path, countReadsIn(path)));
+    return readsByPathsMap;
   }
 
   private long countReadsIn(Path samPath) {

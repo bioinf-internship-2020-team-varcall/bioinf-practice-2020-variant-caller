@@ -21,13 +21,13 @@ public class SamHandlerTest {
 
   @Test
   public void samHandlerMustReturnCorrectReadsNumberWithExamples() {
-    String[] correctTestArgs = {
+    String[] testArgs = {
         "--fasta", testFilePath("test1.fasta"),
         "--bed", testFilePath("test1.bed"),
         "--sam", testFilePath("test1.sam") + pathSeparatorChar +
         testFilePath("test2.sam")
     };
-    ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
+    ParsedArguments parsedArguments = CommandLineParser.parse(testArgs);
     SamHandler samHandler = new SamHandler(parsedArguments.getSamPaths());
 
     Path firstTestFilePath = Paths.get(testFilePath("test1.sam"));
@@ -39,15 +39,12 @@ public class SamHandlerTest {
   }
 
   @Test(expected = SAMFormatException.class)
-  public void samHandlerMustFailIfIInvalidFileProvided() {
-    String[] correctTestArgs = {
+  public void samHandlerMustFailIfInvalidFileProvided() {
+    String[] testArgs = {
         "--fasta", testFilePath("test1.fasta"),
         "--bed", testFilePath("test1.bed"),
         "--sam", testFilePath("test3.sam")};
-    ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
-    SamHandler samHandler = new SamHandler(parsedArguments.getSamPaths());
-    samHandler.computeReadsByPaths();
+    ParsedArguments parsedArguments = CommandLineParser.parse(testArgs);
+    new SamHandler(parsedArguments.getSamPaths()).computeReadsByPaths();
   }
-
-
 }
