@@ -1,0 +1,43 @@
+name: Project building and testing
+
+on:
+  
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+    - master
+    paths:
+    - "VariantCaller/**"
+
+jobs:
+  build:
+    
+    name: Building and testing
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        gradle: [6.1.1]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    
+    - name: Build and test project
+      uses: eskatos/gradle-command-action@v1
+      with:
+        gradle-version: ${{ matrix.gradle }}
+        build-root-directory: ./VariantCaller
+        arguments: build
+
+    - name: Run integration test
+      uses: eskatos/gradle-command-action@v1
+      with:
+        gradle-version: ${{ matrix.gradle }}
+        build-root-directory: ./VariantCaller
+        arguments: integrationTest
