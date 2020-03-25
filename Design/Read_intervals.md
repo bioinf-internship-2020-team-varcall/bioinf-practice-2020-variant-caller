@@ -6,6 +6,10 @@
 
 ## Класс IntervalsHandler
 
+### Для проверки работоспособности:
+
+* Вывод списка интервалов
+
 ### Реализация
 
 В реализации используются следующие классы из библиотеки [htsjdk](https://github.com/samtools/htsjdk):
@@ -16,13 +20,21 @@
 ```java
 package com.epam.bioinf.variantcaller.handlers;
 
+//Временная реализация для проверки работоспособности, она будет изменена в будущих версиях
 class IntervalsHandler {
+  IntervalsHandler(int[] interval); // Конструктор принимает интервал, параметром командной строки
   IntervalsHandler(Path pathToFile); // Конструктор принимает путь к файлу и сохраняет в поле класса список интервалов.
-  BEDFeature[] intervals; // Хранение интервалов
+  
+  BEDFeature[] intervals; // Хранение интервалов если задан файл
+  int[] interval; // // Хранение интервала
+
+  void listIntervals(); // Вывод списка интервалов для проверки работоспособности
 }
 ```
 
 ## Unit-тесты
 
+* IntervalsHandler must return correct if interval is valid
+* IntervalsHandler must fail if interval is not valid
 * IntervalsHandler must return correct if file can be decoded
 * IntervalsHandler must fail if file can not be decoded
