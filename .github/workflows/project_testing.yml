@@ -17,6 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
+        gradle: [6.1.1]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -30,13 +31,13 @@ jobs:
     - name: Build and test project
       uses: eskatos/gradle-command-action@v1
       with:
-        gradle-version: 6.1.1
+        gradle-version: ${{ matrix.gradle }}
         build-root-directory: ./VariantCaller
         arguments: build
 
     - name: Run integration test
       uses: eskatos/gradle-command-action@v1
       with:
-        gradle-version: 6.1.1
+        gradle-version: ${{ matrix.gradle }}
         build-root-directory: ./VariantCaller
         arguments: integrationTest
