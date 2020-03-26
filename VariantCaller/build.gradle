@@ -48,7 +48,7 @@ dependencies {
   integrationTestImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
 
   //spotbugs libs
-  spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+   compile group: 'com.github.spotbugs', name: 'spotbugs', version: '4.0.1', ext: 'pom'
 }
 
 integrationTest.dependsOn shadowJar
@@ -75,17 +75,16 @@ checkstyle {
 }
 
 spotbugs {
-  toolVersion = '4.0.0'
+  toolVersion = '4.0.1'
   ignoreFailures = false
   effort = 'max'
-  showProgress = true
-  includeFilter = file("$configDir/spotbugs/spotbugs.xml")
+  showProgress = false
 }
 
 tasks.withType(SpotBugsTask) {
   reports {
-    xml.enabled = true
-    html.enabled = false
+    xml.enabled = false
+    html.enabled = true
   }
 }
 
