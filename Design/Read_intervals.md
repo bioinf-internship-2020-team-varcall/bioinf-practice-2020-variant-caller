@@ -8,13 +8,13 @@
 
 Так как реализация предусматривает получения данных интервала из командной строки, классы CommandLineParser и ParsedArguments будут доработаны.
 Некоторые проверки и тесты будут изменены так как интервалы являются необязательным параметром.
-Ниже приведенны изменения в классах, проверки не были описанны.
+Ниже приведенны изменения в классах, проверки не были описаны.
 
 ### Изменения в CommandLineParser
 ```java
 package com.epam.bioinf.variantcaller.cmdline;
 
-// Описанны только добавления к уже существующей реализации
+// Описаны только добавления к уже существующей реализации
 public class CommandLineParser {
   
   private final String REGION_KEY = "region"; // Ключ для региона поиска
@@ -43,7 +43,7 @@ public class CommandLineParser {
 ```java
 package com.epam.bioinf.variantcaller.cmdline;
 
-// Описанны только добавления к уже существующей реализации
+// Описаны только добавления к уже существующей реализации
 public class ParsedArguments {
   
   private final List<String> regionData;
