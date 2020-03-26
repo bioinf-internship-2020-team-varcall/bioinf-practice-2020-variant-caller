@@ -5,7 +5,7 @@ import htsjdk.samtools.reference.ReferenceSequence;
 
 import java.nio.file.Path;
 
-import static com.epam.bioinf.variantcaller.handlers.FastaHadler.FastaHadlerMessages.*;
+import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.FastaHandlerMessages.*;
 
 /**
  * Class holds a sequence and performs work with it
@@ -28,10 +28,10 @@ public class FastaHadler {
    */
   public double getGcContent() {
     String s = sequence.getBaseString();
-    return (double) s
+    return s
         .chars()
         .filter(c -> c == 'G' || c == 'C')
-        .count() / s.length() * 100.0;
+        .count() * 1.0 / s.length() * 100.0;
   }
 
   /**
@@ -39,17 +39,5 @@ public class FastaHadler {
    */
   public int countNucleotides() {
     return sequence.getBaseString().length();
-  }
-
-  /**
-   * Class holds exception messages for FastaHandler
-   */
-  public static final class FastaHadlerMessages {
-    private FastaHadlerMessages() {
-      // restrict instantiation
-    }
-
-    public static final String MULTIPLE_SEQUENCES_EXC =
-        "Multiple fasta sequences were provided, fasta file must contain only one sequence";
   }
 }

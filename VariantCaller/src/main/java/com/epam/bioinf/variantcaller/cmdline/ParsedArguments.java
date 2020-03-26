@@ -2,13 +2,11 @@ package com.epam.bioinf.variantcaller.cmdline;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.epam.bioinf.variantcaller.cmdline.CommandLineParser.CommandLineMessages.*;
-import static com.epam.bioinf.variantcaller.cmdline.ParsedArguments.AllowedExtensions.*;
+import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.CommandLineParserMessages.*;
 
 /**
  * Class holds validated data
@@ -35,34 +33,42 @@ public class ParsedArguments {
 
   private void validate(List<Path> fastaValues, List<Path> bedValues, List<Path> samValues) {
     String errorMessage = "";
-    if (fastaValues.size() != 1) errorMessage = FASTA_ARGS_COUNT_EXC;
-    else if (bedValues.size() == 0) errorMessage = BED_ARGS_COUNT_EXC;
-    else if (samValues.size() == 0) errorMessage = SAM_ARGS_COUNT_EXC;
 
-    else if (checkIfSomeExtensionsIsInvalid(fastaValues, FASTA_EXTENSIONS))
+    if (fastaValues.size() != 1) {
+      errorMessage = FASTA_ARGS_COUNT_EXC;
+    } else if (bedValues.size() == 0) {
+      errorMessage = BED_ARGS_COUNT_EXC;
+    } else if (samValues.size() == 0) {
+      errorMessage = SAM_ARGS_COUNT_EXC;
+    } else if (checkIfSomeExtensionsIsInvalid(fastaValues, AllowedExtensions.FASTA_EXTENSIONS)) {
       errorMessage = FASTA_EXTENSION_EXC;
-    else if (checkIfSomeExtensionsIsInvalid(bedValues, BED_EXTENSIONS))
+    } else if (checkIfSomeExtensionsIsInvalid(bedValues, AllowedExtensions.BED_EXTENSIONS)) {
       errorMessage = BED_EXTENSION_EXC;
-    else if (checkIfSomeExtensionsIsInvalid(samValues, SAM_EXTENSIONS))
+    } else if (checkIfSomeExtensionsIsInvalid(samValues, AllowedExtensions.SAM_EXTENSIONS)) {
       errorMessage = SAM_EXTENSION_EXC;
+    } else if (checkIfSomePathDoesNotExist(fastaValues)) {
+      errorMessage = FASTA_PATH_NOT_EXISTS_EXC;
+    } else if (checkIfSomePathDoesNotExist(bedValues)) {
+      errorMessage = BED_PATH_NOT_EXISTS_EXC;
+    } else if (checkIfSomePathDoesNotExist(samValues)) {
+      errorMessage = SAM_PATH_NOT_EXISTS_EXC;
+    }
 
-    else if (checkIfSomePathDoesNotExist(fastaValues)) errorMessage = FASTA_PATH_NOT_EXISTS_EXC;
-    else if (checkIfSomePathDoesNotExist(bedValues)) errorMessage = BED_PATH_NOT_EXISTS_EXC;
-    else if (checkIfSomePathDoesNotExist(samValues)) errorMessage = SAM_PATH_NOT_EXISTS_EXC;
-
-    if (!errorMessage.isEmpty()) throw new IllegalArgumentException(errorMessage);
+    if (!errorMessage.isEmpty()) {
+      throw new IllegalArgumentException(errorMessage);
+    }
   }
 
   private boolean checkIfSomePathDoesNotExist(List<Path> paths) {
     return paths.stream().anyMatch(path -> !Files.exists(path));
   }
 
-  private boolean checkIfSomeExtensionsIsInvalid(List<Path> paths, String... allowedExts) {
+  private boolean checkIfSomeExtensionsIsInvalid(List<Path> paths, List<String> allowedExts) {
     if (paths.stream().allMatch(path -> path.toString().contains("."))) {
       return paths
           .stream()
           .map(path -> path.toString().substring(path.toString().lastIndexOf(".") + 1))
-          .anyMatch(ext -> !Arrays.asList(allowedExts).contains(ext));
+          .anyMatch(ext -> !allowedExts.contains(ext));
     }
     return true;
   }
@@ -83,13 +89,16 @@ public class ParsedArguments {
     return Collections.unmodifiableList(samPaths);
   }
 
-  public static final class AllowedExtensions {
+  /**
+   * Class holds allowed extensions
+   */
+  private static final class AllowedExtensions {
     private AllowedExtensions() {
       // restrict instantiation
     }
 
-    public static final String[] FASTA_EXTENSIONS = {"fasta", "fna", "fa"};
-    public static final String[] BED_EXTENSIONS = {"bed"};
-    public static final String[] SAM_EXTENSIONS = {"sam"};
+    private static final List<String> FASTA_EXTENSIONS = List.of("fasta", "fna", "fa");
+    private static final List<String> BED_EXTENSIONS = List.of("bed");
+    private static final List<String> SAM_EXTENSIONS = List.of("sam");
   }
 }

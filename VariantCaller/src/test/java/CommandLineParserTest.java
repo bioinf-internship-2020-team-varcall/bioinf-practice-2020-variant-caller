@@ -19,21 +19,13 @@ public class CommandLineParserTest {
 
   @Test
   public void parserMustBeBuiltWithValidParameters() {
-    String[] correctTestArgs = {
-        "--fasta", testFilePath("test1.fasta"),
-        "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath("test1.sam")
-    };
+    String[] correctTestArgs = getArgs("--fasta", "--bed", "--sam");
     CommandLineParser.parse(correctTestArgs);
   }
 
   @Test
   public void parserMustFailWithInvalidParameters() {
-    String[] invalidTestArgs = {
-        "-p", testFilePath("test1.fasta"),
-        "-ap", testFilePath("test1.bed"),
-        "-hp", testFilePath("test1.sam")
-    };
+    String[] invalidTestArgs = getArgs("-p", "-ap", "-hp");
     assertThrows(OptionException.class, () ->
         CommandLineParser.parse(invalidTestArgs)
     );
@@ -41,11 +33,7 @@ public class CommandLineParserTest {
 
   @Test
   public void parserMustReturnCorrectParsedArgumentsWithValidArguments() {
-    String[] correctTestArgs = {
-        "--fasta", testFilePath("test1.fasta"),
-        "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath("test1.sam")
-    };
+    String[] correctTestArgs = getArgs("--fasta", "--bed", "--sam");
     ParsedArguments result = CommandLineParser.parse(correctTestArgs);
     assertEquals(result.getFastaPath(), Paths.get(testFilePath("test1.fasta")));
     assertEquals(result.getBedPaths().get(0), Paths.get(testFilePath("test1.bed")));
@@ -54,11 +42,7 @@ public class CommandLineParserTest {
 
   @Test
   public void parserMustReturnCorrectParsedArgumentsIfMultipleArgumentsProvided() {
-    String[] correctTestArgs = {
-        "--fasta", testFilePath("test1.fasta"),
-        "--bed", testFilePath("test1.bed") + pathSeparatorChar + testFilePath("test2.bed"),
-        "--sam", testFilePath("test1.sam") + pathSeparatorChar + testFilePath("test2.sam")
-    };
+    String[] correctTestArgs = getMultipleArgs();
     ParsedArguments result = CommandLineParser.parse(correctTestArgs);
     Path expectedFastaPath = Paths.get(testFilePath("test1.fasta"));
     List<Path> expectedBedPaths = List.of(
@@ -89,5 +73,21 @@ public class CommandLineParserTest {
         Set.copyOf(parsedSamPaths),
         "Unexpected SAM file paths"
     );
+  }
+
+  private String[] getMultipleArgs() {
+    return new String[]{
+        "--fasta", testFilePath("test1.fasta"),
+        "--bed", testFilePath("test1.bed") + pathSeparatorChar + testFilePath("test2.bed"),
+        "--sam", testFilePath("test1.sam") + pathSeparatorChar + testFilePath("test2.sam")
+    };
+  }
+
+  private String[] getArgs(String s, String s2, String s3) {
+    return new String[]{
+        s, testFilePath("test1.fasta"),
+        s2, testFilePath("test1.bed"),
+        s3, testFilePath("test1.sam")
+    };
   }
 }

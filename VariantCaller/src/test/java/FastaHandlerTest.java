@@ -11,13 +11,7 @@ public class FastaHandlerTest {
 
   @Test
   public void fastaHandlerMustReturnCorrectGcContentWithMockExample() {
-    String[] correctTestArgs = {
-        "--fasta", testFilePath("test1.fasta"),
-        "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath("test1.sam")
-    };
-    ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
-    FastaHadler fastaHadler = getFastaHadler(parsedArguments);
+    FastaHadler fastaHadler = getFastaHadler("test1.fasta");
     double expectedGcContent = 69.52;
     double gotGcContent = fastaHadler.getGcContent();
     assertEquals(gotGcContent, expectedGcContent, 0.01);
@@ -25,39 +19,21 @@ public class FastaHandlerTest {
 
   @Test
   public void fastaHandlerMustReturnCorrectCountOfNucleotidesWithMockExample() {
-    String[] correctTestArgs = {
-        "--fasta", testFilePath("test1.fasta"),
-        "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath("test1.sam")
-    };
-    ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
-    FastaHadler fastaHadler = getFastaHadler(parsedArguments);
+    FastaHadler fastaHadler = getFastaHadler("test1.fasta");
     int expectedNucleotidesCount = 420;
     assertEquals(fastaHadler.countNucleotides(), expectedNucleotidesCount);
   }
 
   @Test
   public void fastaHandlerMustReturnCorrectCountOfNucleotidesWithRealExample() {
-    String[] correctTestArgs = {
-        "--fasta", testFilePath("test1.fna"),
-        "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath("test1.sam")
-    };
-    ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
-    FastaHadler fastaHadler = getFastaHadler(parsedArguments);
+    FastaHadler fastaHadler = getFastaHadler("test1.fna");
     int expectedNucleotidesCount = 4641652;
     assertEquals(fastaHadler.countNucleotides(), expectedNucleotidesCount);
   }
 
   @Test
   public void fastaHandlerMustReturnCorrectGcContentWithRealExample() {
-    String[] correctTestArgs = {
-        "--fasta", testFilePath("test1.fna"),
-        "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath("test1.sam")
-    };
-    ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
-    FastaHadler fastaHadler = getFastaHadler(parsedArguments);
+    FastaHadler fastaHadler = getFastaHadler("test1.fna");
     double expectedGcContent = 50.8;
     double gotGcContent = fastaHadler.getGcContent();
     assertEquals(gotGcContent, expectedGcContent, 0.01);
@@ -65,33 +41,32 @@ public class FastaHandlerTest {
 
   @Test
   public void fastaHandlerMustFailIfNoSequenceWasProvided() {
-    String[] invalidTestArgs = {
-        "--fasta", testFilePath("test2.fasta"),
-        "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath("test1.sam")
-    };
-    ParsedArguments parsedArguments = CommandLineParser.parse(invalidTestArgs);
     assertThrows(SAMException.class, () ->
-        new FastaHadler(parsedArguments.getFastaPath())
+        getFastaHadler("test2.fasta")
     );
   }
 
   @Test
   public void fastaHandlerMustFailIfMultipleSequencesWereProvided() {
-    String[] invalidTestArgs = {
-        "--fasta", testFilePath("test3.fasta"),
-        "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath("test1.sam")
-    };
-    ParsedArguments parsedArguments = CommandLineParser.parse(invalidTestArgs);
     assertThrows(IllegalArgumentException.class, () ->
-        new FastaHadler(parsedArguments.getFastaPath())
+        getFastaHadler("test3.fasta")
     );
   }
 
 
-  private FastaHadler getFastaHadler(ParsedArguments parsedArguments) {
+
+  private FastaHadler getFastaHadler(String s) {
+    String[] correctTestArgs = getArgs(s);
+    ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
+    new FastaHadler(parsedArguments.getFastaPath());
     return new FastaHadler(parsedArguments.getFastaPath());
   }
 
+  private String[] getArgs(String s) {
+    return new String[]{
+        "--fasta", testFilePath(s),
+        "--bed", testFilePath("test1.bed"),
+        "--sam", testFilePath("test1.sam")
+    };
+  }
 }
