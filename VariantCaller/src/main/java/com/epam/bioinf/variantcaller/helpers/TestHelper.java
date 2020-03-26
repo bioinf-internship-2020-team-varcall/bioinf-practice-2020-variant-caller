@@ -6,10 +6,15 @@ import java.nio.file.Path;
  * Class contains constants and helper methods for unit and integration tests
  */
 public final class TestHelper {
-  public static Path INTEG_TEST_RECOURCES_ROOT = Path.of("src", "integrationTest", "resources")
+  public static final Path INTEG_TEST_RECOURCES_ROOT = Path
+      .of("src", "integrationTest", "resources")
       .toAbsolutePath();
-  public static Path TEST_RESOURCES_ROOT = Path.of("src", "test", "resources").toAbsolutePath();
-  public static Path PATH_TO_BUILT_JAR = Path.of("build", "libs", "VariantCaller.jar");
+  public static final Path TEST_RESOURCES_ROOT = Path
+      .of("src", "test", "resources")
+      .toAbsolutePath();
+  public static final Path PATH_TO_BUILT_JAR = Path
+      .of("build", "libs", "VariantCaller.jar")
+      .toAbsolutePath();
 
   private TestHelper() {
     // restrict instantiation
