@@ -82,5 +82,29 @@ public class SamHandlerTest {
     new SamHandler(parsedArguments.getSamPaths()).countReadsByPath();
   }
 
+  @Test(expected = RuntimeException.class)
+  public void samHandlerMustFailIfProvidedFileDoesNotExist() {
+    Path samPath = Paths.get(testFilePath("nonExisting.sam"));
+    List<Path> paths = List.of(samPath);
+    new SamHandler(paths).countReadsByPath();
+  }
+
+  @Test(expected = SAMFormatException.class)
+  public void samHandlerMustFailIfOneProvidedFileIsNotSAM() {
+    Path bedPath = Paths.get(testFilePath("test1.bed"));
+    List<Path> paths = List.of(bedPath);
+    new SamHandler(paths).countReadsByPath();
+  }
+
+  @Test(expected = SAMFormatException.class)
+  public void samHandlerMustFailIfOneOfProvidedFilesIsNotSAM() {
+    Path bedPath = Paths.get(testFilePath("test1.bed"));
+    Path samPath = Paths.get(testFilePath("test1.sam"));
+    List<Path> paths = List.of(bedPath, samPath);
+    new SamHandler(paths).countReadsByPath();
+  }
+
   //TODO есть ли идентичные строчки(риды) в файлах?
+  //TODO один и тот же путь указан 2 раза
+
 }

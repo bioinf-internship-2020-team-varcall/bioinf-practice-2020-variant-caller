@@ -2,7 +2,6 @@ package com.epam.bioinf.variantcaller.handlers;
 
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
-import htsjdk.samtools.ValidationStringency;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -16,9 +15,7 @@ import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.SamHandl
 public class SamHandler {
 
   private List<Path> samPaths;
-  private SamReaderFactory samFactory = SamReaderFactory.makeDefault()
-      .enable(SamReaderFactory.Option.VALIDATE_CRC_CHECKSUMS)
-      .validationStringency(ValidationStringency.LENIENT);
+  private SamReaderFactory samFactory = SamReaderFactory.makeDefault();
 
   public SamHandler(List<Path> samPaths) {
     if (samPaths.isEmpty()) {
