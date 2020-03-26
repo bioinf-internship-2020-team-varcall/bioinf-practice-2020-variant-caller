@@ -49,7 +49,7 @@ class SamHandler {
 * SamHandler must fail if provided file does not exist
 * SamHandler must fail if one provided file is not SAM format
 * SamHandler must fail if one of provided files is not SAM format
-* SamHandler must fail if two or more paths to SAM files mathes
+* SamHandler must fail if two or more paths to SAM files matches
 * SamHandler must fail if read occurs several times
 
 ## Интеграционные тесты
