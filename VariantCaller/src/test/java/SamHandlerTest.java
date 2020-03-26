@@ -8,6 +8,8 @@ import org.junit.rules.ExpectedException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
@@ -20,7 +22,23 @@ public class SamHandlerTest {
   public final ExpectedException thrown = none();
 
   @Test
-  public void samHandlerMustReturnCorrectReadsNumberWithExamples() {
+  public void samHandlerMustReturnCorrectReadsNumberWithOneFile() {
+    String[] testArgs = {
+        "--fasta", testFilePath("test1.fasta"),
+        "--bed", testFilePath("test1.bed"),
+        "--sam", testFilePath("test1.sam")
+    };
+    ParsedArguments parsedArguments = CommandLineParser.parse(testArgs);
+    SamHandler samHandler = new SamHandler(parsedArguments.getSamPaths());
+    Path testFilePath = Paths.get(testFilePath("test1.sam"));
+
+    Map<Path, Long> expectedReadsByPath = Map.of(testFilePath, 10L);
+    Map<Path, Long> gotReadsByPath = samHandler.countReadsByPath();
+    assertEquals(gotReadsByPath, expectedReadsByPath);
+  }
+
+  @Test
+  public void samHandlerMustReturnCorrectReadsNumberWithMultipleFiles() {
     String[] testArgs = {
         "--fasta", testFilePath("test1.fasta"),
         "--bed", testFilePath("test1.bed"),
@@ -34,17 +52,35 @@ public class SamHandlerTest {
     Path secondTestFilePath = Paths.get(testFilePath("test2.sam"));
 
     Map<Path, Long> expectedReadsByPath = Map.of(firstTestFilePath, 10L, secondTestFilePath, 10L);
-    Map<Path, Long> gotReadsByPath = samHandler.computeReadsByPaths();
+    Map<Path, Long> gotReadsByPath = samHandler.countReadsByPath();
     assertEquals(gotReadsByPath, expectedReadsByPath);
   }
 
   @Test(expected = SAMFormatException.class)
-  public void samHandlerMustFailIfInvalidFileProvided() {
+  public void samHandlerMustFailIfInvalidOrEmptyFileProvided() {
     String[] testArgs = {
         "--fasta", testFilePath("test1.fasta"),
         "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath("test3.sam")};
+        "--sam", testFilePath("testInvalidReadsFile.sam")};
     ParsedArguments parsedArguments = CommandLineParser.parse(testArgs);
-    new SamHandler(parsedArguments.getSamPaths()).computeReadsByPaths();
+    new SamHandler(parsedArguments.getSamPaths()).countReadsByPath();
   }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void samHandlerMustFailIfEmptyFilesListProvided() {
+    List<Path> emptyList = Collections.emptyList();
+    new SamHandler(emptyList);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void samHandlerMustFailIfFileContainsOnlyOneRead() {
+    String[] testArgs = {
+        "--fasta", testFilePath("test1.fasta"),
+        "--bed", testFilePath("test1.bed"),
+        "--sam", testFilePath("testFileWithOneRead.sam")};
+    ParsedArguments parsedArguments = CommandLineParser.parse(testArgs);
+    new SamHandler(parsedArguments.getSamPaths()).countReadsByPath();
+  }
+
+  //TODO есть ли идентичные строчки(риды) в файлах?
 }
