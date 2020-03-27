@@ -58,7 +58,7 @@ public class FastaHandlerTest {
   private FastaHadler getFastaHadler(String s) {
     String[] correctTestArgs = getArgs(s);
     ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
-    return new FastaHadler(parsedArguments.getFastaPath());
+    return new FastaHadler(parsedArguments);
   }
 
   private String[] getArgs(String s) {

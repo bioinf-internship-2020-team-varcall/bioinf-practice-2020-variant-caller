@@ -1,5 +1,6 @@
 package com.epam.bioinf.variantcaller.handlers;
 
+import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import htsjdk.samtools.reference.FastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
 
@@ -16,11 +17,13 @@ public class FastaHadler {
   /**
    * Costructor checks if a provided file has only one sequence and if true holds this sequence
    */
-  public FastaHadler(Path pathToFastaFile) {
-    FastaSequenceFile fastaSequenceFile = new FastaSequenceFile(pathToFastaFile, true);
+  public FastaHadler(ParsedArguments parsedArguments) {
+    FastaSequenceFile fastaSequenceFile =
+        new FastaSequenceFile(parsedArguments.getFastaPath(), true);
     sequence = fastaSequenceFile.nextSequence();
-    if (fastaSequenceFile.nextSequence() != null)
+    if (fastaSequenceFile.nextSequence() != null) {
       throw new IllegalArgumentException(MULTIPLE_SEQUENCES_EXC);
+    }
   }
 
   /**
