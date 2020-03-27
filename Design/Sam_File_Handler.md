@@ -21,11 +21,11 @@ package com.epam.bioinf.variantcaller.handlers;
 //Временная реализация для проверки работоспособности, она будет изменена в будущих версиях
 class SamHandler {
   SamReaderFactory factory;
-  
-  SamHadler(List<Path> pathsToSamFiles); //Конструктор принимает пути к файлам и сохраняет в поле класса.
+  ArrayList<SAMRecord> samRecords; //хранятся прочитанные риды со всех файлов.
+  SamHadler(ParsedArguments parsedArguments); //Конструктор принимает провалидированные parsed arguments.
   
   /**
-    Метод является временным, поэтому данные после прочтения не хранятся в поле класса.
+    Метод является временным.
     Каждый новый вызов метода ведет к новому прочтению данных.
   */
   Map<Path, Long> countReadsByPath() {
@@ -44,12 +44,7 @@ class SamHandler {
 * SamHandler must return correct reads number with one file
 * SamHandler must return correct reads number with multiple files
 * SamHandler must fail if invalid or empty file provided
-* SamHandler must fail if empty paths list provided
 * SamHandler must fail if file contains only one read
-* SamHandler must fail if provided file does not exist
-* SamHandler must fail if one provided file is not SAM format
-* SamHandler must fail if one of provided files is not SAM format
-* SamHandler must fail if two or more paths to SAM files matches
 * SamHandler must fail if read occurs several times
 
 ## Интеграционные тесты
