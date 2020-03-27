@@ -22,6 +22,23 @@ public class SamHandlerTest {
   public final ExpectedException thrown = none();
 
   @Test
+  public void samHandlerMustReturnCorrectReadsNumberWithRealExample() {
+    String[] testArgs = {
+        "--fasta", testFilePath("test1.fasta"),
+        "--bed", testFilePath("test1.bed"),
+        "--sam", testFilePath("realSamFileExample.sam")
+    };
+    ParsedArguments parsedArguments = CommandLineParser.parse(testArgs);
+    SamHandler samHandler = new SamHandler(parsedArguments.getSamPaths());
+    Path testFilePath = Paths.get(testFilePath("realSamFileExample.sam"));
+    long correctReadsNumber = 1985;
+
+    Map<Path, Long> expectedReadsByPath = Map.of(testFilePath, correctReadsNumber);
+    Map<Path, Long> gotReadsByPath = samHandler.countReadsByPath();
+    assertEquals(gotReadsByPath, expectedReadsByPath);
+  }
+
+  @Test
   public void samHandlerMustReturnCorrectReadsNumberWithOneFile() {
     String[] testArgs = {
         "--fasta", testFilePath("test1.fasta"),
@@ -31,8 +48,9 @@ public class SamHandlerTest {
     ParsedArguments parsedArguments = CommandLineParser.parse(testArgs);
     SamHandler samHandler = new SamHandler(parsedArguments.getSamPaths());
     Path testFilePath = Paths.get(testFilePath("test1.sam"));
+    long correctReadsNumber = 10;
 
-    Map<Path, Long> expectedReadsByPath = Map.of(testFilePath, 10L);
+    Map<Path, Long> expectedReadsByPath = Map.of(testFilePath, correctReadsNumber);
     Map<Path, Long> gotReadsByPath = samHandler.countReadsByPath();
     assertEquals(gotReadsByPath, expectedReadsByPath);
   }
@@ -50,8 +68,10 @@ public class SamHandlerTest {
 
     Path firstTestFilePath = Paths.get(testFilePath("test1.sam"));
     Path secondTestFilePath = Paths.get(testFilePath("test2.sam"));
+    long correctReadsNumber = 10;
 
-    Map<Path, Long> expectedReadsByPath = Map.of(firstTestFilePath, 10L, secondTestFilePath, 10L);
+    Map<Path, Long> expectedReadsByPath =
+        Map.of(firstTestFilePath, correctReadsNumber, secondTestFilePath, correctReadsNumber);
     Map<Path, Long> gotReadsByPath = samHandler.countReadsByPath();
     assertEquals(gotReadsByPath, expectedReadsByPath);
   }
@@ -89,14 +109,14 @@ public class SamHandlerTest {
     new SamHandler(paths).countReadsByPath();
   }
 
-  @Test(expected = SAMFormatException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void samHandlerMustFailIfOneProvidedFileIsNotSAM() {
     Path bedPath = Paths.get(testFilePath("test1.bed"));
     List<Path> paths = List.of(bedPath);
     new SamHandler(paths).countReadsByPath();
   }
 
-  @Test(expected = SAMFormatException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void samHandlerMustFailIfOneOfProvidedFilesIsNotSAM() {
     Path bedPath = Paths.get(testFilePath("test1.bed"));
     Path samPath = Paths.get(testFilePath("test1.sam"));
@@ -104,6 +124,7 @@ public class SamHandlerTest {
     new SamHandler(paths).countReadsByPath();
   }
 
+  //TODO убрать String[] args и заменить просто PathToSamFile
   //TODO есть ли идентичные строчки(риды) в файлах?
   //TODO один и тот же путь указан 2 раза
 
