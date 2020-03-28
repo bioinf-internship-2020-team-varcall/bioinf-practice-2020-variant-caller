@@ -67,7 +67,6 @@ public class ParsedArguments {
 * [BEDCodec](https://samtools.github.io/htsjdk/javadoc/htsjdk/htsjdk/tribble/bed/BEDCodec.html)
 * [FullBEDFeature](https://samtools.github.io/htsjdk/javadoc/htsjdk/htsjdk/tribble/bed/FullBEDFeature.html)
 
-
 Чтение интервалов и их запись в поле класса происходит в конструкторе класса.
 
 ```java
@@ -79,15 +78,18 @@ class IntervalsHandler {
   // При вызове данного конструктора создается экземпляр FullBEDFeature и сохраняется в поле класса.
   IntervalsHandler(List<Path> pathsToFiles); // Конструктор принимает пути к файлам и сохраняет в поле класса список интервалов.
   
-  private FullBEDFeature[] intervals; // Хранение интервалов
+  private List<FullBEDFeature> intervals; // Хранение интервалов
 
   void listIntervals(); // Вывод списка интервалов в stdout  для проверки работоспособности
 
-  FullBEDFeature[] getIntervals(); // Получение списка интервалов
+  List<FullBEDFeature> getIntervals() { // Получение списка интервалов
+    return Collections.unmodifiableList(Arrays.asList(intervals));
+  }
 }
 ```
 
 ## Unit-тесты
+* IntervalsHandler must fail if list of parsed intervals is empty
 * IntervalsHandler must return correct if list of intervalData is valid
 * IntervalsHandler must fail if list of intervalData is not valid
 * IntervalsHandler must fail if list of intervalData is empty
