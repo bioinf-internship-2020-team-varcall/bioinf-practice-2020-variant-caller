@@ -7,7 +7,8 @@ import htsjdk.samtools.reference.ReferenceSequence;
 import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.FastaHandlerMessages.*;
 
 /**
- * Class holds a sequence and performs work with it
+ * Class holds a sequence and performs work with it.
+ * This implementation is temporary and will be changed in future versions.
  */
 public class FastaHandler {
   private final ReferenceSequence sequence;

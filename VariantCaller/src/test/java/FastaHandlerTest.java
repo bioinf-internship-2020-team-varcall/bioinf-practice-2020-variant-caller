@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * These tests are temporary and will be changed in future versions.
+ */
 public class FastaHandlerTest {
 
   @Test
@@ -52,8 +55,6 @@ public class FastaHandlerTest {
         getFastaHandler("test3.fasta")
     );
   }
-
-
 
   private FastaHandler getFastaHandler(String s) {
     String[] correctTestArgs = getArgs(s);
