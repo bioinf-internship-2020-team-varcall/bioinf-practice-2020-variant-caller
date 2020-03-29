@@ -46,7 +46,7 @@ dependencies {
   integrationTestImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
 
   //spotbugs libs
-   compile group: 'com.github.spotbugs', name: 'spotbugs', version: '4.0.1', ext: 'pom'
+  compile group: 'com.github.spotbugs', name: 'spotbugs', version: '4.0.1', ext: 'pom'
 
   //https://mvnrepository.com/artifact/com.github.samtools/htsjdk
   compile group: 'com.github.samtools', name: 'htsjdk', version: '2.21.3'

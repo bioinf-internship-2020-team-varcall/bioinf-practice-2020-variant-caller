@@ -11,9 +11,9 @@ import static java.io.File.pathSeparatorChar;
 
 public class CommandLineParser {
   private final ParsedArguments parsedArguments;
-  private final String FASTA_KEY = "fasta";
-  private final String BED_KEY = "bed";
-  private final String SAM_KEY = "sam";
+  private static final String FASTA_KEY = "fasta";
+  private static final String BED_KEY = "bed";
+  private static final String SAM_KEY = "sam";
 
   private CommandLineParser(String[] args) {
     OptionParser optionParser = new OptionParser() {
