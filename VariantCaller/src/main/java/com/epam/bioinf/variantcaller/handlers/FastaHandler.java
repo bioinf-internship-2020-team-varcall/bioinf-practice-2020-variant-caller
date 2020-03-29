@@ -4,20 +4,18 @@ import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import htsjdk.samtools.reference.FastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
 
-import java.nio.file.Path;
-
 import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.FastaHandlerMessages.*;
 
 /**
  * Class holds a sequence and performs work with it
  */
-public class FastaHadler {
+public class FastaHandler {
   private final ReferenceSequence sequence;
 
   /**
-   * Costructor checks if a provided file has only one sequence and if true holds this sequence
+   * Constructor checks if a provided file has only one sequence and if true holds this sequence
    */
-  public FastaHadler(ParsedArguments parsedArguments) {
+  public FastaHandler(ParsedArguments parsedArguments) {
     FastaSequenceFile fastaSequenceFile =
         new FastaSequenceFile(parsedArguments.getFastaPath(), true);
     sequence = fastaSequenceFile.nextSequence();
