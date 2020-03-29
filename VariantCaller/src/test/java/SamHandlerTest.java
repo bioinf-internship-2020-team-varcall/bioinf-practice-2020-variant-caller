@@ -15,6 +15,24 @@ import static org.junit.Assert.assertEquals;
 public class SamHandlerTest {
 
   @Test
+  public void samHandlerMustReadCorrectWithOneFile() {
+    SamHandler samHandler = getSamHandler("test1.sam");
+    samHandler.read();
+    long expectedReadsNumber = 10;
+    long gotReadsNumber = samHandler.getSamRecords().size();
+    assertEquals(gotReadsNumber, expectedReadsNumber);
+  }
+
+  @Test
+  public void samHandlerMustReadCorrectWithMultipleFiles() {
+    SamHandler samHandler = getSamHandler("test1.sam", "test2.sam");
+    samHandler.read();
+    long expectedReadsNumber = 20;
+    long gotReadsNumber = samHandler.getSamRecords().size();
+    assertEquals(gotReadsNumber, expectedReadsNumber);
+  }
+
+  @Test
   public void samHandlerMustReturnCorrectReadsNumberWithRealExample() {
     SamHandler samHandler = getSamHandler("realSamFileExample.sam");
     Path testFilePath = Paths.get(testFilePath("realSamFileExample.sam"));
@@ -38,14 +56,7 @@ public class SamHandlerTest {
 
   @Test
   public void samHandlerMustReturnCorrectReadsNumberWithMultipleFiles() {
-    String[] testArgs = {
-        "--fasta", testFilePath("test1.fasta"),
-        "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath("test1.sam") + pathSeparatorChar +
-        testFilePath("test2.sam")
-    };
-    ParsedArguments parsedArguments = CommandLineParser.parse(testArgs);
-    SamHandler samHandler = new SamHandler(parsedArguments);
+    SamHandler samHandler = getSamHandler("test1.sam", "test2.sam");
 
     Path firstTestFilePath = Paths.get(testFilePath("test1.sam"));
     Path secondTestFilePath = Paths.get(testFilePath("test2.sam"));
@@ -67,20 +78,22 @@ public class SamHandlerTest {
     getSamHandler("testFileWithOneRead.sam").countReadsByPath();
   }
 
-  private SamHandler getSamHandler(String samFileName) {
-    String[] testArgs = getArgs(samFileName);
+  private SamHandler getSamHandler(String... samFilesName) {
+    String[] testArgs = getArgs(samFilesName);
     ParsedArguments parsedArguments = CommandLineParser.parse(testArgs);
     return new SamHandler(parsedArguments);
   }
 
-  private String[] getArgs(String samFileName) {
+  private String[] getArgs(String... samFilesNames) {
+    StringBuilder samFilesPaths = new StringBuilder();
+    for (String fileName : samFilesNames) {
+      samFilesPaths.append(testFilePath(fileName)).append(pathSeparatorChar);
+    }
     return new String[]{
         "--fasta", testFilePath("test1.fasta"),
         "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath(samFileName)
+        "--sam", samFilesPaths.toString()
     };
   }
 
-//TODO есть ли идентичные строчки(риды) в файлах?
-//TODO передается 2 и более файла. сделать под такой кейс getArgs case
 }
