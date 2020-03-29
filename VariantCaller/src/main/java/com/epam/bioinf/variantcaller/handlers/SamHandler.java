@@ -1,30 +1,34 @@
 package com.epam.bioinf.variantcaller.handlers;
 
+import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.SamHandlerMessages.*;
+import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.SamHandlerMessages.SAM_FILE_CONTAINS_ONLY_ONE_READ_EXC;
 
+/**
+ * Class holds paths to SAM files and SAM records. Performs work with them.
+ */
 public class SamHandler {
 
   private List<Path> samPaths;
-  private SamReaderFactory samFactory = SamReaderFactory.makeDefault();
   private ArrayList<SAMRecord> samRecords = new ArrayList<>();
+  private SamReaderFactory samFactory = SamReaderFactory.makeDefault();
 
-  public SamHandler(List<Path> samPaths) {
-    validate(samPaths);
-    this.samPaths = withRemovedDuplicates(samPaths);
-    removeDuplicatedSequences();//bred
+  /**
+   * Constructor checks gets and holds pre-validated paths to SAM files from ParsedArguments.
+   */
+  public SamHandler(ParsedArguments parsedArguments) {
+    this.samPaths = parsedArguments.getSamPaths();
+    removeDuplicatedSequences();
   }
 
   //dumb method
@@ -32,7 +36,12 @@ public class SamHandler {
     System.out.println(samRecords.stream().map(SAMRecord::getReadString).distinct().count());
   }
 
-
+  /**
+   * This method is temporary and will be removed in later versions.
+   *
+   * @return Map of provided files & number of reads in each file.
+   * @throws IllegalArgumentException if file contains only one read.
+   */
   public Map<Path, Long> countReadsByPath() {
     Map<Path, Long> readsByPathMap = new HashMap<>();
     samPaths.forEach(path -> readsByPathMap.put(path, countReadsIn(path)));
@@ -49,25 +58,8 @@ public class SamHandler {
     }
   }
 
-  private List<Path> withRemovedDuplicates(List<Path> rawList) {
-    return rawList.stream().distinct().collect(Collectors.toList());
-  }
-
-  private boolean pathDoesNotExist(List<Path> paths) {
-    return paths.stream().anyMatch(path -> !Files.exists(path));
-  }
-
-  private boolean extensionIsInvalid(List<Path> paths) {
-    return paths.stream().anyMatch(path -> !path.toString().endsWith(".sam"));
-  }
-
-  private void validate(List<Path> paths) {
-    String errorMessage = "";
-    if (paths.isEmpty()) errorMessage = SAM_FILES_PATHS_LIST_EMPTY_EXC;
-    else if (extensionIsInvalid(paths)) errorMessage = SAM_INVALID_EXTENSION_EXC;
-    else if (pathDoesNotExist(paths)) errorMessage = SAM_PATH_NOT_EXISTS_EXC;
-
-    if (!errorMessage.isEmpty()) throw new IllegalArgumentException(errorMessage);
+  public ArrayList<SAMRecord> getSamRecords() {
+    return samRecords;
   }
 
 }
