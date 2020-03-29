@@ -16,6 +16,7 @@ import java.util.stream.StreamSupport;
 import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.SamHandlerMessages.SAM_FILE_CONTAINS_ONLY_ONE_READ_EXC;
 
 /**
+ * Class implementation is temporary and will be changed in later versions.
  * Class holds paths to SAM files and SAM records. Performs work with them.
  */
 public class SamHandler {
