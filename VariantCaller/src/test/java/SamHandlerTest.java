@@ -1,15 +1,18 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.handlers.SamHandler;
+import com.epam.bioinf.variantcaller.helpers.TestHelper;
 import htsjdk.samtools.SAMFormatException;
 import org.junit.Test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
-import static java.io.File.pathSeparatorChar;
+import static java.io.File.pathSeparator;
 import static org.junit.Assert.assertEquals;
 
 public class SamHandlerTest {
@@ -85,14 +88,13 @@ public class SamHandlerTest {
   }
 
   private String[] getArgs(String... samFilesNames) {
-    StringBuilder samFilesPaths = new StringBuilder();
-    for (String fileName : samFilesNames) {
-      samFilesPaths.append(testFilePath(fileName)).append(pathSeparatorChar);
-    }
+    String samFilesPaths = Arrays.stream(samFilesNames)
+        .map(TestHelper::testFilePath)
+        .collect(Collectors.joining(pathSeparator));
     return new String[]{
         "--fasta", testFilePath("test1.fasta"),
         "--bed", testFilePath("test1.bed"),
-        "--sam", samFilesPaths.toString()
+        "--sam", samFilesPaths
     };
   }
 

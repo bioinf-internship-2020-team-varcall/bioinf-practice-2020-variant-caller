@@ -20,14 +20,16 @@ import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.SamHandl
  */
 public class SamHandler {
   private List<Path> samPaths;
-  private ArrayList<SAMRecord> samRecords = new ArrayList<>();
-  private SamReaderFactory samFactory = SamReaderFactory.makeDefault();
+  private List<SAMRecord> samRecords;
+  private SamReaderFactory samFactory;
 
   /**
    * Constructor gets pre-validated paths to SAM files from ParsedArguments.
    */
   public SamHandler(ParsedArguments parsedArguments) {
     this.samPaths = parsedArguments.getSamPaths();
+    this.samRecords = new ArrayList<>();
+    this.samFactory = SamReaderFactory.makeDefault();
   }
 
   /**
@@ -55,7 +57,7 @@ public class SamHandler {
 
   private void removeDuplicatedReads() {
     samRecords =
-        (ArrayList<SAMRecord>) samRecords.stream().distinct().collect(Collectors.toList());
+        samRecords.stream().distinct().collect(Collectors.toList());
   }
 
   private long countReadsIn(Path samPath) {
