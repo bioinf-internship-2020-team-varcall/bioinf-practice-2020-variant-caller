@@ -6,7 +6,7 @@ import java.nio.file.Path;
  * Class contains constants and helper methods for unit and integration tests
  */
 public final class TestHelper {
-  public static final Path INTEG_TEST_RECOURCES_ROOT = Path
+  public static final Path INTEGRATION_TEST_RESOURCES_ROOT = Path
       .of("src", "integrationTest", "resources")
       .toAbsolutePath();
   public static final Path TEST_RESOURCES_ROOT = Path
@@ -21,14 +21,14 @@ public final class TestHelper {
   }
 
   /**
-   * Method returns a path to a integration test recource with given filename
+   * Method returns a path to a integration test resource with given filename
    */
   public static String integTestFilePath(String filename) {
-    return INTEG_TEST_RECOURCES_ROOT.resolve(filename).toString();
+    return INTEGRATION_TEST_RESOURCES_ROOT.resolve(filename).toString();
   }
 
   /**
-   * Method returns a path to a unit test recource with given filename
+   * Method returns a path to a unit test resource with given filename
    */
   public static String testFilePath(String filename) {
     return TEST_RESOURCES_ROOT.resolve(filename).toString();
