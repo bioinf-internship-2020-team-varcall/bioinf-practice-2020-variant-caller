@@ -36,9 +36,6 @@ dependencies {
   //jopt - library for command line arguments analysis
   compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '6.0-alpha-3'
 
-  // https://mvnrepository.com/artifact/com.github.samtools/htsjdk
-  compile group: 'com.github.samtools', name: 'htsjdk', version: '2.21.3'
-
   //unit tests libs
   testCompile('junit:junit:4.12')
   testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
