@@ -20,7 +20,6 @@ public class SamHandlerTest {
   @Test
   public void samHandlerMustReadCorrectWithOneFile() {
     SamHandler samHandler = getSamHandler("test1.sam");
-    samHandler.read();
     long expectedReadsNumber = 10;
     long gotReadsNumber = samHandler.getSamRecords().size();
     assertEquals(gotReadsNumber, expectedReadsNumber);
@@ -29,7 +28,6 @@ public class SamHandlerTest {
   @Test
   public void samHandlerMustReadCorrectWithMultipleFiles() {
     SamHandler samHandler = getSamHandler("test1.sam", "test2.sam");
-    samHandler.read();
     long expectedReadsNumber = 20;
     long gotReadsNumber = samHandler.getSamRecords().size();
     assertEquals(gotReadsNumber, expectedReadsNumber);
@@ -74,11 +72,6 @@ public class SamHandlerTest {
   @Test(expected = SAMFormatException.class)
   public void samHandlerMustFailIfInvalidOrEmptyFileProvided() {
     getSamHandler("testInvalidReadsFile.sam").countReadsByPath();
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void samHandlerMustFailIfFileContainsOnlyOneRead() {
-    getSamHandler("testFileWithOneRead.sam").countReadsByPath();
   }
 
   private SamHandler getSamHandler(String... samFilesName) {

@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.SamHandlerMessages.SAM_FILE_CONTAINS_ONLY_ONE_READ_EXC;
-
 /**
  * Class implementation is temporary and will be changed in later versions.
  * Class holds paths to SAM files and SAM records. Performs work with them.
@@ -31,6 +29,8 @@ public class SamHandler {
     this.samPaths = parsedArguments.getSamPaths();
     this.samRecords = new ArrayList<>();
     this.samFactory = SamReaderFactory.makeDefault();
+    read();
+    removeDuplicatedReads();
   }
 
   /**
@@ -45,15 +45,11 @@ public class SamHandler {
     return readsByPathMap;
   }
 
-  /**
-   * Opens every SAM file and fills samRecords.
-   */
-  public void read() {
+  private void read() {
     samPaths.forEach(path -> {
       SamReader reader = samFactory.open(path);
       reader.forEach(samRecords::add);
     });
-    removeDuplicatedReads();
   }
 
   private void removeDuplicatedReads() {
@@ -63,12 +59,7 @@ public class SamHandler {
 
   private long countReadsIn(Path samPath) {
     SamReader reader = samFactory.open(samPath);
-    long readsNumber = StreamSupport.stream(reader.spliterator(), true).count();
-    if (readsNumber == 1) {
-      throw new IllegalArgumentException(SAM_FILE_CONTAINS_ONLY_ONE_READ_EXC + samPath);
-    } else {
-      return readsNumber;
-    }
+    return StreamSupport.stream(reader.spliterator(), true).count();
   }
 
   public List<SAMRecord> getSamRecords() {
