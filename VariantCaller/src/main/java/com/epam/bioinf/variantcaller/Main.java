@@ -4,7 +4,7 @@ import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 
 /**
  * Class launches program with command line arguments(implementation is
- * is temporary and will be updated in future versions,
+ *  temporary and will be updated in future versions,
  * now it is used for exception check in integration tests)
  */
 public class Main {
