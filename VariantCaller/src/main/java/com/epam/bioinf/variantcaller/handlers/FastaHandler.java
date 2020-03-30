@@ -17,11 +17,12 @@ public class FastaHandler {
    * Constructor checks if a provided file has only one sequence and if true holds this sequence
    */
   public FastaHandler(ParsedArguments parsedArguments) {
-    FastaSequenceFile fastaSequenceFile =
-        new FastaSequenceFile(parsedArguments.getFastaPath(), true);
-    sequence = fastaSequenceFile.nextSequence();
-    if (fastaSequenceFile.nextSequence() != null) {
-      throw new IllegalArgumentException(MULTIPLE_SEQUENCES_EXC);
+    try (FastaSequenceFile fastaSequenceFile =
+             new FastaSequenceFile(parsedArguments.getFastaPath(), true)) {
+      sequence = fastaSequenceFile.nextSequence();
+      if (fastaSequenceFile.nextSequence() != null) {
+        throw new IllegalArgumentException(MULTIPLE_SEQUENCES_EXC);
+      }
     }
   }
 
