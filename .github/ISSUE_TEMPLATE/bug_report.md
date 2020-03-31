@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Bug report template
+about: Creating an issue to describe a defect in the project
 title: ''
 labels: ''
 assignees: ''
