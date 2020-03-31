@@ -14,3 +14,12 @@
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to change)
+
+## Reviewers
+
+<!--- In the initial pull request, you must select your team members as Reviewers.
+If they approve pull request, then add managers to Reviewers. -->
+
+## Approve
+
+<!--- After the managers approve, we make a merge pull request in the master. -->
