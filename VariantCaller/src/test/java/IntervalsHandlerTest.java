@@ -17,18 +17,26 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IntervalsHandlerTest {
 
   @Test
-  public void intervalsHandlerMustReturnCorrectIntervalWithCmdLineInput() {
-    String expected = "chr1";
+  public void intervalsHandlerMustReturnCorrectIntervalsNumberWithCmdLineInput() {
+    final long expectedIntervalsNumber = 1;
     IntervalsHandler testHandler = new IntervalsHandler("chr1 12 123");
-    assertEquals(expected, testHandler.getIntervals().get(0).getContig());
+    assertEquals(expectedIntervalsNumber, testHandler.getIntervals().stream().count());
   }
 
   @Test
-  public void intervalsHandlerMustReturnCorrectIntervalWithSingleFile() {
-    List<String> expectedList = Arrays.asList("chr1", "chr1", "chr1", "chr1", "chr1", "chr2", "chr2");
+  public void intervalsHandlerMustReturnCorrectIntervalsNumberWithSingleFile() {
+    final long expectedIntervalsNumber = 7;
     List<Path> testPaths = Collections.singletonList(Paths.get(testFilePath("test1.bed")));
     IntervalsHandler testHandler = new IntervalsHandler(testPaths);
-    assertArrayEquals(expectedList.toArray(), testHandler.getIntervals().stream().map(BEDFeature::getContig).toArray());
+    assertEquals(expectedIntervalsNumber, testHandler.getIntervals().stream().count());
+  }
+
+  @Test void intervalsHandlerMustReturnCorrectIntervalsNumberWithMultipleFiles() {
+    final long expectedIntervalsNumber = 16;
+    List<Path> testPaths = Arrays.asList(Paths.get(testFilePath("test1.bed")),
+        Paths.get(testFilePath("test2.bed")));
+    IntervalsHandler testHandler = new IntervalsHandler(testPaths);
+    assertEquals(expectedIntervalsNumber, testHandler.getIntervals().stream().count());
   }
 
 }

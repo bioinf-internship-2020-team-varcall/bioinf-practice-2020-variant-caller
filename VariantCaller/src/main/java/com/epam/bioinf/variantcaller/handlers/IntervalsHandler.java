@@ -47,7 +47,7 @@ public class IntervalsHandler {
   public IntervalsHandler(List<Path> pathsToFiles) {
 
     intervals = new ArrayList<>();
-
+    //TODO check if file can be decoded
     pathsToFiles.forEach(path -> {
       try {
         final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
