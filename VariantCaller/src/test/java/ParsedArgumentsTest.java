@@ -1,38 +1,24 @@
-import static com.epam.bioinf.variantcaller.cmdline.CommandLineParser.CommandLineMessages.*;
-
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import org.junit.jupiter.api.Test;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
-import joptsimple.OptionException;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
-import static org.junit.rules.ExpectedException.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParsedArgumentsTest {
-  @Rule
-  public final ExpectedException thrown = none();
 
   @Test
   public void parsedArgumentsMustBeCreatedWithValidParameters() {
-    List<Path> correctFasta = List.of(
-        Paths.get(testFilePath("test1.fasta"))
-    );
-    List<Path> correctBed = List.of(
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test1.bed"))
-    );
-    List<Path> correctSam = List.of(
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test2.sam"))
-    );
+    List<Path> correctFasta = getPaths("test1.fasta");
+    List<Path> correctBed = getPaths("test1.bed", "test2.bed");
+    List<Path> correctSam = getPaths("test1.sam", "test2.sam");
     ParsedArguments parsedArguments = new ParsedArguments(correctFasta, correctBed, correctSam);
 
     assertEquals(correctFasta.get(0), parsedArguments.getFastaPath());
@@ -51,38 +37,21 @@ public class ParsedArgumentsTest {
   @Test
   public void parsedArgumentsMustFailIfLessThanOneFastaPathProvided() {
     List<Path> invalidFasta = List.of();
-    List<Path> correctBed = List.of(
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test2.bed"))
+    List<Path> correctBed = getPaths("test1.bed", "test2.bed");
+    List<Path> correctSam = getPaths("test1.sam", "test2.sam");
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(invalidFasta, correctBed, correctSam)
     );
-    List<Path> correctSam = List.of(
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test2.sam"))
-    );
-    try {
-      new ParsedArguments(invalidFasta, correctBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      thrown.expect(OptionException.class);
-    }
   }
 
   @Test
   public void parsedArgumentsMustFailIfLessThanOneBedPathProvided() {
-    List<Path> correctFasta = List.of(
-        Paths.get(testFilePath("test1.fasta"))
-    );
+    List<Path> correctFasta = getPaths("test1.fasta");
     List<Path> invalidBed = List.of();
-    List<Path> correctSam = List.of(
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test2.sam"))
+    List<Path> correctSam = getPaths("test1.sam", "test2.sam");
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, invalidBed, correctSam)
     );
-    try {
-      new ParsedArguments(correctFasta, invalidBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      thrown.expect(OptionException.class);
-    }
   }
 
   @Test
@@ -90,74 +59,34 @@ public class ParsedArgumentsTest {
     List<Path> correctFasta = List.of(
         Paths.get(testFilePath("test1.fasta"))
     );
-    List<Path> correctBed = List.of(
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test2.bed"))
-    );
+    List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> invalidSam = List.of();
-    try {
-      new ParsedArguments(correctFasta, correctBed, invalidSam);
-      fail();
-    } catch (Exception e) {
-      thrown.expect(OptionException.class);
-    }
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, correctBed, invalidSam)
+    );
   }
 
   @Test
   public void parsedArgumentsFailIfMoreThanOneFastaPathProvided() {
-    List<Path> invalidFasta = List.of(
-        Paths.get(testFilePath("test1.fasta")),
-        Paths.get(testFilePath("test2.fasta"))
+    List<Path> invalidFasta = getPaths("test1.fasta", "test2.fasta");
+    List<Path> correctBed = getPaths("test1.bed", "test2.bed");
+    List<Path> correctSam = getPaths("test1.sam", "test2.sam");
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(invalidFasta, correctBed, correctSam)
     );
-    List<Path> correctBed = List.of(
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test2.bed"))
-    );
-    List<Path> correctSam = List.of(
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test2.sam"))
-    );
-    try {
-      new ParsedArguments(invalidFasta, correctBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          FASTA_ARGS_COUNT_EXC,
-          "Exception was thrown but its message is not equal to 'FASTA_ARGS_COUNT_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
   }
 
   @Test
   public void parsedArgumentsMustBeBuiltWithRemovedDuplicatedPaths() {
-    List<Path> dupllicatedFasta = List.of(
-        Paths.get(testFilePath("test1.fasta")),
-        Paths.get(testFilePath("test1.fasta"))
-    );
-    List<Path> duplicatedBed = List.of(
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test2.bed"))
-    );
-    List<Path> duplicatedSam = List.of(
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test2.sam"))
-    );
+    List<Path> duplicatedFasta = getPaths("test1.fasta", "test1.fasta");
+    List<Path> duplicatedBed = getPaths("test1.bed", "test1.bed", "test2.bed");
+    List<Path> duplicatedSam = getPaths("test1.sam", "test1.sam", "test2.sam");
 
     Path expectedFastaPath = Paths.get(testFilePath("test1.fasta"));
-    List<Path> expectedBedPaths = List.of(
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test2.bed"))
-    );
-    List<Path> expectedSamPaths = List.of(
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test2.sam"))
-    );
+    List<Path> expectedBedPaths = getPaths("test1.bed", "test2.bed");
+    List<Path> expectedSamPaths = getPaths("test1.sam", "test2.sam");
 
-    ParsedArguments result = new ParsedArguments(dupllicatedFasta, duplicatedBed, duplicatedSam);
+    ParsedArguments result = new ParsedArguments(duplicatedFasta, duplicatedBed, duplicatedSam);
 
     Path parsedFastaPath = result.getFastaPath();
     List<Path> parsedBedPaths = result.getBedPaths();
@@ -182,157 +111,69 @@ public class ParsedArgumentsTest {
 
   @Test
   public void parsedArgumentsMustFailIfFastaPathHasInvalidExtension() {
-    List<Path> fastaWithInvalidExt = List.of(
-        Paths.get(testFilePath("test1.fas"))
+    List<Path> fastaWithInvalidExt = getPaths("test1.fas");
+    List<Path> correctBed = getPaths("test1.bed", "test2.bed");
+    List<Path> correctSam = getPaths("test1.sam", "test2.sam");
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(fastaWithInvalidExt, correctBed, correctSam)
     );
-    List<Path> correctBed = List.of(
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test2.bed"))
-    );
-    List<Path> correctSam = List.of(
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test2.sam"))
-    );
-    try {
-      new ParsedArguments(fastaWithInvalidExt, correctBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          FASTA_EXTENSION_EXC,
-          e.getLocalizedMessage(),
-          "Exception was thrown but its message is not equal to 'FASTA_EXTENSION_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
   }
 
   @Test
   public void parsedArgumentsMustFailIfSomeBedPathHasInvalidExtension() {
-    List<Path> correctFasta = List.of(
-        Paths.get(testFilePath("test1.fasta"))
+    List<Path> correctFasta = getPaths("test1.fasta");
+    List<Path> bedWithInvalidExt = getPaths("test1.bek", "test2.bed");
+    List<Path> correctSam = getPaths("test1.sam", "test2.sam");
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, bedWithInvalidExt, correctSam)
     );
-    List<Path> bedWithInvalidExt = List.of(
-        Paths.get(testFilePath("test1.bek")),
-        Paths.get(testFilePath("test2.bed"))
-    );
-    List<Path> correctSam = List.of(
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test2.sam"))
-    );
-    try {
-      new ParsedArguments(correctFasta, bedWithInvalidExt, correctSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          BED_EXTENSION_EXC,
-          "Exception was thrown but its message is not equal to 'BED_EXTENSION_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
   }
 
   @Test
   public void parsedArgumentsMustFailIfSomeSamPathHasInvalidExtension() {
-    List<Path> correctFasta = List.of(
-        Paths.get(testFilePath("test1.fasta"))
+    List<Path> correctFasta = getPaths("test1.fasta");
+    List<Path> correctBed = getPaths("test1.bed", "test2.bed");
+    List<Path> samWithInvalidExt = getPaths("test1.samuel", "test2.sam");
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, correctBed, samWithInvalidExt)
     );
-    List<Path> correctBed = List.of(
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test2.bed"))
-    );
-    List<Path> samWithInvalidExt = List.of(
-        Paths.get(testFilePath("test1.samuel")),
-        Paths.get(testFilePath("test2.sam"))
-    );
-    try {
-      new ParsedArguments(correctFasta, correctBed, samWithInvalidExt);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          SAM_EXTENSION_EXC,
-          "Exception was thrown but its message is not equal to 'SAM_EXTENSION_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
   }
 
   @Test
   public void parsedArgumentsMustFailIfFastaFileDoesNotExist() {
-    List<Path> notExistingFasta = List.of(
-        Paths.get(testFilePath("test217.fasta"))
+    List<Path> notExistingFasta = getPaths("test217.fasta");
+    List<Path> correctBed = getPaths("test1.bed", "test2.bed");
+    List<Path> correctSam = getPaths("test1.sam", "test2.sam");
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(notExistingFasta, correctBed, correctSam)
     );
-    List<Path> correctBed = List.of(
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test2.bed"))
-    );
-    List<Path> correctSam = List.of(
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test2.sam"))
-    );
-    try {
-      new ParsedArguments(notExistingFasta, correctBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          FASTA_PATH_NOT_EXISTS_EXC,
-          "Exception was thrown but its msg is not equal to 'FASTA_PATH_NOT_EXISTS_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
   }
 
   @Test
   public void parsedArgumentsMustFailIfSomeBedFileDoesNotExist() {
-    List<Path> correctFasta = List.of(
-        Paths.get(testFilePath("test1.fasta"))
+    List<Path> correctFasta = getPaths("test1.fasta");
+    List<Path> notExistingBed = getPaths("test217.bed", "test2.bed");
+    List<Path> correctSam = getPaths("test1.sam", "test2.sam");
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, notExistingBed, correctSam)
     );
-    List<Path> notExistingBed = List.of(
-        Paths.get(testFilePath("test217.bed")),
-        Paths.get(testFilePath("test2.bed"))
-    );
-    List<Path> correctSam = List.of(
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test2.sam"))
-    );
-    try {
-      new ParsedArguments(correctFasta, notExistingBed, correctSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          BED_PATH_NOT_EXISTS_EXC,
-          "Exception was thrown but its message is not equal to 'BED_PATH_NOT_EXISTS_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
   }
 
   @Test
   public void parsedArgumentsMustFailIfSomeSamFileDoesNotExist() {
-    List<Path> correctFasta = List.of(
-        Paths.get(testFilePath("test1.fasta"))
+    List<Path> correctFasta = getPaths("test1.fasta");
+    List<Path> correctBed = getPaths("test1.bed", "test2.bed");
+    List<Path> notExistingSam = getPaths("test217.sam", "test2.sam");
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, correctBed, notExistingSam)
     );
-    List<Path> correctBed = List.of(
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test2.bed"))
+  }
+
+  private List<Path> getPaths(String... filenames) {
+    List<Path> paths = new ArrayList<>();
+    Arrays.asList(filenames).forEach(filename ->
+        paths.add(Paths.get(testFilePath(filename)))
     );
-    List<Path> notExistingSam = List.of(
-        Paths.get(testFilePath("test217.sam")),
-        Paths.get(testFilePath("test2.sam"))
-    );
-    try {
-      new ParsedArguments(correctFasta, correctBed, notExistingSam);
-      fail();
-    } catch (Exception e) {
-      assertEquals(
-          e.getLocalizedMessage(),
-          SAM_PATH_NOT_EXISTS_EXC,
-          "Exception was thrown but its message is not equal to 'SAM_PATH_NOT_EXISTS_EXC' constant"
-      );
-      thrown.expect(OptionException.class);
-    }
+    return paths;
   }
 }
