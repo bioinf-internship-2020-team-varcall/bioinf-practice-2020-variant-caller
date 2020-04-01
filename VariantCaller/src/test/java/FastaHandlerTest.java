@@ -56,15 +56,15 @@ public class FastaHandlerTest {
     );
   }
 
-  private FastaHandler getFastaHandler(String s) {
-    String[] correctTestArgs = getArgs(s);
+  private FastaHandler getFastaHandler(String fastaFileName) {
+    String[] correctTestArgs = getArgs(fastaFileName);
     ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
     return new FastaHandler(parsedArguments);
   }
 
-  private String[] getArgs(String s) {
+  private String[] getArgs(String fastaFileName) {
     return new String[]{
-        "--fasta", testFilePath(s),
+        "--fasta", testFilePath(fastaFileName),
         "--bed", testFilePath("test1.bed"),
         "--sam", testFilePath("test1.sam")
     };

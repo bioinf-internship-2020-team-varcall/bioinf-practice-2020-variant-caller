@@ -83,11 +83,11 @@ public class CommandLineParserTest {
     };
   }
 
-  private String[] getArgs(String s, String s2, String s3) {
+  private String[] getArgs(String fastaKey, String bedKey, String samKey) {
     return new String[]{
-        s, testFilePath("test1.fasta"),
-        s2, testFilePath("test1.bed"),
-        s3, testFilePath("test1.sam")
+        fastaKey, testFilePath("test1.fasta"),
+        bedKey, testFilePath("test1.bed"),
+        samKey, testFilePath("test1.sam")
     };
   }
 }

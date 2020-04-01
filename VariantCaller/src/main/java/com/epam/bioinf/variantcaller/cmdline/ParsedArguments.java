@@ -17,7 +17,7 @@ public class ParsedArguments {
   private final List<Path> samPaths;
 
   /**
-   * Constructor validates and holds parsed arguments
+   * Constructor validates parsed arguments
    */
   public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths, List<Path> samPaths) {
     List<Path> processedFasta = withRemovedDuplicates(fastaPaths);
