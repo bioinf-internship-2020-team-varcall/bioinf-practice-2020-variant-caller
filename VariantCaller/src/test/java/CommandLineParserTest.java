@@ -6,21 +6,42 @@ import joptsimple.OptionException;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
 
-import static java.io.File.pathSeparatorChar;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import static java.io.File.pathSeparatorChar;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandLineParserTest {
 
   @Test
-  public void parserMustBeBuiltWithValidParameters() {
+  public void parserMustBeBuiltWithValidParameters1() {
     String[] correctTestArgs = getArgs("--fasta", "--bed", "--sam");
     CommandLineParser.parse(correctTestArgs);
+  }
+
+  @Test
+  public void parserMustBeBuiltWithValidParameters2() {
+    String[] correctTestArgs = getArgs("--fasta", "--sam");
+    CommandLineParser.parse(correctTestArgs);
+  }
+
+  @Test
+  public void parserMustBeBuiltWithValidParameters3() {
+    String[] correctTestArgs = getArgs("--fasta", "--sam", "--region");
+    CommandLineParser.parse(correctTestArgs);
+  }
+
+  @Test
+  public void parserMustBeBuiltWithExcessParameters() {
+    String[] invalidTestArgs = getArgs("--fasta", "--bed", "--sam", "--region");
+    assertThrows(IllegalArgumentException.class, () ->
+        CommandLineParser.parse(invalidTestArgs)
+    );
   }
 
   @Test
@@ -76,18 +97,34 @@ public class CommandLineParserTest {
   }
 
   private String[] getMultipleArgs() {
-    return new String[]{
+    return new String[] {
         "--fasta", testFilePath("test1.fasta"),
         "--bed", testFilePath("test1.bed") + pathSeparatorChar + testFilePath("test2.bed"),
         "--sam", testFilePath("test1.sam") + pathSeparatorChar + testFilePath("test2.sam")
     };
   }
 
-  private String[] getArgs(String fastaKey, String bedKey, String samKey) {
-    return new String[]{
-        fastaKey, testFilePath("test1.fasta"),
-        bedKey, testFilePath("test1.bed"),
-        samKey, testFilePath("test1.sam")
-    };
+  private String[] getArgs(String... keys) {
+    List<String> output = new ArrayList<>();
+    Arrays.asList(keys).forEach(key -> {
+      output.add(key);
+      output.add(evaluateKey(key));
+    });
+    return output.toArray(String[]::new);
+  }
+
+  private String evaluateKey(String key) {
+    switch (key) {
+        case ("--fasta"):
+          return testFilePath("test1.fasta");
+        case ("--sam"):
+          return testFilePath("test1.sam");
+        case ("--bed"):
+          return testFilePath("test1.bed");
+        case ("--region"):
+          return "chr1 10 20";
+        default:
+          return null;
+    }
   }
 }

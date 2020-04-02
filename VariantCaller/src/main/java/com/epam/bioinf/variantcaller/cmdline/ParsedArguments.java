@@ -15,29 +15,37 @@ public class ParsedArguments {
   private final Path fastaPath;
   private final List<Path> bedPaths;
   private final List<Path> samPaths;
+  private final String regionData;
 
   /**
    * Constructor validates parsed arguments
    */
-  public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths, List<Path> samPaths) {
+  public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths,
+      List<Path> samPaths, String regionData) {
     List<Path> processedFasta = withRemovedDuplicates(fastaPaths);
     List<Path> processedBed = withRemovedDuplicates(bedPaths);
     List<Path> processedSam = withRemovedDuplicates(samPaths);
 
-    validate(processedFasta, processedBed, processedSam);
+    validate(processedFasta, processedBed, processedSam, regionData);
 
     this.fastaPath = processedFasta.get(0);
     this.bedPaths = processedBed;
     this.samPaths = processedSam;
+    this.regionData = regionData;
   }
 
-  private void validate(List<Path> fastaValues, List<Path> bedValues, List<Path> samValues) {
+  private void validate(List<Path> fastaValues, List<Path> bedValues,
+      List<Path> samValues, String regionData) {
     String errorMessage = "";
 
     if (fastaValues.size() != 1) {
       errorMessage = FASTA_ARGS_COUNT_EXC;
     } else if (bedValues.size() == 0) {
-      errorMessage = BED_ARGS_COUNT_EXC;
+      if (regionData != null) {
+        if (checkIfRegionDataIsInvalid(regionData)) {
+          errorMessage = INVALID_REGION_EXC;
+        }
+      }
     } else if (samValues.size() == 0) {
       errorMessage = SAM_ARGS_COUNT_EXC;
     } else if (checkIfSomeExtensionsIsInvalid(fastaValues, AllowedExtensions.FASTA_EXTENSIONS)) {
@@ -73,6 +81,10 @@ public class ParsedArguments {
     return true;
   }
 
+  private boolean checkIfRegionDataIsInvalid(String regionData) {
+    return regionData.split(" ").length != 3;
+  }
+
   private List<Path> withRemovedDuplicates(List<Path> rawList) {
     return rawList.stream().distinct().collect(Collectors.toList());
   }
@@ -87,6 +99,10 @@ public class ParsedArguments {
 
   public List<Path> getSamPaths() {
     return Collections.unmodifiableList(samPaths);
+  }
+
+  public String getRegionData() {
+    return regionData;
   }
 
   /**

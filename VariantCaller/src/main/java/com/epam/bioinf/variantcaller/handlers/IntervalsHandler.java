@@ -1,5 +1,6 @@
 package com.epam.bioinf.variantcaller.handlers;
 
+import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import htsjdk.tribble.AbstractFeatureReader;
 import htsjdk.tribble.CloseableTribbleIterator;
 import htsjdk.tribble.FeatureReader;
@@ -22,51 +23,49 @@ public class IntervalsHandler {
 
   /**
    * TODO javadoc
-   * @param intervalData
+   * @param parsedArguments
    */
-  public IntervalsHandler(String intervalData) {
+  public IntervalsHandler(ParsedArguments parsedArguments) {
 
     intervals = new ArrayList<>();
 
-    String[] data = intervalData.split(" ");
+    if (parsedArguments.getRegionData() != null) {
 
-    // TODO custom error message if parsing fails
-    String chr = data[0];
-    int start = Integer.parseInt(data[1]);
-    int end = Integer.parseInt(data[2]);
+      String[] data = parsedArguments.getRegionData().split(" ");
 
-    BEDFeature bedFeature = new SimpleBEDFeature(start, end, chr);
-    validate(bedFeature);
-    intervals.add(bedFeature);
-  }
+      // TODO custom error message if parsing fails
+      String chr = data[0];
+      int start = Integer.parseInt(data[1]);
+      int end = Integer.parseInt(data[2]);
 
-  /**
-   * TODO javadoc
-   * @param pathsToFiles
-   */
-  public IntervalsHandler(List<Path> pathsToFiles) {
+      BEDFeature bedFeature = new SimpleBEDFeature(start, end, chr);
+      validate(bedFeature);
+      intervals.add(bedFeature);
 
-    intervals = new ArrayList<>();
-    //TODO check if file can be decoded
-    pathsToFiles.forEach(path -> {
-      try {
-        final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
-            .getFeatureReader(path.toString(), new BEDCodec(), false);
-        final CloseableTribbleIterator<BEDFeature> iterator = intervalsReader.iterator();
+    } else {
 
-        while (iterator.hasNext()) {
-          final BEDFeature bedFeature = iterator.next();
+      List<Path> pathsToFiles = parsedArguments.getBedPaths();
 
-          validate(bedFeature);
+      //TODO check if file can be decoded
+      pathsToFiles.forEach(path -> {
+        try {
+          final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
+              .getFeatureReader(path.toString(), new BEDCodec(), false);
+          final CloseableTribbleIterator<BEDFeature> iterator = intervalsReader.iterator();
 
-          intervals.add(bedFeature);
+          while (iterator.hasNext()) {
+            final BEDFeature bedFeature = iterator.next();
 
+            validate(bedFeature);
+
+            intervals.add(bedFeature);
+
+          }
+        } catch (IOException e) {
+          throw new RuntimeException(e);
         }
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    });
-
+      });
+    }
   }
 
   /**
