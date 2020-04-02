@@ -48,6 +48,7 @@ dependencies {
   //spotbugs libs
   compile group: 'com.github.spotbugs', name: 'spotbugs', version: '4.0.1', ext: 'pom'
 
+  //https://mvnrepository.com/artifact/com.github.spotbugs/spotbugs-annotations
   compileOnly 'com.github.spotbugs:spotbugs-annotations:4.0.1'
 
   //https://mvnrepository.com/artifact/com.github.samtools/htsjdk
