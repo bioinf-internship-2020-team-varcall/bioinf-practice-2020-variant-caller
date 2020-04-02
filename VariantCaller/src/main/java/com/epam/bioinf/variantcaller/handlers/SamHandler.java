@@ -1,15 +1,18 @@
 package com.epam.bioinf.variantcaller.handlers;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
+import htsjdk.samtools.util.RuntimeIOException;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -40,16 +43,18 @@ public class SamHandler {
    * @throws IllegalArgumentException if file contains only one read.
    */
   public Map<Path, Long> countReadsByPath() {
-    Map<Path, Long> readsByPathMap = new HashMap<>();
-    samPaths.forEach(path -> readsByPathMap.put(path, countReadsIn(path)));
-    return readsByPathMap;
+    return samPaths.stream().collect(Collectors.toMap(Function.identity(), this::countReadsIn));
   }
 
+  @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   private void read() {
-    samPaths.forEach(path -> {
-      SamReader reader = samFactory.open(path);
-      reader.forEach(samRecords::add);
-    });
+    for (Path path : samPaths) {
+      try (SamReader reader = samFactory.open(path)) {
+        reader.forEach(samRecords::add);
+      } catch (RuntimeIOException | IOException e) {
+        throw new RuntimeIOException(e.getMessage());
+      }
+    }
   }
 
   private void removeDuplicatedReads() {
@@ -57,9 +62,13 @@ public class SamHandler {
         samRecords.stream().distinct().collect(Collectors.toList());
   }
 
+  @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   private long countReadsIn(Path samPath) {
-    SamReader reader = samFactory.open(samPath);
-    return StreamSupport.stream(reader.spliterator(), true).count();
+    try (SamReader reader = samFactory.open(samPath)) {
+      return StreamSupport.stream(reader.spliterator(), true).count();
+    } catch (RuntimeIOException | IOException e) {
+      throw new RuntimeIOException(e.getMessage());
+    }
   }
 
   public List<SAMRecord> getSamRecords() {
