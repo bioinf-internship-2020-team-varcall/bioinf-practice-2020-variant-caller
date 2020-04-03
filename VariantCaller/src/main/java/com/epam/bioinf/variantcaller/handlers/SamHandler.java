@@ -47,13 +47,13 @@ public class SamHandler {
 
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   private void read() {
-    samPaths.forEach( path -> {
+    for (Path path : samPaths) {
       try (SamReader reader = samFactory.open(path)) {
         reader.forEach(samRecords::add);
       } catch (RuntimeIOException | IOException e) {
         throw new RuntimeIOException(e.getMessage());
       }
-    });
+    }
   }
 
   private void removeDuplicatedReads() {
