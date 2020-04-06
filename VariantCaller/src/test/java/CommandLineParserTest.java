@@ -19,25 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CommandLineParserTest {
 
   @Test
-  public void parserMustBeBuiltWithValidParameters1() {
-    String[] correctTestArgs = getArgs("--fasta", "--bed", "--sam");
-    CommandLineParser.parse(correctTestArgs);
+  public void parserMustBeBuiltWithValidParameters() {
+    CommandLineParser.parse(getArgs("--fasta", "--bed", "--sam"));
+    CommandLineParser.parse(getArgs("--fasta", "--sam"));
+    CommandLineParser.parse(getArgs("--fasta", "--sam", "--region"));
   }
 
   @Test
-  public void parserMustBeBuiltWithValidParameters2() {
-    String[] correctTestArgs = getArgs("--fasta", "--sam");
-    CommandLineParser.parse(correctTestArgs);
-  }
-
-  @Test
-  public void parserMustBeBuiltWithValidParameters3() {
-    String[] correctTestArgs = getArgs("--fasta", "--sam", "--region");
-    CommandLineParser.parse(correctTestArgs);
-  }
-
-  @Test
-  public void parserMustBeBuiltWithExcessParameters() {
+  public void parserMustBeFailWithExcessParameters() {
     String[] invalidTestArgs = getArgs("--fasta", "--bed", "--sam", "--region");
     assertThrows(IllegalArgumentException.class, () ->
         CommandLineParser.parse(invalidTestArgs)

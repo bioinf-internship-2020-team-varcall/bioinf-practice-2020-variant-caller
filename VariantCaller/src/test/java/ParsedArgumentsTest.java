@@ -46,17 +46,17 @@ public class ParsedArgumentsTest {
         new ParsedArguments(invalidFasta, correctBed, correctSam, correctRegion)
     );
   }
-//
-//  @Test
-//  public void parsedArgumentsMustFailIfLessThanOneBedPathProvided() {
-//    List<Path> correctFasta = getPaths("test1.fasta");
-//    List<Path> invalidBed = List.of();
-//    List<Path> correctSam = getPaths("test1.sam", "test2.sam");
-//    String correctRegion = "";
-//    assertThrows(IllegalArgumentException.class, () ->
-//        new ParsedArguments(correctFasta, invalidBed, correctSam, correctRegion)
-//    );
-//  }
+
+  @Test
+  public void parsedArgumentsMustFailIfRegionSpecifiedIncorrectly() {
+    List<Path> correctFasta = getPaths("test1.fasta");
+    List<Path> correctBed = List.of();
+    List<Path> correctSam = getPaths("test1.sam", "test2.sam");
+    String incorrectRegion = "chr1 chr1 12 15";
+    assertThrows(IllegalArgumentException.class, () ->
+        new ParsedArguments(correctFasta, correctBed, correctSam, incorrectRegion)
+    );
+  }
 
   @Test
   public void parsedArgumentsMustFailIfLessThanOneSamPathProvided() {

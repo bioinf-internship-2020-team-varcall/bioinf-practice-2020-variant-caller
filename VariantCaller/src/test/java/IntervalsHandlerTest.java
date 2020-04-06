@@ -25,43 +25,54 @@ public class IntervalsHandlerTest {
   @Test
   public void intervalsHandlerMustReturnCorrectIntervalsNumberWithCmdLineInput() {
     final long expectedIntervalsNumber = 1;
-    IntervalsHandler testHandler = getIntervalsHandler("chr1 12 123");
-    assertEquals(expectedIntervalsNumber, testHandler.getIntervals().stream().count());
+    IntervalsHandler intervalsHandler = getIntervalsHandler("--region", "chr1 12 123");
+    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().stream().count());
   }
 
   @Test
   public void intervalsHandlerMustReturnCorrectIntervalsNumberWithSingleFile() {
     final long expectedIntervalsNumber = 7;
-    IntervalsHandler testHandler = getIntervalsHandler("test1.bed");
-    assertEquals(expectedIntervalsNumber, testHandler.getIntervals().stream().count());
+    IntervalsHandler intervalsHandler = getIntervalsHandler("--bed", "test1.bed");
+    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().stream().count());
   }
 
-  @Test void intervalsHandlerMustReturnCorrectIntervalsNumberWithMultipleFiles() {
+  @Test
+  void intervalsHandlerMustReturnCorrectIntervalsNumberWithMultipleFiles() {
     final long expectedIntervalsNumber = 16;
-    IntervalsHandler testHandler = getIntervalsHandler("test1.bed", "test2.bed");
-    assertEquals(expectedIntervalsNumber, testHandler.getIntervals().stream().count());
+    IntervalsHandler intervalsHandler = getIntervalsHandler("--bed", "test1.bed", "test2.bed");
+    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().stream().count());
   }
 
-  private IntervalsHandler getIntervalsHandler(String... bedFilesNames) {
-    String[] correctTestArgs = getArgs(bedFilesNames);
+  @Test
+  void intervalsHandlerMustFailIfRegionPointsAreIncorrect() {
+    assertThrows(IllegalArgumentException.class,
+        () -> getIntervalsHandler("--region", "chr1 a 123"));
+    assertThrows(IllegalArgumentException.class,
+        () -> getIntervalsHandler("--region", "chr1 -12 123"));
+    assertThrows(IllegalArgumentException.class,
+        () -> getIntervalsHandler("--region", "chr1 10 6"));
+  }
+
+  private IntervalsHandler getIntervalsHandler(String... arguments) {
+    String[] correctTestArgs = getArgs(arguments);
     ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
     return new IntervalsHandler(parsedArguments);
   }
 
   private String[] getArgs(String... input) {
-    if (input[0].split(" ").length == 3) {
-      return new String[]{
-          "--fasta", testFilePath("test1.fasta"),
-          "--region", input[0],
-          "--sam", testFilePath("test1.sam")
-      };
+    String key = input[0];
+    String keyValue = "";
+    if (key == "--region") {
+      keyValue = input[1];
+    } else {
+      keyValue = Arrays.stream(input)
+          .skip(1)
+          .map(TestHelper::testFilePath)
+          .collect(Collectors.joining(pathSeparator));
     }
-    String bedFilesPaths = Arrays.stream(input)
-        .map(TestHelper::testFilePath)
-        .collect(Collectors.joining(pathSeparator));
     return new String[]{
         "--fasta", testFilePath("test1.fasta"),
-        "--bed", bedFilesPaths,
+        key, keyValue,
         "--sam", testFilePath("test1.sam")
     };
   }
