@@ -1,1 +1,3 @@
-# Mock FASTA file for integration testing.
+version https://git-lfs.github.com/spec/v1
+oid sha256:1cb800d5d6f19849f09dc8de674e592bdf5e3dad1a15b258ddf3cd0c6f3ac2e3
+size 42
