@@ -81,8 +81,8 @@ public class IntervalsHandler {
           validate(bedFeature);
           intervals.add(bedFeature);
         }
-      } catch (IOException | TribbleException.MalformedFeatureFile exeption) {
-        throw new RuntimeException(ERROR_READING_EXC, exeption.getCause());
+      } catch (IOException | TribbleException.MalformedFeatureFile exception) {
+        throw new RuntimeException(ERROR_READING_EXC, exception.getCause());
       }
     }
   }
@@ -90,8 +90,8 @@ public class IntervalsHandler {
   private int parseIntervalPoint(String point) {
     try {
       return Integer.parseInt(point);
-    } catch (NumberFormatException exeption) {
-      throw new IllegalArgumentException(INVALID_REGION_EXC, exeption.getCause());
+    } catch (NumberFormatException exception) {
+      throw new IllegalArgumentException(INVALID_REGION_EXC, exception.getCause());
     }
   }
 
