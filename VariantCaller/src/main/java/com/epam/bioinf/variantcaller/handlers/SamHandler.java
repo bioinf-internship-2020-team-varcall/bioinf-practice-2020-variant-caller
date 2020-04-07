@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -24,6 +23,7 @@ public class SamHandler {
   private List<Path> samPaths;
   private List<SAMRecord> samRecords;
   private SamReaderFactory samFactory;
+  private Map<Path, Long> readsNumberByPath;
 
   /**
    * Constructor gets pre-validated paths to SAM files from ParsedArguments.
@@ -32,6 +32,7 @@ public class SamHandler {
     this.samPaths = parsedArguments.getSamPaths();
     this.samRecords = new ArrayList<>();
     this.samFactory = SamReaderFactory.makeDefault();
+    this.readsNumberByPath = Map.of();
     read();
     removeDuplicatedReads();
   }
@@ -41,8 +42,8 @@ public class SamHandler {
    *
    * @return Map of provided files & number of reads in each file.
    */
-  public Map<Path, Long> countReadsByPath() {
-    return samPaths.stream().collect(Collectors.toMap(Function.identity(), this::countReadsIn));
+  public Map<Path, Long> getReadsNumberByPath() {
+    return readsNumberByPath;
   }
 
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
@@ -50,8 +51,9 @@ public class SamHandler {
     for (Path path : samPaths) {
       try (SamReader reader = samFactory.open(path)) {
         reader.forEach(samRecords::add);
-      } catch (RuntimeIOException | IOException e) {
-        throw new RuntimeIOException(e.getMessage());
+        readsNumberByPath.put(path, StreamSupport.stream(reader.spliterator(), true).count());
+      } catch (IOException e) {
+        throw new RuntimeIOException(e.getMessage(), e.getCause());
       }
     }
   }
@@ -59,15 +61,6 @@ public class SamHandler {
   private void removeDuplicatedReads() {
     samRecords =
         samRecords.stream().distinct().collect(Collectors.toList());
-  }
-
-  @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
-  private long countReadsIn(Path samPath) {
-    try (SamReader reader = samFactory.open(samPath)) {
-      return StreamSupport.stream(reader.spliterator(), true).count();
-    } catch (RuntimeIOException | IOException e) {
-      throw new RuntimeIOException(e.getMessage());
-    }
   }
 
   public List<SAMRecord> getSamRecords() {

@@ -40,7 +40,7 @@ public class SamHandlerTest {
     long correctReadsNumber = 1985;
 
     Map<Path, Long> expectedReadsByPath = Map.of(testFilePath, correctReadsNumber);
-    Map<Path, Long> gotReadsByPath = samHandler.countReadsByPath();
+    Map<Path, Long> gotReadsByPath = samHandler.getReadsNumberByPath();
     assertEquals(gotReadsByPath, expectedReadsByPath);
   }
 
@@ -51,7 +51,7 @@ public class SamHandlerTest {
     long correctReadsNumber = 10;
 
     Map<Path, Long> expectedReadsByPath = Map.of(testFilePath, correctReadsNumber);
-    Map<Path, Long> gotReadsByPath = samHandler.countReadsByPath();
+    Map<Path, Long> gotReadsByPath = samHandler.getReadsNumberByPath();
     assertEquals(gotReadsByPath, expectedReadsByPath);
   }
 
@@ -65,13 +65,13 @@ public class SamHandlerTest {
 
     Map<Path, Long> expectedReadsByPath =
         Map.of(firstTestFilePath, correctReadsNumber, secondTestFilePath, correctReadsNumber);
-    Map<Path, Long> gotReadsByPath = samHandler.countReadsByPath();
+    Map<Path, Long> gotReadsByPath = samHandler.getReadsNumberByPath();
     assertEquals(gotReadsByPath, expectedReadsByPath);
   }
 
   @Test(expected = SAMFormatException.class)
   public void samHandlerMustFailIfInvalidOrEmptyFileProvided() {
-    getSamHandler("testInvalidReadsFile.sam").countReadsByPath();
+    getSamHandler("testInvalidReadsFile.sam");
   }
 
   private SamHandler getSamHandler(String... samFilesName) {
