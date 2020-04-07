@@ -53,6 +53,18 @@ public class IntervalsHandlerTest {
         () -> getIntervalsHandler("--region", "chr1 10 6"));
   }
 
+  @Test
+  void intervalsHandlerMustFailIfFileCanNotBeDecoded() {
+    assertThrows(RuntimeException.class,
+        () -> getIntervalsHandler("--bed", "test3.bed"));
+  }
+
+  @Test
+  void intervalsHandlerMustFailIfOneOfTheFilesCanNotBeDecoded() {
+    assertThrows(RuntimeException.class,
+        () -> getIntervalsHandler("--bed", "test1.bed", "test2.bed", "test3.bed"));
+  }
+
   private IntervalsHandler getIntervalsHandler(String... arguments) {
     String[] correctTestArgs = getArgs(arguments);
     ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);

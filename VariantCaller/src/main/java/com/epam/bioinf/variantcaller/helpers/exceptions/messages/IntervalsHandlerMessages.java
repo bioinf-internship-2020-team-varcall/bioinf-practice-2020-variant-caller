@@ -15,5 +15,5 @@ public class IntervalsHandlerMessages {
   public static final String INTERVAL_END_EXC =
       "Invalid interval end parsed from file";
   public static final String ERROR_READING_EXC =
-      "Problem reading intervals from file, please verify your .bed file";
+      "Problem reading intervals, file is malformed, please verify your .bed file";
 }

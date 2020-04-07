@@ -5,6 +5,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import htsjdk.tribble.AbstractFeatureReader;
 import htsjdk.tribble.CloseableTribbleIterator;
 import htsjdk.tribble.FeatureReader;
+import htsjdk.tribble.TribbleException;
 import htsjdk.tribble.bed.BEDCodec;
 import htsjdk.tribble.bed.BEDFeature;
 import htsjdk.tribble.bed.SimpleBEDFeature;
@@ -22,7 +23,6 @@ import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.Interval
  * Current implementation may differ from final version.
  */
 public class IntervalsHandler {
-
   private List<BEDFeature> intervals;
 
   /**
@@ -34,9 +34,7 @@ public class IntervalsHandler {
    * @see ParsedArguments
    */
   public IntervalsHandler(ParsedArguments parsedArguments) {
-
     intervals = new ArrayList<>();
-
     if (parsedArguments.getRegionData() != null) {
       parseIntervalFromRegionData(parsedArguments);
     } else {
@@ -62,13 +60,10 @@ public class IntervalsHandler {
   }
 
   private void parseIntervalFromRegionData(ParsedArguments parsedArguments) {
-
-    String[] data = parsedArguments.getRegionData().split(" ");
-
-    String chr = data[0];
-    int start = tryParseIntervalPoint(data[1]);
-    int end = tryParseIntervalPoint(data[2]);
-
+    String[] regionData = parsedArguments.getRegionData().split(" ");
+    String chr = regionData[0];
+    int start = tryParseIntervalPoint(regionData[1]);
+    int end = tryParseIntervalPoint(regionData[2]);
     BEDFeature bedFeature = new SimpleBEDFeature(start, end, chr);
     validate(bedFeature);
     intervals.add(bedFeature);
@@ -76,9 +71,7 @@ public class IntervalsHandler {
 
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   private void parseIntervalsFromFiles(ParsedArguments parsedArguments) {
-
     List<Path> pathsToFiles = parsedArguments.getBedPaths();
-
     for (Path path : pathsToFiles) {
       try (final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
           .getFeatureReader(path.toString(), new BEDCodec(), false);
@@ -88,8 +81,8 @@ public class IntervalsHandler {
           validate(bedFeature);
           intervals.add(bedFeature);
         }
-      } catch (IOException e) {
-        throw new RuntimeException(ERROR_READING_EXC, e.getCause());
+      } catch (IOException | TribbleException.MalformedFeatureFile exeption) {
+        throw new RuntimeException(ERROR_READING_EXC, exeption.getCause());
       }
     }
   }
@@ -97,23 +90,20 @@ public class IntervalsHandler {
   private int tryParseIntervalPoint(String point) {
     try {
       return Integer.parseInt(point);
-    } catch (NumberFormatException e) {
-      throw new IllegalArgumentException(INVALID_REGION_EXC, e.getCause());
+    } catch (NumberFormatException exeption) {
+      throw new IllegalArgumentException(INVALID_REGION_EXC, exeption.getCause());
     }
   }
 
   private void validate(BEDFeature bedFeature) {
-
     final int start = bedFeature.getStart();
     final int end = bedFeature.getEnd();
     String errorMessage = "";
-
     if (start < 1) {
       errorMessage = INTERVAL_START_EXC;
     } else if (end < 1 || end < start - 1) {
       errorMessage = INTERVAL_END_EXC;
     }
-
     if (!errorMessage.isEmpty()) {
       throw new IllegalArgumentException(errorMessage);
     }
