@@ -62,8 +62,8 @@ public class IntervalsHandler {
   private void parseIntervalFromRegionData(ParsedArguments parsedArguments) {
     String[] regionData = parsedArguments.getRegionData().split(" ");
     String chr = regionData[0];
-    int start = tryParseIntervalPoint(regionData[1]);
-    int end = tryParseIntervalPoint(regionData[2]);
+    int start = parseIntervalPoint(regionData[1]);
+    int end = parseIntervalPoint(regionData[2]);
     BEDFeature bedFeature = new SimpleBEDFeature(start, end, chr);
     validate(bedFeature);
     intervals.add(bedFeature);
@@ -87,7 +87,7 @@ public class IntervalsHandler {
     }
   }
 
-  private int tryParseIntervalPoint(String point) {
+  private int parseIntervalPoint(String point) {
     try {
       return Integer.parseInt(point);
     } catch (NumberFormatException exeption) {
