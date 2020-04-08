@@ -10,10 +10,10 @@ import htsjdk.samtools.util.RuntimeIOException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Class implementation is temporary and will be changed in later versions.
@@ -32,7 +32,7 @@ public class SamHandler {
     this.samPaths = parsedArguments.getSamPaths();
     this.samRecords = new ArrayList<>();
     this.samFactory = SamReaderFactory.makeDefault();
-    this.readsNumberByPath = Map.of();
+    this.readsNumberByPath = new HashMap<>();
     read();
     removeDuplicatedReads();
   }
@@ -50,8 +50,12 @@ public class SamHandler {
   private void read() {
     for (Path path : samPaths) {
       try (SamReader reader = samFactory.open(path)) {
-        reader.forEach(samRecords::add);
-        readsNumberByPath.put(path, StreamSupport.stream(reader.spliterator(), true).count());
+        long counter = 0;
+        for (SAMRecord record : reader) {
+          samRecords.add(record);
+          counter++;
+        }
+        readsNumberByPath.put(path, counter);
       } catch (IOException e) {
         throw new RuntimeIOException(e.getMessage(), e.getCause());
       }
