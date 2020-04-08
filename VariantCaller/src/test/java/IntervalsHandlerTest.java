@@ -77,15 +77,19 @@ public class IntervalsHandlerTest {
     if (key == "--region") {
       keyValue = input[1];
     } else {
-      keyValue = Arrays.stream(input)
-          .skip(1)
-          .map(TestHelper::testFilePath)
-          .collect(Collectors.joining(pathSeparator));
+      keyValue = collectPathsToStringWithoutKey(input);
     }
     return new String[]{
         "--fasta", testFilePath("test1.fasta"),
         key, keyValue,
         "--sam", testFilePath("test1.sam")
     };
+  }
+
+  private String collectPathsToStringWithoutKey(String... input) {
+    return Arrays.stream(input)
+        .skip(1)
+        .map(TestHelper::testFilePath)
+        .collect(Collectors.joining(pathSeparator));
   }
 }
