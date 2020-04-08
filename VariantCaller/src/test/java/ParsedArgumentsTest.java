@@ -13,7 +13,8 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParsedArgumentsTest {
-  private final String correctRegion = ""; // Used to imitate correct work of ParsedArguments.
+  // Used to imitate correct work of ParsedArguments
+  private static final String correctRegion = "";
 
   @Test
   public void parsedArgumentsMustBeCreatedWithValidParameters() {
