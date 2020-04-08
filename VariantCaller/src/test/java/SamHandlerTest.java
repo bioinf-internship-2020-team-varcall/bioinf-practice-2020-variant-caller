@@ -3,7 +3,7 @@ import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.handlers.SamHandler;
 import com.epam.bioinf.variantcaller.helpers.TestHelper;
 import htsjdk.samtools.SAMFormatException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
 import static java.io.File.pathSeparator;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SamHandlerTest {
 
@@ -69,9 +70,10 @@ public class SamHandlerTest {
     assertEquals(gotReadsByPath, expectedReadsByPath);
   }
 
-  @Test(expected = SAMFormatException.class)
+  @Test
   public void samHandlerMustFailIfInvalidOrEmptyFileProvided() {
-    getSamHandler("testInvalidReadsFile.sam");
+    assertThrows(SAMFormatException.class,
+        () -> getSamHandler("testInvalidReadsFile.sam"));
   }
 
   private SamHandler getSamHandler(String... samFilesName) {
