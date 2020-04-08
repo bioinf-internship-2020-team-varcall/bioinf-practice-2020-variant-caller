@@ -36,9 +36,9 @@ public class IntervalsHandler {
   public IntervalsHandler(ParsedArguments parsedArguments) {
     intervals = new ArrayList<>();
     if (parsedArguments.getRegionData() != null) {
-      parseIntervalFromRegionData(parsedArguments);
+      getIntervalFromRegionData(parsedArguments.getRegionData());
     } else {
-      parseIntervalsFromFiles(parsedArguments);
+      parseIntervalsFromFiles(parsedArguments.getBedPaths());
     }
   }
 
@@ -59,19 +59,22 @@ public class IntervalsHandler {
     return Collections.unmodifiableList(intervals);
   }
 
-  private void parseIntervalFromRegionData(ParsedArguments parsedArguments) {
-    String[] regionData = parsedArguments.getRegionData().split(" ");
-    String chr = regionData[0];
-    int start = parseIntervalPoint(regionData[1]);
-    int end = parseIntervalPoint(regionData[2]);
-    BEDFeature bedFeature = new SimpleBEDFeature(start, end, chr);
+  private void getIntervalFromRegionData(String region) {
+    BEDFeature bedFeature = parseFeatureFromString(region);
     validate(bedFeature);
     intervals.add(bedFeature);
   }
 
+  private BEDFeature parseFeatureFromString(String region) {
+    String[] regionData = region.split(" ");
+    String chr = regionData[0];
+    int start = parseIntervalPoint(regionData[1]);
+    int end = parseIntervalPoint(regionData[2]);
+    return new SimpleBEDFeature(start, end, chr);
+  }
+
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
-  private void parseIntervalsFromFiles(ParsedArguments parsedArguments) {
-    List<Path> pathsToFiles = parsedArguments.getBedPaths();
+  private void parseIntervalsFromFiles(List<Path> pathsToFiles) {
     for (Path path : pathsToFiles) {
       try (final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
           .getFeatureReader(path.toString(), new BEDCodec(), false);
