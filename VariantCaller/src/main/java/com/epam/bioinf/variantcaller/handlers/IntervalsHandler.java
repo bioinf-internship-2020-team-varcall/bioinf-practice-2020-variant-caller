@@ -34,12 +34,8 @@ public class IntervalsHandler {
    * @see ParsedArguments
    */
   public IntervalsHandler(ParsedArguments parsedArguments) {
-    intervals = new ArrayList<>();
-    if (parsedArguments.getRegionData().isPresent()) {
-      getIntervalFromRegionData(parsedArguments.getRegionData().get());
-    } else {
-      parseIntervalsFromFiles(parsedArguments.getBedPaths());
-    }
+    intervals = parsedArguments.getRegionData().map(IntervalsHandler::getIntervalFromRegionData)
+        .orElseGet(() -> parseIntervalsFromFiles(parsedArguments.getBedPaths()));
   }
 
   /**
@@ -59,13 +55,13 @@ public class IntervalsHandler {
     return Collections.unmodifiableList(intervals);
   }
 
-  private void getIntervalFromRegionData(String region) {
+  private static List<BEDFeature> getIntervalFromRegionData(String region) {
     BEDFeature bedFeature = parseFeatureFromString(region);
     validate(bedFeature);
-    intervals.add(bedFeature);
+    return List.of(bedFeature);
   }
 
-  private BEDFeature parseFeatureFromString(String region) {
+  private static BEDFeature parseFeatureFromString(String region) {
     String[] regionData = region.split(" ");
     String chr = regionData[0];
     int start = parseIntervalPoint(regionData[1]);
@@ -74,7 +70,8 @@ public class IntervalsHandler {
   }
 
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
-  private void parseIntervalsFromFiles(List<Path> pathsToFiles) {
+  private static List<BEDFeature> parseIntervalsFromFiles(List<Path> pathsToFiles) {
+    List<BEDFeature> parsedIntervals = new ArrayList<>();
     for (Path path : pathsToFiles) {
       try (
           final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
@@ -84,15 +81,16 @@ public class IntervalsHandler {
         while (iterator.hasNext()) {
           final BEDFeature bedFeature = iterator.next();
           validate(bedFeature);
-          intervals.add(bedFeature);
+          parsedIntervals.add(bedFeature);
         }
       } catch (IOException | TribbleException.MalformedFeatureFile exception) {
         throw new RuntimeException(ERROR_READING_EXC, exception.getCause());
       }
     }
+    return parsedIntervals;
   }
 
-  private int parseIntervalPoint(String point) {
+  private static int parseIntervalPoint(String point) {
     try {
       return Integer.parseInt(point);
     } catch (NumberFormatException exception) {
@@ -100,7 +98,7 @@ public class IntervalsHandler {
     }
   }
 
-  private void validate(BEDFeature bedFeature) {
+  private static void validate(BEDFeature bedFeature) {
     final int start = bedFeature.getStart();
     final int end = bedFeature.getEnd();
     String errorMessage = "";
