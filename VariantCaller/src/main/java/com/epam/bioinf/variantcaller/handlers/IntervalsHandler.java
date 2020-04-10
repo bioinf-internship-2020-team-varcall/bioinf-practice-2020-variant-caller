@@ -35,20 +35,11 @@ public class IntervalsHandler {
    */
   public IntervalsHandler(ParsedArguments parsedArguments) {
     intervals = new ArrayList<>();
-
     if (parsedArguments.getRegionData().isPresent()) {
       getIntervalFromRegionData(parsedArguments.getRegionData().get());
     } else {
       parseIntervalsFromFiles(parsedArguments.getBedPaths());
     }
-
-
-
-//    if (parsedArguments.getRegionData() != null) {
-//      getIntervalFromRegionData(parsedArguments.getRegionData());
-//    } else {
-//      parseIntervalsFromFiles(parsedArguments.getBedPaths());
-//    }
   }
 
   /**
