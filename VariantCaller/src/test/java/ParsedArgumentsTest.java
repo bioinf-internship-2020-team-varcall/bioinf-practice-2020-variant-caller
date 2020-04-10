@@ -32,6 +32,7 @@ public class ParsedArgumentsTest {
         Set.copyOf(parsedArguments.getSamPaths()),
         "Unexpected SAM file paths"
     );
+    assertEquals(parsedArguments.getRegionData(), CORRECT_REGION);
   }
 
   @Test
