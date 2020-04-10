@@ -1,19 +1,11 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
-import com.epam.bioinf.variantcaller.handlers.FastaHandler;
 import com.epam.bioinf.variantcaller.handlers.IntervalsHandler;
 
 import com.epam.bioinf.variantcaller.helpers.TestHelper;
-import htsjdk.tribble.bed.BEDFeature;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
@@ -26,21 +18,21 @@ public class IntervalsHandlerTest {
   public void intervalsHandlerMustReturnCorrectIntervalsNumberWithCmdLineInput() {
     final long expectedIntervalsNumber = 1;
     IntervalsHandler intervalsHandler = getIntervalsHandler("--region", "chr1 12 123");
-    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().stream().count());
+    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().size());
   }
 
   @Test
   public void intervalsHandlerMustReturnCorrectIntervalsNumberWithSingleFile() {
     final long expectedIntervalsNumber = 7;
     IntervalsHandler intervalsHandler = getIntervalsHandler("--bed", "test1.bed");
-    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().stream().count());
+    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().size());
   }
 
   @Test
   void intervalsHandlerMustReturnCorrectIntervalsNumberWithMultipleFiles() {
     final long expectedIntervalsNumber = 16;
     IntervalsHandler intervalsHandler = getIntervalsHandler("--bed", "test1.bed", "test2.bed");
-    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().stream().count());
+    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().size());
   }
 
   @Test
@@ -56,13 +48,13 @@ public class IntervalsHandlerTest {
   @Test
   void intervalsHandlerMustFailIfFileCanNotBeDecoded() {
     assertThrows(RuntimeException.class,
-        () -> getIntervalsHandler("--bed", "test3.bed"));
+        () -> getIntervalsHandler("--bed", "test3_malformed.bed"));
   }
 
   @Test
   void intervalsHandlerMustFailIfOneOfTheFilesCanNotBeDecoded() {
     assertThrows(RuntimeException.class,
-        () -> getIntervalsHandler("--bed", "test1.bed", "test2.bed", "test3.bed"));
+        () -> getIntervalsHandler("--bed", "test1.bed", "test2.bed", "test3_malformed.bed"));
   }
 
   private IntervalsHandler getIntervalsHandler(String... arguments) {

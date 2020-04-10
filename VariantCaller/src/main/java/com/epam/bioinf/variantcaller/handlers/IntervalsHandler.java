@@ -35,11 +35,20 @@ public class IntervalsHandler {
    */
   public IntervalsHandler(ParsedArguments parsedArguments) {
     intervals = new ArrayList<>();
-    if (parsedArguments.getRegionData() != null) {
-      getIntervalFromRegionData(parsedArguments.getRegionData());
+
+    if (parsedArguments.getRegionData().isPresent()) {
+      getIntervalFromRegionData(parsedArguments.getRegionData().get());
     } else {
       parseIntervalsFromFiles(parsedArguments.getBedPaths());
     }
+
+
+
+//    if (parsedArguments.getRegionData() != null) {
+//      getIntervalFromRegionData(parsedArguments.getRegionData());
+//    } else {
+//      parseIntervalsFromFiles(parsedArguments.getBedPaths());
+//    }
   }
 
   /**
@@ -76,9 +85,11 @@ public class IntervalsHandler {
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   private void parseIntervalsFromFiles(List<Path> pathsToFiles) {
     for (Path path : pathsToFiles) {
-      try (final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
+      try (
+          final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
           .getFeatureReader(path.toString(), new BEDCodec(), false);
-           final CloseableTribbleIterator<BEDFeature> iterator = intervalsReader.iterator();) {
+           final CloseableTribbleIterator<BEDFeature> iterator = intervalsReader.iterator();
+      ) {
         while (iterator.hasNext()) {
           final BEDFeature bedFeature = iterator.next();
           validate(bedFeature);

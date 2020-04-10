@@ -6,6 +6,7 @@ import joptsimple.OptionSpec;
 import joptsimple.util.PathConverter;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static java.io.File.pathSeparatorChar;
 import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.CommandLineParserMessages.BOTH_INTERVAL_OPTIONS_PROVIDED_EXC;
@@ -41,7 +42,7 @@ public class CommandLineParser {
         options.valuesOf(fasta),
         options.valuesOf(bed),
         options.valuesOf(sam),
-        options.valueOf(region)
+        Optional.ofNullable(options.valueOf(region))
     );
   }
 

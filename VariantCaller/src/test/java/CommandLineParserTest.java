@@ -26,7 +26,7 @@ public class CommandLineParserTest {
   }
 
   @Test
-  public void parserMustBeFailWithExcessParameters() {
+  public void parserMustFailWithExcessParameters() {
     String[] invalidTestArgs = getArgs("--fasta", "--bed", "--sam", "--region");
     assertThrows(IllegalArgumentException.class, () ->
         CommandLineParser.parse(invalidTestArgs)
@@ -95,10 +95,10 @@ public class CommandLineParserTest {
 
   private String[] getArgs(String... keys) {
     List<String> output = new ArrayList<>();
-    Arrays.asList(keys).forEach(key -> {
+    for (String key : keys) {
       output.add(key);
       output.add(evaluateKey(key));
-    });
+    }
     return output.toArray(String[]::new);
   }
 

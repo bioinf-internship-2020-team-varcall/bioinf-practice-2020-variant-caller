@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.CommandLineParserMessages.*;
@@ -15,13 +16,13 @@ public class ParsedArguments {
   private final Path fastaPath;
   private final List<Path> bedPaths;
   private final List<Path> samPaths;
-  private final String regionData;
+  private final Optional<String> regionData;
 
   /**
    * Constructor validates parsed arguments
    */
   public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths,
-      List<Path> samPaths, String regionData) {
+      List<Path> samPaths, Optional<String> regionData) {
     List<Path> processedFasta = withRemovedDuplicates(fastaPaths);
     List<Path> processedBed = withRemovedDuplicates(bedPaths);
     List<Path> processedSam = withRemovedDuplicates(samPaths);
@@ -35,14 +36,14 @@ public class ParsedArguments {
   }
 
   private void validate(List<Path> fastaValues, List<Path> bedValues,
-      List<Path> samValues, String regionData) {
+      List<Path> samValues, Optional<String> regionData) {
     String errorMessage = "";
 
     if (fastaValues.size() != 1) {
       errorMessage = FASTA_ARGS_COUNT_EXC;
     } else if (bedValues.size() == 0) {
-      if (regionData != null) {
-        if (checkIfRegionDataIsInvalid(regionData)) {
+      if (regionData.isPresent()) {
+        if (checkIfRegionDataIsInvalid(regionData.get())) {
           errorMessage = INVALID_REGION_EXC;
         }
       }
@@ -101,7 +102,7 @@ public class ParsedArguments {
     return Collections.unmodifiableList(samPaths);
   }
 
-  public String getRegionData() {
+  public Optional<String> getRegionData() {
     return regionData;
   }
 
