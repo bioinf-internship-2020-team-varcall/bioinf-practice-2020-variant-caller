@@ -22,16 +22,16 @@ public class SamHandlerTest {
   public void samHandlerMustReadCorrectWithOneFile() {
     SamHandler samHandler = getSamHandler("test1.sam");
     long expectedReadsNumber = 10;
-    long gotReadsNumber = samHandler.getSamRecords().size();
-    assertEquals(gotReadsNumber, expectedReadsNumber);
+    long actualReadsNumber = samHandler.getSamRecords().size();
+    assertEquals(expectedReadsNumber, actualReadsNumber);
   }
 
   @Test
   public void samHandlerMustReadCorrectWithMultipleFiles() {
     SamHandler samHandler = getSamHandler("test1.sam", "test2.sam");
     long expectedReadsNumber = 20;
-    long gotReadsNumber = samHandler.getSamRecords().size();
-    assertEquals(gotReadsNumber, expectedReadsNumber);
+    long actualReadsNumber = samHandler.getSamRecords().size();
+    assertEquals(expectedReadsNumber, actualReadsNumber);
   }
 
   @Test
@@ -41,8 +41,8 @@ public class SamHandlerTest {
     long correctReadsNumber = 1985;
 
     Map<Path, Long> expectedReadsByPath = Map.of(testFilePath, correctReadsNumber);
-    Map<Path, Long> gotReadsByPath = samHandler.getReadsNumberByPath();
-    assertEquals(gotReadsByPath, expectedReadsByPath);
+    Map<Path, Long> actualReadsByPath = samHandler.getReadsNumberByPath();
+    assertEquals(expectedReadsByPath, actualReadsByPath);
   }
 
   @Test
@@ -52,8 +52,8 @@ public class SamHandlerTest {
     long correctReadsNumber = 10;
 
     Map<Path, Long> expectedReadsByPath = Map.of(testFilePath, correctReadsNumber);
-    Map<Path, Long> gotReadsByPath = samHandler.getReadsNumberByPath();
-    assertEquals(gotReadsByPath, expectedReadsByPath);
+    Map<Path, Long> actualReadsByPath = samHandler.getReadsNumberByPath();
+    assertEquals(expectedReadsByPath, actualReadsByPath);
   }
 
   @Test
@@ -66,8 +66,8 @@ public class SamHandlerTest {
 
     Map<Path, Long> expectedReadsByPath =
         Map.of(firstTestFilePath, correctReadsNumber, secondTestFilePath, correctReadsNumber);
-    Map<Path, Long> gotReadsByPath = samHandler.getReadsNumberByPath();
-    assertEquals(gotReadsByPath, expectedReadsByPath);
+    Map<Path, Long> actualReadsByPath = samHandler.getReadsNumberByPath();
+    assertEquals(expectedReadsByPath, actualReadsByPath);
   }
 
   @Test
