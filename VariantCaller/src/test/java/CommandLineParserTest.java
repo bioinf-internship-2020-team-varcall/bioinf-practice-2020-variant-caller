@@ -3,6 +3,10 @@ import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import org.junit.jupiter.api.Test;
 import joptsimple.OptionException;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
 
@@ -12,17 +16,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.io.File.pathSeparatorChar;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandLineParserTest {
 
-  @Test
-  public void parserMustBeBuiltWithValidParameters() {
-    CommandLineParser.parse(getArgs("--fasta", "--bed", "--sam"));
-    CommandLineParser.parse(getArgs("--fasta", "--sam"));
-    CommandLineParser.parse(getArgs("--fasta", "--sam", "--region"));
+  @ParameterizedTest
+  @MethodSource("provideArgumentsForMustBeBuiltWithValidParameters")
+  public void parserMustBeBuiltWithValidParameters(String[] testParameters) {
+    CommandLineParser.parse(getArgs(testParameters));
   }
 
   @Test
@@ -82,6 +86,14 @@ public class CommandLineParserTest {
         Set.copyOf(expectedSamPaths),
         Set.copyOf(parsedSamPaths),
         "Unexpected SAM file paths"
+    );
+  }
+
+  private static Stream<Arguments> provideArgumentsForMustBeBuiltWithValidParameters() {
+    return Stream.of(
+        Arguments.of((Object) new String[]{"--fasta", "--bed", "--sam"}),
+        Arguments.of((Object) new String[]{"--fasta", "--sam"}),
+        Arguments.of((Object) new String[]{"--fasta", "--sam", "--region"})
     );
   }
 

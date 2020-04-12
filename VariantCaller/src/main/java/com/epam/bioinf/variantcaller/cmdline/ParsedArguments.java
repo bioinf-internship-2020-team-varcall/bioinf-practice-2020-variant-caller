@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.CommandLineParserMessages.*;
@@ -43,9 +44,7 @@ public class ParsedArguments {
       errorMessage = FASTA_ARGS_COUNT_EXC;
     } else if (bedValues.size() == 0) {
       if (regionData.isPresent()) {
-        if (checkIfRegionDataIsInvalid(regionData.get())) {
-          errorMessage = INVALID_REGION_EXC;
-        }
+        checkIfRegionDataIsInvalid(regionData.get());
       }
     } else if (samValues.size() == 0) {
       errorMessage = SAM_ARGS_COUNT_EXC;
@@ -82,8 +81,18 @@ public class ParsedArguments {
     return true;
   }
 
-  private boolean checkIfRegionDataIsInvalid(String regionData) {
-    return regionData.split(" ").length != 3;
+  /**
+   * Checking that region from input is valid by dividing string
+   * input and validating that size of array is 3. Example:
+   * "chr1 1 10" -> ["chr1", "1", "10"] - valid
+   * "chr1 1 10 1" -> ["chr1", "1", "10", "1"] - invalid
+   * @param regionData region info
+   */
+  private void checkIfRegionDataIsInvalid(String regionData) {
+    Pattern regionSplit = Pattern.compile(" ");
+    if (regionSplit.split(regionData).length != 3) {
+      throw new IllegalArgumentException(INVALID_REGION_EXC);
+    }
   }
 
   private List<Path> withRemovedDuplicates(List<Path> rawList) {

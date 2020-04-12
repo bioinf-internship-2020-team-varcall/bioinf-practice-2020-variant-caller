@@ -18,6 +18,7 @@ public class ParsedArgumentsTest {
     List<Path> correctFasta = getPaths("test1.fasta");
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
+    Optional<String> expectedRegion = Optional.of("chr1 1 10");
     ParsedArguments parsedArguments = new ParsedArguments(correctFasta, correctBed,
         correctSam, CORRECT_REGION);
 
@@ -32,7 +33,7 @@ public class ParsedArgumentsTest {
         Set.copyOf(parsedArguments.getSamPaths()),
         "Unexpected SAM file paths"
     );
-    assertEquals(parsedArguments.getRegionData(), CORRECT_REGION);
+    assertEquals(expectedRegion, parsedArguments.getRegionData());
   }
 
   @Test

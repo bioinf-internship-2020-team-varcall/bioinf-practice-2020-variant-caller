@@ -1,48 +1,37 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.handlers.IntervalsHandler;
-
 import com.epam.bioinf.variantcaller.helpers.TestHelper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
 import static java.io.File.pathSeparator;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class IntervalsHandlerTest {
 
-  @Test
-  public void intervalsHandlerMustReturnCorrectIntervalsNumberWithCmdLineInput() {
-    final long expectedIntervalsNumber = 1;
-    IntervalsHandler intervalsHandler = getIntervalsHandler("--region", "chr1 12 123");
-    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().size());
+  @ParameterizedTest
+  @MethodSource("provideArgumentsForExpectedIntervalsSize")
+  public void intervalsHandlerMustReturnCorrectIntervalsSize(int expectedSize,
+      String[] flagData) {
+    IntervalsHandler intervalsHandler = getIntervalsHandler(flagData);
+    assertEquals(expectedSize, intervalsHandler.getIntervals().size());
   }
 
-  @Test
-  public void intervalsHandlerMustReturnCorrectIntervalsNumberWithSingleFile() {
-    final long expectedIntervalsNumber = 7;
-    IntervalsHandler intervalsHandler = getIntervalsHandler("--bed", "test1.bed");
-    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().size());
-  }
-
-  @Test
-  void intervalsHandlerMustReturnCorrectIntervalsNumberWithMultipleFiles() {
-    final long expectedIntervalsNumber = 16;
-    IntervalsHandler intervalsHandler = getIntervalsHandler("--bed", "test1.bed", "test2.bed");
-    assertEquals(expectedIntervalsNumber, intervalsHandler.getIntervals().size());
-  }
-
-  @Test
-  void intervalsHandlerMustFailIfRegionPointsAreIncorrect() {
+  @ParameterizedTest
+  @ValueSource(strings = {"chr1 a 123", "chr1 -12 123", "chr1 10 6"})
+  void intervalsHandlerMustFailIfRegionPointsAreIncorrect(String testData) {
     assertThrows(IllegalArgumentException.class,
-        () -> getIntervalsHandler("--region", "chr1 a 123"));
-    assertThrows(IllegalArgumentException.class,
-        () -> getIntervalsHandler("--region", "chr1 -12 123"));
-    assertThrows(IllegalArgumentException.class,
-        () -> getIntervalsHandler("--region", "chr1 10 6"));
+        () -> getIntervalsHandler("--region", testData));
   }
 
   @Test
@@ -55,6 +44,14 @@ public class IntervalsHandlerTest {
   void intervalsHandlerMustFailIfOneOfTheFilesCanNotBeDecoded() {
     assertThrows(RuntimeException.class,
         () -> getIntervalsHandler("--bed", "test1.bed", "test2.bed", "test3_malformed.bed"));
+  }
+
+  private static Stream<Arguments> provideArgumentsForExpectedIntervalsSize() {
+    return Stream.of(
+        Arguments.of(1, (Object) new String[]{"--region", "chr1 12 123"}),
+        Arguments.of(7, (Object) new String[]{"--bed", "test1.bed"}),
+        Arguments.of(16, (Object) new String[]{"--bed", "test1.bed", "test2.bed"})
+    );
   }
 
   private IntervalsHandler getIntervalsHandler(String... arguments) {

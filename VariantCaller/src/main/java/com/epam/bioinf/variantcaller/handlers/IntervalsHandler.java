@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.IntervalsHandlerMessages.*;
 
@@ -34,8 +35,11 @@ public class IntervalsHandler {
    * @see ParsedArguments
    */
   public IntervalsHandler(ParsedArguments parsedArguments) {
-    intervals = parsedArguments.getRegionData().map(IntervalsHandler::getIntervalFromRegionData)
-        .orElseGet(() -> parseIntervalsFromFiles(parsedArguments.getBedPaths()));
+    intervals = parsedArguments.
+        getRegionData().
+        map(IntervalsHandler::getIntervalFromRegionData)
+        .orElseGet(
+            () -> parseIntervalsFromFiles(parsedArguments.getBedPaths()));
   }
 
   /**
@@ -49,20 +53,27 @@ public class IntervalsHandler {
   /**
    * Returns stored intervals.
    *
-   * @return unmodifiable list of intervals
+   * @return list of intervals
    */
   public List<BEDFeature> getIntervals() {
-    return Collections.unmodifiableList(intervals);
+    return intervals;
   }
 
   private static List<BEDFeature> getIntervalFromRegionData(String region) {
     BEDFeature bedFeature = parseFeatureFromString(region);
     validate(bedFeature);
-    return List.of(bedFeature);
+    return Collections.unmodifiableList(
+        List.of(bedFeature));
   }
 
+  /**
+   * Getting single interval from string.
+   * @param region contains data about start, end and name
+   * @return single interval
+   */
   private static BEDFeature parseFeatureFromString(String region) {
-    String[] regionData = region.split(" ");
+    Pattern regionSplit = Pattern.compile(" ");
+    String[] regionData = regionSplit.split(region);
     String chr = regionData[0];
     int start = parseIntervalPoint(regionData[1]);
     int end = parseIntervalPoint(regionData[2]);
@@ -75,8 +86,8 @@ public class IntervalsHandler {
     for (Path path : pathsToFiles) {
       try (
           final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
-          .getFeatureReader(path.toString(), new BEDCodec(), false);
-           final CloseableTribbleIterator<BEDFeature> iterator = intervalsReader.iterator();
+            .getFeatureReader(path.toString(), new BEDCodec(), false);
+          final CloseableTribbleIterator<BEDFeature> iterator = intervalsReader.iterator();
       ) {
         while (iterator.hasNext()) {
           final BEDFeature bedFeature = iterator.next();
@@ -84,10 +95,10 @@ public class IntervalsHandler {
           parsedIntervals.add(bedFeature);
         }
       } catch (IOException | TribbleException.MalformedFeatureFile exception) {
-        throw new RuntimeException(ERROR_READING_EXC, exception.getCause());
+        throw new RuntimeException(ERROR_READING_EXC, exception);
       }
     }
-    return parsedIntervals;
+    return Collections.unmodifiableList(parsedIntervals);
   }
 
   private static int parseIntervalPoint(String point) {
