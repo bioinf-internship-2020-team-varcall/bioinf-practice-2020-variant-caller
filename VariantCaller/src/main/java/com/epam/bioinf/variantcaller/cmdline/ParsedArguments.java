@@ -42,11 +42,11 @@ public class ParsedArguments {
 
     if (fastaValues.size() != 1) {
       errorMessage = FASTA_ARGS_COUNT_EXC;
-    } else if (bedValues.size() == 0) {
+    } else if (bedValues.isEmpty()) {
       if (regionData.isPresent()) {
         checkIfRegionDataIsInvalid(regionData.get());
       }
-    } else if (samValues.size() == 0) {
+    } else if (samValues.isEmpty()) {
       errorMessage = SAM_ARGS_COUNT_EXC;
     } else if (checkIfSomeExtensionsIsInvalid(fastaValues, AllowedExtensions.FASTA_EXTENSIONS)) {
       errorMessage = FASTA_EXTENSION_EXC;
