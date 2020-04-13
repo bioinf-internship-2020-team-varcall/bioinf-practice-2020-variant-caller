@@ -4,6 +4,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.CommandLineParserMessages.*;
@@ -15,29 +17,36 @@ public class ParsedArguments {
   private final Path fastaPath;
   private final List<Path> bedPaths;
   private final List<Path> samPaths;
+  private final Optional<String> regionData;
+  private static final Pattern regionSplit = Pattern.compile(" ");
 
   /**
    * Constructor validates parsed arguments
    */
-  public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths, List<Path> samPaths) {
+  public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths,
+      List<Path> samPaths, Optional<String> regionData) {
     List<Path> processedFasta = withRemovedDuplicates(fastaPaths);
     List<Path> processedBed = withRemovedDuplicates(bedPaths);
     List<Path> processedSam = withRemovedDuplicates(samPaths);
 
-    validate(processedFasta, processedBed, processedSam);
+    validate(processedFasta, processedBed, processedSam, regionData);
 
     this.fastaPath = processedFasta.get(0);
     this.bedPaths = processedBed;
     this.samPaths = processedSam;
+    this.regionData = regionData;
   }
 
-  private void validate(List<Path> fastaValues, List<Path> bedValues, List<Path> samValues) {
+  private void validate(List<Path> fastaValues, List<Path> bedValues,
+      List<Path> samValues, Optional<String> regionData) {
     String errorMessage = "";
 
     if (fastaValues.size() != 1) {
       errorMessage = FASTA_ARGS_COUNT_EXC;
     } else if (bedValues.isEmpty()) {
-      errorMessage = BED_ARGS_COUNT_EXC;
+      if (regionData.isPresent()) {
+        checkIfRegionDataIsInvalid(regionData.get());
+      }
     } else if (samValues.isEmpty()) {
       errorMessage = SAM_ARGS_COUNT_EXC;
     } else if (checkIfSomeExtensionsIsInvalid(fastaValues, AllowedExtensions.FASTA_EXTENSIONS)) {
@@ -73,6 +82,19 @@ public class ParsedArguments {
     return true;
   }
 
+  /**
+   * Checking that region from input is valid by dividing string
+   * input and validating that size of array is 3. Example:
+   * "chr1 1 10" -> ["chr1", "1", "10"] - valid
+   * "chr1 1 10 1" -> ["chr1", "1", "10", "1"] - invalid
+   * @param regionData region info
+   */
+  private void checkIfRegionDataIsInvalid(String regionData) {
+    if (regionSplit.split(regionData).length != 3) {
+      throw new IllegalArgumentException(INVALID_REGION_EXC);
+    }
+  }
+
   private List<Path> withRemovedDuplicates(List<Path> rawList) {
     return rawList.stream().distinct().collect(Collectors.toList());
   }
@@ -87,6 +109,10 @@ public class ParsedArguments {
 
   public List<Path> getSamPaths() {
     return Collections.unmodifiableList(samPaths);
+  }
+
+  public Optional<String> getRegionData() {
+    return regionData;
   }
 
   /**

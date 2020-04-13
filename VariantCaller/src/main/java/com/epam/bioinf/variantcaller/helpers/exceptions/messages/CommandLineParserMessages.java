@@ -15,6 +15,11 @@ public final class CommandLineParserMessages {
   public static final String SAM_ARGS_COUNT_EXC =
       "No paths to '.sam' files were presented, must be 1 or more";
 
+  public static final String BOTH_INTERVAL_OPTIONS_PROVIDED_EXC =
+      "Both interval options provided, please specify one";
+  public static final String INVALID_REGION_EXC =
+      "Region specified incorrectly";
+
   public static final String FASTA_EXTENSION_EXC =
       "'--fasta' parameters must contain a path to a file with '.fasta' extension";
   public static final String BED_EXTENSION_EXC =

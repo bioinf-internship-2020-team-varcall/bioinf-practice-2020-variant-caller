@@ -5,21 +5,22 @@ import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParsedArgumentsTest {
+  // Used to imitate correct work of ParsedArguments
+  private static final Optional<String> CORRECT_REGION = Optional.of("chr1 1 10");
 
   @Test
   public void parsedArgumentsMustBeCreatedWithValidParameters() {
     List<Path> correctFasta = getPaths("test1.fasta");
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
-    ParsedArguments parsedArguments = new ParsedArguments(correctFasta, correctBed, correctSam);
+    Optional<String> expectedRegion = Optional.of("chr1 1 10");
+    ParsedArguments parsedArguments = new ParsedArguments(correctFasta, correctBed,
+        correctSam, CORRECT_REGION);
 
     assertEquals(correctFasta.get(0), parsedArguments.getFastaPath());
     assertEquals(
@@ -32,6 +33,7 @@ public class ParsedArgumentsTest {
         Set.copyOf(parsedArguments.getSamPaths()),
         "Unexpected SAM file paths"
     );
+    assertEquals(expectedRegion, parsedArguments.getRegionData());
   }
 
   @Test
@@ -40,17 +42,18 @@ public class ParsedArgumentsTest {
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
     assertThrows(IllegalArgumentException.class, () ->
-        new ParsedArguments(invalidFasta, correctBed, correctSam)
+        new ParsedArguments(invalidFasta, correctBed, correctSam, CORRECT_REGION)
     );
   }
 
   @Test
-  public void parsedArgumentsMustFailIfLessThanOneBedPathProvided() {
+  public void parsedArgumentsMustFailIfRegionSpecifiedIncorrectly() {
     List<Path> correctFasta = getPaths("test1.fasta");
-    List<Path> invalidBed = List.of();
+    List<Path> correctBed = List.of();
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
+    Optional<String> incorrectRegion = Optional.of("chr1 chr1 12 15");
     assertThrows(IllegalArgumentException.class, () ->
-        new ParsedArguments(correctFasta, invalidBed, correctSam)
+        new ParsedArguments(correctFasta, correctBed, correctSam, incorrectRegion)
     );
   }
 
@@ -62,7 +65,7 @@ public class ParsedArgumentsTest {
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> invalidSam = List.of();
     assertThrows(IllegalArgumentException.class, () ->
-        new ParsedArguments(correctFasta, correctBed, invalidSam)
+        new ParsedArguments(correctFasta, correctBed, invalidSam, CORRECT_REGION)
     );
   }
 
@@ -72,7 +75,7 @@ public class ParsedArgumentsTest {
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
     assertThrows(IllegalArgumentException.class, () ->
-        new ParsedArguments(invalidFasta, correctBed, correctSam)
+        new ParsedArguments(invalidFasta, correctBed, correctSam, CORRECT_REGION)
     );
   }
 
@@ -86,7 +89,8 @@ public class ParsedArgumentsTest {
     List<Path> expectedBedPaths = getPaths("test1.bed", "test2.bed");
     List<Path> expectedSamPaths = getPaths("test1.sam", "test2.sam");
 
-    ParsedArguments result = new ParsedArguments(duplicatedFasta, duplicatedBed, duplicatedSam);
+    ParsedArguments result = new ParsedArguments(duplicatedFasta, duplicatedBed,
+        duplicatedSam, CORRECT_REGION);
 
     Path parsedFastaPath = result.getFastaPath();
     List<Path> parsedBedPaths = result.getBedPaths();
@@ -115,7 +119,7 @@ public class ParsedArgumentsTest {
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
     assertThrows(IllegalArgumentException.class, () ->
-        new ParsedArguments(fastaWithInvalidExt, correctBed, correctSam)
+        new ParsedArguments(fastaWithInvalidExt, correctBed, correctSam, CORRECT_REGION)
     );
   }
 
@@ -125,7 +129,7 @@ public class ParsedArgumentsTest {
     List<Path> bedWithInvalidExt = getPaths("test1.bek", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
     assertThrows(IllegalArgumentException.class, () ->
-        new ParsedArguments(correctFasta, bedWithInvalidExt, correctSam)
+        new ParsedArguments(correctFasta, bedWithInvalidExt, correctSam, CORRECT_REGION)
     );
   }
 
@@ -135,7 +139,7 @@ public class ParsedArgumentsTest {
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> samWithInvalidExt = getPaths("test1.samuel", "test2.sam");
     assertThrows(IllegalArgumentException.class, () ->
-        new ParsedArguments(correctFasta, correctBed, samWithInvalidExt)
+        new ParsedArguments(correctFasta, correctBed, samWithInvalidExt, CORRECT_REGION)
     );
   }
 
@@ -145,7 +149,7 @@ public class ParsedArgumentsTest {
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
     assertThrows(IllegalArgumentException.class, () ->
-        new ParsedArguments(notExistingFasta, correctBed, correctSam)
+        new ParsedArguments(notExistingFasta, correctBed, correctSam, CORRECT_REGION)
     );
   }
 
@@ -155,7 +159,7 @@ public class ParsedArgumentsTest {
     List<Path> notExistingBed = getPaths("test217.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
     assertThrows(IllegalArgumentException.class, () ->
-        new ParsedArguments(correctFasta, notExistingBed, correctSam)
+        new ParsedArguments(correctFasta, notExistingBed, correctSam, CORRECT_REGION)
     );
   }
 
@@ -165,7 +169,7 @@ public class ParsedArgumentsTest {
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> notExistingSam = getPaths("test217.sam", "test2.sam");
     assertThrows(IllegalArgumentException.class, () ->
-        new ParsedArguments(correctFasta, correctBed, notExistingSam)
+        new ParsedArguments(correctFasta, correctBed, notExistingSam, CORRECT_REGION)
     );
   }
 
