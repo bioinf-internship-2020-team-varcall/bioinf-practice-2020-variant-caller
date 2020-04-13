@@ -2,14 +2,15 @@ package com.epam.bioinf.variantcaller.exceptions.parser.region;
 
 import com.epam.bioinf.variantcaller.exceptions.parser.RegionParserException;
 
-import static com.epam.bioinf.variantcaller.exceptions.messages.CommandLineParserMessages.BOTH_INTERVAL_OPTIONS_PROVIDED_EXC;
-
 public class RegionBothIntervalOptionsException extends RegionParserException {
   public RegionBothIntervalOptionsException() {
-    super(BOTH_INTERVAL_OPTIONS_PROVIDED_EXC);
+    super(BOTH_INTERVAL_OPTIONS_PROVIDED);
   }
 
   public RegionBothIntervalOptionsException(Throwable throwable) {
-    super(BOTH_INTERVAL_OPTIONS_PROVIDED_EXC, throwable);
+    super(BOTH_INTERVAL_OPTIONS_PROVIDED, throwable);
   }
+
+  public static final String BOTH_INTERVAL_OPTIONS_PROVIDED =
+      "Both interval options provided, please specify one";
 }

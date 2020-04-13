@@ -2,14 +2,15 @@ package com.epam.bioinf.variantcaller.exceptions.parser.region;
 
 import com.epam.bioinf.variantcaller.exceptions.parser.RegionParserException;
 
-import static com.epam.bioinf.variantcaller.exceptions.messages.CommandLineParserMessages.BED_EXTENSION_EXC;
-
 public class RegionInvalidExtensionException extends RegionParserException {
   public RegionInvalidExtensionException() {
-    super(BED_EXTENSION_EXC);
+    super(BED_EXTENSION);
   }
 
   public RegionInvalidExtensionException(Throwable throwable) {
-    super(BED_EXTENSION_EXC, throwable);
+    super(BED_EXTENSION, throwable);
   }
+
+  public static final String BED_EXTENSION =
+      "'--bed' parameters must contain a path to a file with '.bed' extension";
 }

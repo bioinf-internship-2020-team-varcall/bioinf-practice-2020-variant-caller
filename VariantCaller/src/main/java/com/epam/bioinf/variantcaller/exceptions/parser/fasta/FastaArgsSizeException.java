@@ -2,14 +2,15 @@ package com.epam.bioinf.variantcaller.exceptions.parser.fasta;
 
 import com.epam.bioinf.variantcaller.exceptions.parser.FastaParserException;
 
-import static com.epam.bioinf.variantcaller.exceptions.messages.CommandLineParserMessages.FASTA_ARGS_COUNT_EXC;
-
 public class FastaArgsSizeException extends FastaParserException {
   public FastaArgsSizeException() {
-    super(FASTA_ARGS_COUNT_EXC);
+    super(FASTA_ARGS_COUNT);
   }
 
   public FastaArgsSizeException(Throwable throwable) {
-    super(FASTA_ARGS_COUNT_EXC, throwable);
+    super(FASTA_ARGS_COUNT, throwable);
   }
+
+  public static final String FASTA_ARGS_COUNT =
+      "Multiple or no paths to '.fasta' files were presented, must be 1";
 }

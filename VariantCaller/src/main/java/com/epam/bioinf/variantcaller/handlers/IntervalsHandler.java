@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static com.epam.bioinf.variantcaller.exceptions.messages.IntervalsHandlerMessages.*;
-
 /**
  * Class reads and stores intervals for VariantCaller.
  * Current implementation may differ from a final version.
@@ -74,6 +72,7 @@ public class IntervalsHandler {
 
   /**
    * Getting single interval from string.
+   *
    * @param region contains data about start, end and name.
    * @return single interval.
    */
@@ -91,7 +90,7 @@ public class IntervalsHandler {
     for (Path path : pathsToFiles) {
       try (
           final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
-            .getFeatureReader(path.toString(), new BEDCodec(), false);
+              .getFeatureReader(path.toString(), new BEDCodec(), false);
           final CloseableTribbleIterator<BEDFeature> iterator = intervalsReader.iterator();
       ) {
         while (iterator.hasNext()) {

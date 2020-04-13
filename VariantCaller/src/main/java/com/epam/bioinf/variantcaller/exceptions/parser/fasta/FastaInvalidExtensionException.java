@@ -2,14 +2,15 @@ package com.epam.bioinf.variantcaller.exceptions.parser.fasta;
 
 import com.epam.bioinf.variantcaller.exceptions.parser.FastaParserException;
 
-import static com.epam.bioinf.variantcaller.exceptions.messages.CommandLineParserMessages.FASTA_EXTENSION_EXC;
-
 public class FastaInvalidExtensionException extends FastaParserException {
   public FastaInvalidExtensionException() {
-    super(FASTA_EXTENSION_EXC);
+    super(FASTA_EXTENSION);
   }
 
   public FastaInvalidExtensionException(Throwable throwable) {
-    super(FASTA_EXTENSION_EXC, throwable);
+    super(FASTA_EXTENSION, throwable);
   }
+
+  public static final String FASTA_EXTENSION =
+      "'--fasta' parameters must contain a path to a file with '.fasta' extension";
 }

@@ -5,8 +5,6 @@ import com.epam.bioinf.variantcaller.exceptions.handlers.fasta.FastaMultipleSequ
 import htsjdk.samtools.reference.FastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
 
-import static com.epam.bioinf.variantcaller.exceptions.messages.FastaHandlerMessages.*;
-
 /**
  * Class holds a sequence and performs work with it.
  * This implementation is temporary and will be changed in future versions.

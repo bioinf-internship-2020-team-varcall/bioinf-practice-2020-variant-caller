@@ -2,15 +2,14 @@ package com.epam.bioinf.variantcaller.exceptions.parser.region;
 
 import com.epam.bioinf.variantcaller.exceptions.parser.RegionParserException;
 
-import static com.epam.bioinf.variantcaller.exceptions.messages.CommandLineParserMessages.BED_PATH_NOT_EXISTS_EXC;
-import static com.epam.bioinf.variantcaller.exceptions.messages.CommandLineParserMessages.INVALID_REGION_EXC;
-
 public class RegionPathNotExistsException extends RegionParserException {
   public RegionPathNotExistsException() {
-    super(BED_PATH_NOT_EXISTS_EXC);
+    super(BED_PATH_NOT_EXISTS);
   }
 
   public RegionPathNotExistsException(Throwable throwable) {
-    super(BED_PATH_NOT_EXISTS_EXC, throwable);
+    super(BED_PATH_NOT_EXISTS, throwable);
   }
+
+  public static final String BED_PATH_NOT_EXISTS = "One or more '.bed' files do not exist";
 }

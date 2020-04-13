@@ -2,14 +2,15 @@ package com.epam.bioinf.variantcaller.exceptions.handlers.region;
 
 import com.epam.bioinf.variantcaller.exceptions.handlers.RegionHandlerException;
 
-import static com.epam.bioinf.variantcaller.exceptions.messages.IntervalsHandlerMessages.INTERVAL_END_EXC;
-
 public class RegionIllegalEndException extends RegionHandlerException {
   public RegionIllegalEndException() {
-    super(INTERVAL_END_EXC);
+    super(INTERVAL_END);
   }
 
   public RegionIllegalEndException(Throwable throwable) {
-    super(INTERVAL_END_EXC, throwable);
+    super(INTERVAL_END, throwable);
   }
+
+  public static final String INTERVAL_END =
+      "Invalid interval end parsed from file";
 }

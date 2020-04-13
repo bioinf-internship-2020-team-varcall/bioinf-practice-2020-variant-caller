@@ -2,14 +2,15 @@ package com.epam.bioinf.variantcaller.exceptions.handlers.fasta;
 
 import com.epam.bioinf.variantcaller.exceptions.handlers.FastaHandlerException;
 
-import static com.epam.bioinf.variantcaller.exceptions.messages.FastaHandlerMessages.MULTIPLE_SEQUENCES_EXC;
-
 public class FastaMultipleSequencesException extends FastaHandlerException {
   public FastaMultipleSequencesException() {
-    super(MULTIPLE_SEQUENCES_EXC);
+    super(MULTIPLE_SEQUENCES);
   }
 
   public FastaMultipleSequencesException(Throwable throwable) {
-    super(MULTIPLE_SEQUENCES_EXC, throwable);
+    super(MULTIPLE_SEQUENCES, throwable);
   }
+
+  public static final String MULTIPLE_SEQUENCES =
+      "Multiple fasta sequences were provided, fasta file must contain only one sequence";
 }
