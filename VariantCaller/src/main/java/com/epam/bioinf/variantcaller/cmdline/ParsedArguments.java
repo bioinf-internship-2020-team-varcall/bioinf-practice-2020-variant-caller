@@ -48,30 +48,24 @@ public class ParsedArguments {
 
   private void validate(List<Path> fastaValues, List<Path> bedValues,
       List<Path> samValues, Optional<String> regionData) {
-    ParserException exception = null;
-
     if (fastaValues.size() != 1) {
-      exception = new FastaArgsSizeException();
+      throw new FastaArgsSizeException();
     } else if (bedValues.isEmpty()) {
       regionData.ifPresent(this::checkIfRegionDataIsInvalid);
     } else if (samValues.isEmpty()) {
-      exception = new SamArgsSizeException();
+      throw new SamArgsSizeException();
     } else if (checkIfSomeExtensionsIsInvalid(fastaValues, AllowedExtensions.FASTA_EXTENSIONS)) {
-      exception = new FastaInvalidExtensionException();
+      throw new FastaInvalidExtensionException();
     } else if (checkIfSomeExtensionsIsInvalid(bedValues, AllowedExtensions.BED_EXTENSIONS)) {
-      exception = new RegionInvalidExtensionException();
+      throw new RegionInvalidExtensionException();
     } else if (checkIfSomeExtensionsIsInvalid(samValues, AllowedExtensions.SAM_EXTENSIONS)) {
-      exception = new SamInvalidExtensionException();
+      throw new SamInvalidExtensionException();
     } else if (checkIfSomePathDoesNotExist(fastaValues)) {
-      exception = new FastaPathNotExistsException();
+      throw new FastaPathNotExistsException();
     } else if (checkIfSomePathDoesNotExist(bedValues)) {
-      exception = new RegionPathNotExistsException();
+      throw new RegionPathNotExistsException();
     } else if (checkIfSomePathDoesNotExist(samValues)) {
-      exception = new SamPathNotExistsException();
-    }
-
-    if (exception != null) {
-      throw exception;
+      throw new SamPathNotExistsException();
     }
   }
 
