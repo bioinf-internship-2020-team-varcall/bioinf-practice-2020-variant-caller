@@ -18,6 +18,7 @@ public class ParsedArguments {
   private final List<Path> bedPaths;
   private final List<Path> samPaths;
   private final Optional<String> regionData;
+  private static final Pattern regionSplit = Pattern.compile(" ");
 
   /**
    * Constructor validates parsed arguments
@@ -89,7 +90,6 @@ public class ParsedArguments {
    * @param regionData region info
    */
   private void checkIfRegionDataIsInvalid(String regionData) {
-    Pattern regionSplit = Pattern.compile(" ");
     if (regionSplit.split(regionData).length != 3) {
       throw new IllegalArgumentException(INVALID_REGION_EXC);
     }

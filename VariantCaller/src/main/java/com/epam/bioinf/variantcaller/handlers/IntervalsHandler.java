@@ -25,6 +25,7 @@ import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.Interval
  */
 public class IntervalsHandler {
   private List<BEDFeature> intervals;
+  private static final Pattern regionSplit = Pattern.compile(" ");
 
   /**
    * Constructor reads region information and depending on it
@@ -35,9 +36,9 @@ public class IntervalsHandler {
    * @see ParsedArguments
    */
   public IntervalsHandler(ParsedArguments parsedArguments) {
-    intervals = parsedArguments.
-        getRegionData().
-        map(IntervalsHandler::getIntervalFromRegionData)
+    intervals = parsedArguments
+        .getRegionData()
+        .map(IntervalsHandler::getIntervalFromRegionData)
         .orElseGet(
             () -> parseIntervalsFromFiles(parsedArguments.getBedPaths()));
   }
@@ -72,7 +73,6 @@ public class IntervalsHandler {
    * @return single interval
    */
   private static BEDFeature parseFeatureFromString(String region) {
-    Pattern regionSplit = Pattern.compile(" ");
     String[] regionData = regionSplit.split(region);
     String chr = regionData[0];
     int start = parseIntervalPoint(regionData[1]);
