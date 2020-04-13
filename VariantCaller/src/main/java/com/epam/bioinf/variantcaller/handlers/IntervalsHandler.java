@@ -116,14 +116,10 @@ public class IntervalsHandler {
   private static void validate(BEDFeature bedFeature) {
     final int start = bedFeature.getStart();
     final int end = bedFeature.getEnd();
-    RegionHandlerException exception = null;
     if (start < 1) {
-      exception = new RegionIllegalStartException();
+      throw new RegionIllegalStartException();
     } else if (end < 1 || end < start - 1) {
-      exception = new RegionIllegalEndException();
-    }
-    if (exception != null) {
-      throw exception;
+      throw new RegionIllegalEndException();
     }
   }
 }
