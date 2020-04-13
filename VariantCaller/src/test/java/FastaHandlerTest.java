@@ -16,30 +16,30 @@ public class FastaHandlerTest {
   public void fastaHandlerMustReturnCorrectGcContentWithMockExample() {
     FastaHandler fastaHandler = getFastaHandler("test1.fasta");
     double expectedGcContent = 69.52;
-    double gotGcContent = fastaHandler.getGcContent();
-    assertEquals(gotGcContent, expectedGcContent, 0.01);
+    double actualGcContent = fastaHandler.getGcContent();
+    assertEquals(expectedGcContent, actualGcContent, 0.01);
   }
 
   @Test
   public void fastaHandlerMustReturnCorrectCountOfNucleotidesWithMockExample() {
     FastaHandler fastaHandler = getFastaHandler("test1.fasta");
     int expectedNucleotidesCount = 420;
-    assertEquals(fastaHandler.countNucleotides(), expectedNucleotidesCount);
+    assertEquals(expectedNucleotidesCount, fastaHandler.countNucleotides());
   }
 
   @Test
   public void fastaHandlerMustReturnCorrectCountOfNucleotidesWithRealExample() {
     FastaHandler fastaHandler = getFastaHandler("test1.fna");
     int expectedNucleotidesCount = 4641652;
-    assertEquals(fastaHandler.countNucleotides(), expectedNucleotidesCount);
+    assertEquals(expectedNucleotidesCount, fastaHandler.countNucleotides());
   }
 
   @Test
   public void fastaHandlerMustReturnCorrectGcContentWithRealExample() {
     FastaHandler fastaHandler = getFastaHandler("test1.fna");
     double expectedGcContent = 50.8;
-    double gotGcContent = fastaHandler.getGcContent();
-    assertEquals(gotGcContent, expectedGcContent, 0.01);
+    double actualGcContent = fastaHandler.getGcContent();
+    assertEquals(expectedGcContent, actualGcContent, 0.01);
   }
 
   @Test
