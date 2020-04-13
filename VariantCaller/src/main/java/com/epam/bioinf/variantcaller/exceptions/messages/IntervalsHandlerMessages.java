@@ -1,4 +1,4 @@
-package com.epam.bioinf.variantcaller.helpers.exceptions.messages;
+package com.epam.bioinf.variantcaller.exceptions.messages;
 
 /**
  * Class holds exception messages for IntervalsHandler

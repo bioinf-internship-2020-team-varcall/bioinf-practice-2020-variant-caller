@@ -1,6 +1,11 @@
 package com.epam.bioinf.variantcaller.handlers;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+import com.epam.bioinf.variantcaller.exceptions.handlers.RegionHandlerException;
+import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalEndException;
+import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalIntervalException;
+import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalStartException;
+import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionReadingException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import htsjdk.tribble.AbstractFeatureReader;
 import htsjdk.tribble.CloseableTribbleIterator;
@@ -17,11 +22,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.IntervalsHandlerMessages.*;
+import static com.epam.bioinf.variantcaller.exceptions.messages.IntervalsHandlerMessages.*;
 
 /**
  * Class reads and stores intervals for VariantCaller.
- * Current implementation may differ from final version.
+ * Current implementation may differ from a final version.
  */
 public class IntervalsHandler {
   private List<BEDFeature> intervals;
@@ -32,7 +37,7 @@ public class IntervalsHandler {
    * creates a single interval or parses multiple from files
    * and stores them.
    *
-   * @param parsedArguments with region information
+   * @param parsedArguments with region information.
    * @see ParsedArguments
    */
   public IntervalsHandler(ParsedArguments parsedArguments) {
@@ -54,7 +59,7 @@ public class IntervalsHandler {
   /**
    * Returns stored intervals.
    *
-   * @return list of intervals
+   * @return list of intervals.
    */
   public List<BEDFeature> getIntervals() {
     return intervals;
@@ -69,8 +74,8 @@ public class IntervalsHandler {
 
   /**
    * Getting single interval from string.
-   * @param region contains data about start, end and name
-   * @return single interval
+   * @param region contains data about start, end and name.
+   * @return single interval.
    */
   private static BEDFeature parseFeatureFromString(String region) {
     String[] regionData = regionSplit.split(region);
@@ -95,7 +100,7 @@ public class IntervalsHandler {
           parsedIntervals.add(bedFeature);
         }
       } catch (IOException | TribbleException.MalformedFeatureFile exception) {
-        throw new RuntimeException(ERROR_READING_EXC, exception);
+        throw new RegionReadingException(exception);
       }
     }
     return Collections.unmodifiableList(parsedIntervals);
@@ -105,21 +110,21 @@ public class IntervalsHandler {
     try {
       return Integer.parseInt(point);
     } catch (NumberFormatException exception) {
-      throw new IllegalArgumentException(INVALID_REGION_EXC, exception.getCause());
+      throw new RegionIllegalIntervalException(exception);
     }
   }
 
   private static void validate(BEDFeature bedFeature) {
     final int start = bedFeature.getStart();
     final int end = bedFeature.getEnd();
-    String errorMessage = "";
+    RegionHandlerException exception = null;
     if (start < 1) {
-      errorMessage = INTERVAL_START_EXC;
+      exception = new RegionIllegalStartException();
     } else if (end < 1 || end < start - 1) {
-      errorMessage = INTERVAL_END_EXC;
+      exception = new RegionIllegalEndException();
     }
-    if (!errorMessage.isEmpty()) {
-      throw new IllegalArgumentException(errorMessage);
+    if (exception != null) {
+      throw exception;
     }
   }
 }

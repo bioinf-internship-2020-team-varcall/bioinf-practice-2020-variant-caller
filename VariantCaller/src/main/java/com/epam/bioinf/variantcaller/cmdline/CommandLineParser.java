@@ -1,5 +1,6 @@
 package com.epam.bioinf.variantcaller.cmdline;
 
+import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionBothIntervalOptionsException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -9,7 +10,6 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import static java.io.File.pathSeparatorChar;
-import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.CommandLineParserMessages.BOTH_INTERVAL_OPTIONS_PROVIDED_EXC;
 
 /**
  * Class parses arguments and creates ParsedArguments
@@ -36,7 +36,7 @@ public class CommandLineParser {
     OptionSpec<String> region = getOptionSpecStringByParameter(optionParser, REGION_KEY);
     OptionSet options = optionParser.parse(args);
     if (options.hasArgument(bed) && options.hasArgument(region)) {
-      throw new IllegalArgumentException(BOTH_INTERVAL_OPTIONS_PROVIDED_EXC);
+      throw new RegionBothIntervalOptionsException();
     }
     parsedArguments = new ParsedArguments(
         options.valuesOf(fasta),

@@ -1,4 +1,4 @@
-import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.CommandLineParserMessages.*;
+import static com.epam.bioinf.variantcaller.exceptions.messages.CommandLineParserMessages.*;
 
 import org.junit.Rule;
 import org.junit.Test;

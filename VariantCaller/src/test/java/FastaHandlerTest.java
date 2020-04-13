@@ -1,5 +1,6 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+import com.epam.bioinf.variantcaller.exceptions.handlers.fasta.FastaMultipleSequencesException;
 import com.epam.bioinf.variantcaller.handlers.FastaHandler;
 import htsjdk.samtools.SAMException;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ public class FastaHandlerTest {
 
   @Test
   public void fastaHandlerMustFailIfMultipleSequencesWereProvided() {
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(FastaMultipleSequencesException.class, () ->
         getFastaHandler("test3.fasta")
     );
   }
