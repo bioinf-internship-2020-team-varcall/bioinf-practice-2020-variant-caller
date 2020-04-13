@@ -37,7 +37,7 @@ public class CommandLineArgsrIntegTest {
   public void programMustFailWithInvalidArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
         "--fasta", integTestFilePath("test1.fasta") + pathSeparatorChar
-        + integTestFilePath("test2.fasta"),
+          + integTestFilePath("test2.fasta"),
         "--bed", integTestFilePath("test1.bed"),
         "--sam", integTestFilePath("test1.sam")
     };
