@@ -1,5 +1,7 @@
 import static com.epam.bioinf.variantcaller.exceptions.messages.CommandLineParserMessages.*;
 
+import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
+import joptsimple.OptionException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -45,7 +47,8 @@ public class CommandLineArgsrIntegTest {
         "--sam", integTestFilePath("test1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
-    assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: "
+    assertEquals("Exception in thread \"main\" "
+        + "com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaArgsSizeException: "
         + FASTA_ARGS_COUNT_EXC, processInfo.errorString);
     assertEquals(1, processInfo.exitValue);
   }
