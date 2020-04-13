@@ -1,26 +1,21 @@
-import static com.epam.bioinf.variantcaller.exceptions.messages.CommandLineParserMessages.*;
-
-import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
-import joptsimple.OptionException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.PATH_TO_BUILT_JAR;
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.integTestFilePath;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.rules.ExpectedException.none;
-
 import java.io.BufferedReader;
-
-import static java.io.File.pathSeparatorChar;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.epam.bioinf.variantcaller.helpers.TestHelper.PATH_TO_BUILT_JAR;
+import static com.epam.bioinf.variantcaller.helpers.TestHelper.integTestFilePath;
+import static java.io.File.pathSeparatorChar;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.rules.ExpectedException.none;
 
 public class CommandLineArgsrIntegTest {
   @Rule
@@ -42,14 +37,15 @@ public class CommandLineArgsrIntegTest {
   public void programMustFailWithInvalidArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
         "--fasta", integTestFilePath("test1.fasta") + pathSeparatorChar
-          + integTestFilePath("test2.fasta"),
+        + integTestFilePath("test2.fasta"),
         "--bed", integTestFilePath("test1.bed"),
         "--sam", integTestFilePath("test1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
     assertEquals("Exception in thread \"main\" "
-        + "com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaArgsSizeException: "
-        + FASTA_ARGS_COUNT_EXC, processInfo.errorString);
+            + "com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaArgsSizeException: "
+            + "Multiple or no paths to '.fasta' files were presented, must be 1",
+        processInfo.errorString);
     assertEquals(1, processInfo.exitValue);
   }
 
