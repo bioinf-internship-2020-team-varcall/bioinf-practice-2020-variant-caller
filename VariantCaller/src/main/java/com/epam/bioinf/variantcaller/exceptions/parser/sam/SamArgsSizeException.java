@@ -11,6 +11,6 @@ public class SamArgsSizeException extends SamParserException {
     super(SAM_ARGS_COUNT, throwable);
   }
 
-  public static final String SAM_ARGS_COUNT =
+  private static final String SAM_ARGS_COUNT =
       "No paths to '.sam' files were presented, must be 1 or more";
 }

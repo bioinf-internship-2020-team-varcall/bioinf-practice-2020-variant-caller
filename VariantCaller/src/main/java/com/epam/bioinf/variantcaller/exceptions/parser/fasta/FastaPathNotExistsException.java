@@ -11,5 +11,5 @@ public class FastaPathNotExistsException extends FastaParserException {
     super(FASTA_PATH_NOT_EXISTS, throwable);
   }
 
-  public static final String FASTA_PATH_NOT_EXISTS = "The '.fasta' file does not exist";
+  private static final String FASTA_PATH_NOT_EXISTS = "The '.fasta' file does not exist";
 }

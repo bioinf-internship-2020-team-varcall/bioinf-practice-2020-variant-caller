@@ -7,10 +7,6 @@ public class FastaMultipleSequencesException extends FastaHandlerException {
     super(MULTIPLE_SEQUENCES);
   }
 
-  public FastaMultipleSequencesException(Throwable throwable) {
-    super(MULTIPLE_SEQUENCES, throwable);
-  }
-
-  public static final String MULTIPLE_SEQUENCES =
+  private static final String MULTIPLE_SEQUENCES =
       "Multiple fasta sequences were provided, fasta file must contain only one sequence";
 }

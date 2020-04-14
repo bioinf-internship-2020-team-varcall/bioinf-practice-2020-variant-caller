@@ -11,6 +11,6 @@ public class RegionIllegalIntervalException extends RegionHandlerException {
     super(INVALID_REGION, throwable);
   }
 
-  public static final String INVALID_REGION =
+  private static final String INVALID_REGION =
       "Could not parse interval points, please verify they are valid";
 }

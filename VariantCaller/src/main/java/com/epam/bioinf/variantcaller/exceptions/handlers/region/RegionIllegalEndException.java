@@ -11,6 +11,5 @@ public class RegionIllegalEndException extends RegionHandlerException {
     super(INTERVAL_END, throwable);
   }
 
-  public static final String INTERVAL_END =
-      "Invalid interval end parsed from file";
+  private static final String INTERVAL_END = "Invalid interval end parsed from file";
 }

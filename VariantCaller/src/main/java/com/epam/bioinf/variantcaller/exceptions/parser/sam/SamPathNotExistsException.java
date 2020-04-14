@@ -11,5 +11,5 @@ public class SamPathNotExistsException extends SamParserException {
     super(SAM_PATH_NOT_EXISTS, throwable);
   }
 
-  public static final String SAM_PATH_NOT_EXISTS = "One or more '.sam' files do not exist";
+  private static final String SAM_PATH_NOT_EXISTS = "One or more '.sam' files do not exist";
 }

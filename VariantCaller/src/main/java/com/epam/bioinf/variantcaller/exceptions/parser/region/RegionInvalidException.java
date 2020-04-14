@@ -11,7 +11,7 @@ public class RegionInvalidException extends RegionParserException {
     super(INVALID_REGION, throwable);
   }
 
-  public static final String INVALID_REGION =
+  private static final String INVALID_REGION =
       "Region specified incorrectly";
 
 }

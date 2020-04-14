@@ -11,6 +11,6 @@ public class FastaInvalidExtensionException extends FastaParserException {
     super(FASTA_EXTENSION, throwable);
   }
 
-  public static final String FASTA_EXTENSION =
+  private static final String FASTA_EXTENSION =
       "'--fasta' parameters must contain a path to a file with '.fasta' extension";
 }

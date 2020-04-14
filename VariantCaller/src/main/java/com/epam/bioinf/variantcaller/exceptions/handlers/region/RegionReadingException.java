@@ -11,6 +11,6 @@ public class RegionReadingException extends RegionHandlerException {
     super(ERROR_READING, throwable);
   }
 
-  public static final String ERROR_READING =
+  private static final String ERROR_READING =
       "Problem reading intervals, file is malformed, please verify your .bed file";
 }

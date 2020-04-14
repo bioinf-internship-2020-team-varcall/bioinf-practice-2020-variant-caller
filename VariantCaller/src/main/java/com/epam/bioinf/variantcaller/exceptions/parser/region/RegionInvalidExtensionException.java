@@ -11,6 +11,6 @@ public class RegionInvalidExtensionException extends RegionParserException {
     super(BED_EXTENSION, throwable);
   }
 
-  public static final String BED_EXTENSION =
+  private static final String BED_EXTENSION =
       "'--bed' parameters must contain a path to a file with '.bed' extension";
 }

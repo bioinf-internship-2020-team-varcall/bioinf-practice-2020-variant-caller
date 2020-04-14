@@ -11,6 +11,5 @@ public class RegionIllegalStartException extends RegionHandlerException {
     super(INTERVAL_START, throwable);
   }
 
-  public static final String INTERVAL_START =
-      "Invalid interval start parsed from file";
+  private static final String INTERVAL_START = "Invalid interval start parsed from file";
 }

@@ -11,5 +11,5 @@ public class RegionPathNotExistsException extends RegionParserException {
     super(BED_PATH_NOT_EXISTS, throwable);
   }
 
-  public static final String BED_PATH_NOT_EXISTS = "One or more '.bed' files do not exist";
+  private static final String BED_PATH_NOT_EXISTS = "One or more '.bed' files do not exist";
 }

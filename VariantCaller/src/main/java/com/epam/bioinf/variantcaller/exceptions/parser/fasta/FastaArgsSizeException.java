@@ -11,6 +11,6 @@ public class FastaArgsSizeException extends FastaParserException {
     super(FASTA_ARGS_COUNT, throwable);
   }
 
-  public static final String FASTA_ARGS_COUNT =
+  private static final String FASTA_ARGS_COUNT =
       "Multiple or no paths to '.fasta' files were presented, must be 1";
 }

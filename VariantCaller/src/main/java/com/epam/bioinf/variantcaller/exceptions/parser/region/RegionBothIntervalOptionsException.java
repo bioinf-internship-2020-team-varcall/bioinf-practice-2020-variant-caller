@@ -11,6 +11,6 @@ public class RegionBothIntervalOptionsException extends RegionParserException {
     super(BOTH_INTERVAL_OPTIONS_PROVIDED, throwable);
   }
 
-  public static final String BOTH_INTERVAL_OPTIONS_PROVIDED =
+  private static final String BOTH_INTERVAL_OPTIONS_PROVIDED =
       "Both interval options provided, please specify one";
 }

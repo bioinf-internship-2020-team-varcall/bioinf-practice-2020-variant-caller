@@ -11,6 +11,6 @@ public class SamInvalidExtensionException extends SamParserException {
     super(SAM_EXTENSION, throwable);
   }
 
-  public static final String SAM_EXTENSION =
+  private static final String SAM_EXTENSION =
       "'--sam' parameters must contain a path to a file with '.sam' extension";
 }
