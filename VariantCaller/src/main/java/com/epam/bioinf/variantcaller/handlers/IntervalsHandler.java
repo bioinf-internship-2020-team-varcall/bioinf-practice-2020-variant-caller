@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 /**
  * Class reads and stores intervals for VariantCaller.
- * Current implementation may differ from a final version.
+ * Current implementation may differ from final version.
  */
 public class IntervalsHandler {
   private List<BEDFeature> intervals;
