@@ -9,7 +9,7 @@
 public boolean isIntervalsSet();
 ```
 Дополнения к unit-тестам:
-  * ParsedArguments must return correct if intervals were specified
+  * ParsedArguments must return true if intervals were specified
   * ParsedArguments must return false if intervals were not specified
 
 ## Изменения SamHandler
@@ -20,21 +20,21 @@ public boolean isIntervalsSet();
 
 ### Реализация
 
-Как будет выполнятся чтение, решается в конструкторе вызовом функции `isIntervalsSet()`.
-Чтение ридов выполняется последовательно, в случае с фильтрацией, происходит проверка - находится
+Как будет выполняться чтение, решается в конструкторе вызовом функции `isIntervalsSet()`.
+Чтение ридов выполняется последовательно. В случае с фильтрацией происходит проверка - находится
 ли рид в заданных интервалах.
-В методе проверки `isRelatedToIntervals`, если рид находится в заданном интервале он
+В методе `isRelatedToIntervals`, в случае если рид находится в заданном интервале он
 добавляется в `samRecords`.
 
 ```java
 package com.epam.bioinf.variantcaller.handlers;
 
-//Временная реализация, может быть изменена изменена в будущих версиях
+// Временная реализация, может быть изменена изменена в будущих версиях
 class SamHandler {
-  private ArrayList<SAMRecord> samRecords; //Хранятся прочитанные и отфильтрованные риды.
+  private ArrayList<SAMRecord> samRecords; // Хранятся прочитанные и отфильтрованные риды.
   private List<BEDFeature>
   
-  public SamHandler(ParsedArguments parsedArguments) { //Конструктор принимает провалидированные parsed arguments.
+  public SamHandler(ParsedArguments parsedArguments) { // Конструктор принимает провалидированные parsed arguments.
     if (parsedArguments.isIntervalsSet()) {
       IntervalsHandler intervalsHandler = new IntervalsHanler(parsedArguments);
       readInSpecifiedIntervals(parsedArguments.getSamPaths(), intervalsHandler.getIntervals());
@@ -54,8 +54,8 @@ class SamHandler {
 ## Unit-тесты
 Описанны только добавления к существующим
 
-* SamHandler must return correct reads number with multiple files by single interval
 * SamHandler must return correct reads number with one file filtered by single interval
-* SamHandler must return correct reads number with multiple files by multiple interval
-* SamHandler must return correct reads number with one file filtered by multiple interval
+* SamHandler must return correct reads number with one file filtered by multiple intervals
+* SamHandler must return correct reads number with multiple files filtered by single interval
+* SamHandler must return correct reads number with multiple files filtered by multiple intervals
 * SamHandler must fail if no reads relate to provided intervals
