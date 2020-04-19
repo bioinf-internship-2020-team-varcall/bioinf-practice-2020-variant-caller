@@ -21,7 +21,7 @@ class Caller {
   List<SamRecords> reads; // Храним риды
 
   Caller(FastaSequence reference, List<SamRecord> reads); // Инициализируем массив вариантов объектами Variant с пустыми массивами внутри
-  Variant[] call(); // Ищем варианты(заполняем массивы в объектах Variant) и возвращаем реузльтат
+  Variant[] call(); // Ищем варианты(заполняем массивы в объектах Variant) и возвращаем результат
   void printPotentialVariants(); // Временный метод вывода вариантов в консоль
 }
 ```
