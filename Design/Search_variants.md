@@ -52,6 +52,11 @@ class Variant {
 * Caller must return correct variants with mock fasta, sam examples
 * Caller must return correct variants with mock fasta, sam examples and one interval
 * Caller must return correct variants with mock fasta, sam examples and multiple intervals
+* Caller must return an empty array if no variants were found
+* Caller must throw an exception if no reference sequence was provided
+* Caller must throw an exception if a list of reads is empty
+* Caller must return filtered variants so that positions with less than two symbols were not considered as correct
+
 
 ### Variant
 
