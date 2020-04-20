@@ -17,11 +17,9 @@ package com.epam.bioinf.variantcaller.caller;
 
 // Временная реализация, которая будет расширена в будущих версиях(задача про метрики)
 class Caller {
-  Variant[] variants; // Храним варианты
-  List<SamRecords> reads; // Храним риды
-
-  Caller(FastaSequence reference, List<SamRecord> reads); // Инициализируем массив вариантов объектами Variant с пустыми массивами внутри
-  Variant[] call(); // Ищем варианты(заполняем массивы в объектах Variant) и возвращаем результат
+  List<Variant> variants; // Храним варианты
+  Caller(FastaSequence reference); // Инициализируем массив вариантов объектами Variant с пустыми массивами внутри
+  List<Variant> call(List<SamRecord> reads); // Ищем варианты(заполняем массивы в объектах Variant) и возвращаем результат как список вариантов
   void printPotentialVariants(); // Временный метод вывода вариантов в консоль
 }
 ```
