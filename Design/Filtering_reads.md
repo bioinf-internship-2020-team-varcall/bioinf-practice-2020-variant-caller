@@ -31,8 +31,8 @@ package com.epam.bioinf.variantcaller.handlers;
 
 // Временная реализация, может быть изменена изменена в будущих версиях
 class SamHandler {
-  private ArrayList<SAMRecord> samRecords; // Хранятся прочитанные и отфильтрованные риды.
-  private List<BEDFeature>
+  private List<SAMRecord> samRecords; // Хранятся прочитанные и отфильтрованные риды.
+  private List<BEDFeature>;
   
   public SamHandler(ParsedArguments parsedArguments) { // Конструктор принимает провалидированные parsed arguments.
     if (parsedArguments.isIntervalsSet()) {
@@ -43,11 +43,11 @@ class SamHandler {
     }
   }
 
-  private static void readInSpecifiedIntervals(List<Path> samPaths, List<BEDFeature> intervals);
+  private static List<SAMRecord> read(List<Path> samPaths);
 
-  private static void read(List<Path> samPaths);
+  private static List<SAMRecord> read(List<Path> samPaths, List<BEDFeature> intervals);
 
-  private static void isRelatedToIntervals(SAMRecord record);
+  private static boolean isInsideAnyInterval(SAMRecord record);
 }
 ```
 
