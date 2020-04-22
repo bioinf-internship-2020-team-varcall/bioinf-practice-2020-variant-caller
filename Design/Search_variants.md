@@ -33,7 +33,7 @@
 package com.epam.bioinf.variantcaller.handlers;
 
 class FastaHandler {
-  List<FastaSequence> getFastaSequences(); // Возвращаем прочитанные последовательность
+  List<FastaSequence> getFastaSequences(); // Возвращаем прочитанные последовательности
 }
 ```
 
