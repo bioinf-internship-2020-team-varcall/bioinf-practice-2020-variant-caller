@@ -25,7 +25,7 @@ O(a * b), где a - количество хромосом, b - длина по�
 package com.epam.bioinf.variantcaller.handlers;
 
 class FastaHandler {
-  FastaSequence getFastaSequence(); // Возвращаем прочитанную последовательность
+  List<FastaSequence> getFastaSequences(); // Возвращаем прочитанные последовательность
 }
 ```
 
