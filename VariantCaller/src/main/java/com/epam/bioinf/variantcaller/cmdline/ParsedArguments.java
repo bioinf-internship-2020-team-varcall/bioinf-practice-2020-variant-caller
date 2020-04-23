@@ -1,5 +1,16 @@
 package com.epam.bioinf.variantcaller.cmdline;
 
+import com.epam.bioinf.variantcaller.exceptions.ParserException;
+import com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaArgsSizeException;
+import com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaInvalidExtensionException;
+import com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaPathNotExistsException;
+import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionInvalidException;
+import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionInvalidExtensionException;
+import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionPathNotExistsException;
+import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamArgsSizeException;
+import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamInvalidExtensionException;
+import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamPathNotExistsException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -7,8 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.CommandLineParserMessages.*;
 
 /**
  * Class holds validated data
@@ -39,32 +48,24 @@ public class ParsedArguments {
 
   private void validate(List<Path> fastaValues, List<Path> bedValues,
       List<Path> samValues, Optional<String> regionData) {
-    String errorMessage = "";
-
     if (fastaValues.size() != 1) {
-      errorMessage = FASTA_ARGS_COUNT_EXC;
+      throw new FastaArgsSizeException();
     } else if (bedValues.isEmpty()) {
-      if (regionData.isPresent()) {
-        checkIfRegionDataIsInvalid(regionData.get());
-      }
+      regionData.ifPresent(this::checkIfRegionDataIsInvalid);
     } else if (samValues.isEmpty()) {
-      errorMessage = SAM_ARGS_COUNT_EXC;
+      throw new SamArgsSizeException();
     } else if (checkIfSomeExtensionsIsInvalid(fastaValues, AllowedExtensions.FASTA_EXTENSIONS)) {
-      errorMessage = FASTA_EXTENSION_EXC;
+      throw new FastaInvalidExtensionException();
     } else if (checkIfSomeExtensionsIsInvalid(bedValues, AllowedExtensions.BED_EXTENSIONS)) {
-      errorMessage = BED_EXTENSION_EXC;
+      throw new RegionInvalidExtensionException();
     } else if (checkIfSomeExtensionsIsInvalid(samValues, AllowedExtensions.SAM_EXTENSIONS)) {
-      errorMessage = SAM_EXTENSION_EXC;
+      throw new SamInvalidExtensionException();
     } else if (checkIfSomePathDoesNotExist(fastaValues)) {
-      errorMessage = FASTA_PATH_NOT_EXISTS_EXC;
+      throw new FastaPathNotExistsException();
     } else if (checkIfSomePathDoesNotExist(bedValues)) {
-      errorMessage = BED_PATH_NOT_EXISTS_EXC;
+      throw new RegionPathNotExistsException();
     } else if (checkIfSomePathDoesNotExist(samValues)) {
-      errorMessage = SAM_PATH_NOT_EXISTS_EXC;
-    }
-
-    if (!errorMessage.isEmpty()) {
-      throw new IllegalArgumentException(errorMessage);
+      throw new SamPathNotExistsException();
     }
   }
 
@@ -84,14 +85,15 @@ public class ParsedArguments {
 
   /**
    * Checking that region from input is valid by dividing string
-   * input and validating that size of array is 3. Example:
+   * input and validating size of array is 3. Example:
    * "chr1 1 10" -> ["chr1", "1", "10"] - valid
    * "chr1 1 10 1" -> ["chr1", "1", "10", "1"] - invalid
+   *
    * @param regionData region info
    */
   private void checkIfRegionDataIsInvalid(String regionData) {
     if (regionSplit.split(regionData).length != 3) {
-      throw new IllegalArgumentException(INVALID_REGION_EXC);
+      throw new RegionInvalidException();
     }
   }
 

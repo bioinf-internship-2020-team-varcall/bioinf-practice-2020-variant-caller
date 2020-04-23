@@ -1,24 +1,21 @@
-import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.CommandLineParserMessages.*;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.PATH_TO_BUILT_JAR;
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.integTestFilePath;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.rules.ExpectedException.none;
-
 import java.io.BufferedReader;
-
-import static java.io.File.pathSeparatorChar;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.epam.bioinf.variantcaller.helpers.TestHelper.PATH_TO_BUILT_JAR;
+import static com.epam.bioinf.variantcaller.helpers.TestHelper.integTestFilePath;
+import static java.io.File.pathSeparatorChar;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.rules.ExpectedException.none;
 
 public class CommandLineArgsrIntegTest {
   @Rule
@@ -45,8 +42,10 @@ public class CommandLineArgsrIntegTest {
         "--sam", integTestFilePath("test1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
-    assertEquals("Exception in thread \"main\" java.lang.IllegalArgumentException: "
-        + FASTA_ARGS_COUNT_EXC, processInfo.errorString);
+    assertEquals("Exception in thread \"main\" "
+            + "com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaArgsSizeException: "
+            + "Multiple or no paths to '.fasta' files were presented, must be 1",
+        processInfo.errorString);
     assertEquals(1, processInfo.exitValue);
   }
 

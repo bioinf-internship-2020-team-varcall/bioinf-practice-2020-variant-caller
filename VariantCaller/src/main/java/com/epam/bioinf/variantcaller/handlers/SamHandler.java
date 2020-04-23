@@ -57,7 +57,7 @@ public class SamHandler {
         }
         readsNumberByPath.put(path, counter);
       } catch (IOException e) {
-        throw new RuntimeIOException(e.getMessage(), e.getCause());
+        throw new RuntimeIOException(e.getMessage(), e);
       }
     }
   }
