@@ -33,7 +33,7 @@
 package com.epam.bioinf.variantcaller.handlers;
 
 class FastaHandler {
-  List<FastaSequence> getFastaSequences(); // Возвращаем прочитанные последовательности
+  HashMap<Integer, ReferenceSequence> getFastaSequences(ParsedArguments parsedArguments); // Возвращаем прочитанные последовательности
 }
 ```
 
@@ -45,9 +45,9 @@ package com.epam.bioinf.variantcaller.caller;
 
 // Временная реализация, которая будет расширена в будущих версиях(задача про метрики)
 class Caller {
-  List<Variant> variants; // Храним варианты
-  Caller(List<FastaSequence> reference); // Инициализируем список вариантов объектами Variant с пустыми списками внутри
-  List<Variant> call(List<SamRecord> reads); // Ищем варианты(заполняем массивы в объектах Variant) и возвращаем результат как список вариантов
+  private HashMap<String, HashMap<Integer, Variant>> variants; // Храним варианты как словарь, где ключ - это контиг, а значение - другой словарь, где его ключ - это позиция в геноме, а значением - объект, хранящий потенциальные варианты
+  List<Variant> call(HashMap<Integer, ReferenceSequence> referenceSequences, List<SAMRecord> samRecords); // Последовательности передаются как словарь, где ключ - это контиг индекс и значение - последовательность
+  void initVariants(); // создаем и инициализируем варианты для нужных позиций из ридов
   void printPotentialVariants(); // Временный метод вывода вариантов в консоль
 }
 ```
@@ -58,13 +58,11 @@ package com.epam.bioinf.variantcaller.caller;
 
 // Временная реализация, которая будет расширена в будущих версиях(задача про метрики)
 class Variant {
-  Character referenceChar; // Храним референс символ
-  int position; // Храним индекс референс символа в геноме
   ArrayList<Character> potentialVariants; // Сохраняем все потенциальные варианты
 
   Variant(Character referenceChar, int position); // Инициализируем список
   void addPotentialVariant(Character potentialVariant); // Добавляем символ к potentialVariants
-  Character identifyMostPossibleVariant(); // Возвращаем наиболее часто встречающийся символ
+  public List<Character> getPotentialVariants(); // Возвращаем список потенциальных вариантов
 }
 ```
 
@@ -75,6 +73,7 @@ class Variant {
 
 ### Caller
 
+* Caller must successully create variant objects according to cigars in reads
 * Caller must return correct variants with mock fasta, sam examples for one chromosome
 * Caller must return correct variants with mock fasta, sam examples and one interval for one chromosome
 * Caller must return correct variants with mock fasta, sam examples and multiple intervals for one chromosome
@@ -89,7 +88,7 @@ class Variant {
 
 ### Variant
 
-* Variant must successfully identify most possible variant
+* Variant must successfully add character
 
 ## Интеграционный тест
 
