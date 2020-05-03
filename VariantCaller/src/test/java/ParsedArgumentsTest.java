@@ -1,5 +1,6 @@
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
 
@@ -171,6 +172,16 @@ public class ParsedArgumentsTest {
     assertThrows(IllegalArgumentException.class, () ->
         new ParsedArguments(correctFasta, correctBed, notExistingSam, CORRECT_REGION)
     );
+  }
+
+  @Test
+  public void parsedArgumentsMustReturnTrueIfIntervalsAreSet() {
+    List<Path> correctFasta = getPaths("test1.fasta");
+    List<Path> correctBed = getPaths("test1.bed", "test2.bed");
+    List<Path> correctSam = getPaths("test1.sam", "test2.sam");
+    ParsedArguments parsedArguments =
+        new ParsedArguments(correctFasta, correctBed , correctSam, CORRECT_REGION);
+    assertTrue(parsedArguments.isIntervalsSet());
   }
 
   private List<Path> getPaths(String... filenames) {

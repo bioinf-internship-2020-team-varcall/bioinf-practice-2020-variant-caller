@@ -35,45 +35,16 @@ public class SamHandlerTest {
   }
 
   @Test
-  public void samHandlerMustReturnCorrectReadsNumberWithRealExample() {
-    SamHandler samHandler = getSamHandler("realSamFileExample.sam");
-    Path testFilePath = Paths.get(testFilePath("realSamFileExample.sam"));
-    long correctReadsNumber = 1985;
-
-    Map<Path, Long> expectedReadsByPath = Map.of(testFilePath, correctReadsNumber);
-    Map<Path, Long> actualReadsByPath = samHandler.getReadsNumberByPath();
-    assertEquals(expectedReadsByPath, actualReadsByPath);
-  }
-
-  @Test
-  public void samHandlerMustReturnCorrectReadsNumberWithOneFile() {
-    SamHandler samHandler = getSamHandler("test1.sam");
-    Path testFilePath = Paths.get(testFilePath("test1.sam"));
-    long correctReadsNumber = 10;
-
-    Map<Path, Long> expectedReadsByPath = Map.of(testFilePath, correctReadsNumber);
-    Map<Path, Long> actualReadsByPath = samHandler.getReadsNumberByPath();
-    assertEquals(expectedReadsByPath, actualReadsByPath);
-  }
-
-  @Test
-  public void samHandlerMustReturnCorrectReadsNumberWithMultipleFiles() {
-    SamHandler samHandler = getSamHandler("test1.sam", "test2.sam");
-
-    Path firstTestFilePath = Paths.get(testFilePath("test1.sam"));
-    Path secondTestFilePath = Paths.get(testFilePath("test2.sam"));
-    long correctReadsNumber = 10;
-
-    Map<Path, Long> expectedReadsByPath =
-        Map.of(firstTestFilePath, correctReadsNumber, secondTestFilePath, correctReadsNumber);
-    Map<Path, Long> actualReadsByPath = samHandler.getReadsNumberByPath();
-    assertEquals(expectedReadsByPath, actualReadsByPath);
-  }
-
-  @Test
   public void samHandlerMustFailIfInvalidOrEmptyFileProvided() {
     assertThrows(SAMFormatException.class,
         () -> getSamHandler("testInvalidReadsFile.sam"));
+  }
+
+  @Test
+  public void samHandlerMustReturnCorrectWithInterval() {
+    SamHandler samHandler = getSamHandler("test1.sam");
+    final long expected = 4;
+    assertEquals(expected, samHandler.getSamRecordsCount());
   }
 
   private SamHandler getSamHandler(String... samFilesName) {
@@ -88,8 +59,8 @@ public class SamHandlerTest {
         .collect(Collectors.joining(pathSeparator));
     return new String[]{
         "--fasta", testFilePath("test1.fasta"),
-        "--bed", testFilePath("test1.bed"),
-        "--sam", samFilesPaths
+        "--sam", samFilesPaths,
+        "--region", "chr1 1 556"
     };
   }
 

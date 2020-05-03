@@ -6,13 +6,11 @@ import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.util.RuntimeIOException;
+import htsjdk.tribble.bed.BEDFeature;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -20,46 +18,61 @@ import java.util.stream.Collectors;
  * Class holds paths to SAM files and SAM records. Performs work with them.
  */
 public class SamHandler {
-  private List<Path> samPaths;
   private List<SAMRecord> samRecords;
-  private SamReaderFactory samFactory;
-  private Map<Path, Long> readsNumberByPath;
 
   /**
    * Constructor gets pre-validated paths to SAM files from ParsedArguments.
    */
   public SamHandler(ParsedArguments parsedArguments) {
-    this.samPaths = parsedArguments.getSamPaths();
-    this.samRecords = new ArrayList<>();
-    this.samFactory = SamReaderFactory.makeDefault();
-    this.readsNumberByPath = new HashMap<>();
-    read();
-    removeDuplicatedReads();
-  }
+    if (parsedArguments.isIntervalsSet()) {
+      IntervalsHandler intervalsHandler = new IntervalsHandler(parsedArguments);
+      this.samRecords = read(parsedArguments.getSamPaths(), intervalsHandler.getIntervals());
+    } else {
+      this.samRecords = read(parsedArguments.getSamPaths());
+    }
 
-  /**
-   * This method is temporary and will be removed in later versions.
-   *
-   * @return Map of provided files & number of reads in each file.
-   */
-  public Map<Path, Long> getReadsNumberByPath() {
-    return readsNumberByPath;
   }
 
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
-  private void read() {
+  private static List<SAMRecord> read(List<Path> samPaths) {
+    List<SAMRecord> samRecords = new ArrayList<>();
+    SamReaderFactory samFactory = SamReaderFactory.makeDefault();
     for (Path path : samPaths) {
       try (SamReader reader = samFactory.open(path)) {
-        long counter = 0;
         for (SAMRecord record : reader) {
           samRecords.add(record);
-          counter++;
         }
-        readsNumberByPath.put(path, counter);
       } catch (IOException e) {
         throw new RuntimeIOException(e.getMessage(), e.getCause());
       }
     }
+    return Collections.unmodifiableList(samRecords);
+  }
+
+  @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
+  private static List<SAMRecord> read(List<Path> samPaths, List<BEDFeature> intervals) {
+    List<SAMRecord> samRecords = new ArrayList<>();
+    SamReaderFactory samFactory = SamReaderFactory.makeDefault();
+    for (Path path : samPaths) {
+      try (SamReader reader = samFactory.open(path)) {
+        for (SAMRecord record : reader) {
+          //System.out.println(record.getContig() + " " +record.getStart() + " " + record.getEnd());
+          if (isInsideAnyInterval(record, intervals)) {
+            samRecords.add(record);
+          }
+        }
+      } catch (IOException e) {
+        throw new RuntimeIOException(e.getMessage(), e.getCause());
+      }
+    }
+    return Collections.unmodifiableList(samRecords);
+  }
+
+  private static boolean isInsideAnyInterval(SAMRecord record, List<BEDFeature> intervals) {
+    return intervals.stream()
+        .anyMatch(interval -> interval.getContig().equals(record.getContig()) &&
+            record.getStart() >= interval.getStart() &&
+            record.getEnd() <= interval.getEnd());
   }
 
   private void removeDuplicatedReads() {
@@ -71,4 +84,11 @@ public class SamHandler {
     return samRecords;
   }
 
+  /**
+   * Temporary method
+   * @return samRecords size
+   */
+  public int getSamRecordsCount() {
+    return samRecords.size();
+  }
 }
