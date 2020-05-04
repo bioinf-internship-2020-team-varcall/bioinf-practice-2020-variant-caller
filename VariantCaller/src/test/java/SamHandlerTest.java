@@ -1,5 +1,6 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamNoRelatedReadsException;
 import com.epam.bioinf.variantcaller.handlers.IntervalsHandler;
 import com.epam.bioinf.variantcaller.handlers.SamHandler;
 import com.epam.bioinf.variantcaller.helpers.TestHelper;
@@ -50,13 +51,6 @@ public class SamHandlerTest {
         () -> getSamHandler("testInvalidReadsFile.sam"));
   }
 
-  @Test
-  public void samHandlerMustReturnCorrectWithSingleFileFilteredBySingleInterval() {
-    SamHandler samHandler = getSamHandler("test1.sam", "--region", "chr1 1 556");
-    final long expected = 4;
-    assertEquals(expected, samHandler.getSamRecordsCount());
-  }
-
   @ParameterizedTest
   @MethodSource("provideArgumentsForCorrectNumberOfFilteredReads")
   public void samHandlerMustReturnCorrectNumberOfFilteredReads(int expectedSize,
@@ -67,15 +61,16 @@ public class SamHandlerTest {
 
   @Test
   public void samHandlerMustFailIfNoReadsRelateToProvidedIntervals() {
-
+    assertThrows(SamNoRelatedReadsException.class,
+        () -> getSamHandler("test1.sam", "--region", "chr5 1 556"));
   }
 
   private static Stream<Arguments> provideArgumentsForCorrectNumberOfFilteredReads() {
     return Stream.of(
         Arguments.of(4, "test1.sam", "--region", "chr1 1 556"),
         Arguments.of(6, "test1.sam", "--bed", "test1.bed")
-//        Arguments.of(6, "test1.sam", "--bed", "chr1 1 556"),
-//        Arguments.of(6, "test1.sam", "--bed", "test1.bed")
+//        multiple files filtered by single interval
+//        multiple files filtered by multiple intervals
     );
   }
 

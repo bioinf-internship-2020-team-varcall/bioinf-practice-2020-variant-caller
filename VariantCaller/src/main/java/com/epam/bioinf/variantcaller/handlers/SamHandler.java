@@ -1,6 +1,7 @@
 package com.epam.bioinf.variantcaller.handlers;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamNoRelatedReadsException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
@@ -65,9 +66,9 @@ public class SamHandler {
         throw new RuntimeIOException(e.getMessage(), e);
       }
     }
-//    if (samRecords.isEmpty()) {
-//      throw new
-//    }
+    if (samRecords.isEmpty()) {
+      throw new SamNoRelatedReadsException();
+    }
     return Collections.unmodifiableList(samRecords);
   }
 
