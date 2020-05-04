@@ -68,9 +68,9 @@ public class SamHandlerTest {
   private static Stream<Arguments> provideArgumentsForCorrectNumberOfFilteredReads() {
     return Stream.of(
         Arguments.of(4, "test1.sam", "--region", "chr1 1 556"),
-        Arguments.of(6, "test1.sam", "--bed", "test1.bed")
-//        multiple files filtered by single interval
-//        multiple files filtered by multiple intervals
+        Arguments.of(6, "test1.sam", "--bed", "test1.bed"),
+        Arguments.of(5, "test1.sam test2.sam", "--region", "chr1 1 556"),
+        Arguments.of(7, "test1.sam test2.sam", "--bed", "test1.bed")
     );
   }
 
@@ -82,24 +82,15 @@ public class SamHandlerTest {
 
   private String[] getArgs(String... input) {
     String samFilesPaths = collectPaths(input[0]);
-    if (input.length == 1) {
-      return new String[] {
-          "--fasta", testFilePath("test1.fasta"),
-          "--sam", samFilesPaths
-      };
-    }
-    String key = input[1];
-    String keyValue = "";
-    if (key == "--region") {
-      keyValue = input[2];
-    } else {
-      keyValue = collectPaths(input[2]);
-    }
-    return new String[]{
+    List<String> result = new ArrayList<>(List.of(
         "--fasta", testFilePath("test1.fasta"),
-        "--sam", samFilesPaths,
-        key, keyValue
-    };
+        "--sam", samFilesPaths));
+    if (input.length != 1) {
+      String key = input[1];
+      String keyValue = key.equals("--region") ? input[2] : collectPaths(input[2]);
+      result.addAll(List.of(key, keyValue));
+    }
+    return result.toArray(new String[0]);
   }
 
   private String collectPaths(String input) {
