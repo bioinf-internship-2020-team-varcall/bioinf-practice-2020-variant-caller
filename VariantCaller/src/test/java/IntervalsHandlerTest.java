@@ -49,6 +49,13 @@ public class IntervalsHandlerTest {
         () -> getIntervalsHandler("--bed", "test1.bed", "test2.bed", "test3_malformed.bed"));
   }
 
+  @Test
+  void intervalsHandlerMustReturnCorrectOverlappingIntervalsSize() {
+    final long expectedSize = 6;
+    IntervalsHandler intervalsHandler = getIntervalsHandler("--bed", "test4_overlapping.bed");
+    assertEquals(expectedSize, intervalsHandler.getIntervals().size());
+  }
+
   private static Stream<Arguments> provideArgumentsForExpectedIntervalsSize() {
     return Stream.of(
         Arguments.of(1, new String[]{"--region", "chr1 12 123"}),

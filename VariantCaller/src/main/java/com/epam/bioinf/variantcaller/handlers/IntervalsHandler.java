@@ -1,7 +1,6 @@
 package com.epam.bioinf.variantcaller.handlers;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
-import com.epam.bioinf.variantcaller.exceptions.handlers.RegionHandlerException;
 import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalEndException;
 import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalIntervalException;
 import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalStartException;
@@ -17,10 +16,9 @@ import htsjdk.tribble.bed.SimpleBEDFeature;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Class reads and stores intervals for VariantCaller.
@@ -102,6 +100,9 @@ public class IntervalsHandler {
         throw new RegionReadingException(exception);
       }
     }
+    if (parsedIntervals.size() >= 2) {
+      parsedIntervals = mergeOverlappingIntervals(parsedIntervals);
+    }
     return Collections.unmodifiableList(parsedIntervals);
   }
 
@@ -121,5 +122,38 @@ public class IntervalsHandler {
     } else if (end < 1 || end < start - 1) {
       throw new RegionIllegalEndException();
     }
+  }
+
+  /**
+   * Method checks if provided intervals have overlaps and
+   * if such are present constructs new one from them.
+   * @param intervals with possible overlapping intervals
+   * @return intervals with merged overlapping intervals
+   */
+  private static List<BEDFeature> mergeOverlappingIntervals(List<BEDFeature> intervals) {
+    List<BEDFeature> sortedIntervals = intervals.stream()
+        .sorted(Comparator.comparing(BEDFeature::getStart))
+        .sorted(Comparator.comparing(BEDFeature::getContig))
+        .collect(Collectors.toList());
+    List<BEDFeature> verifiedIntervals = new ArrayList<>();
+    Iterator<BEDFeature> iterator = sortedIntervals.iterator();
+    BEDFeature current = iterator.next();
+
+    while (iterator.hasNext()) {
+      BEDFeature next = iterator.next();
+      if (current.getContig().equals(next.getContig())) {
+        if (current.getEnd() >= next.getStart()) {
+          current = new SimpleBEDFeature(current.getStart(), Math.max(current.getEnd(), next.getEnd()), current.getContig());
+          if (!iterator.hasNext()) {
+            break;
+          }
+          continue;
+        }
+      }
+      verifiedIntervals.add(current);
+      current = next;
+    }
+    verifiedIntervals.add(current);
+    return verifiedIntervals;
   }
 }
