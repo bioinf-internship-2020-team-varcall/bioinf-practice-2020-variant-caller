@@ -143,7 +143,10 @@ public class IntervalsHandler {
       BEDFeature next = iterator.next();
       if (current.getContig().equals(next.getContig())) {
         if (current.getEnd() >= next.getStart()) {
-          current = new SimpleBEDFeature(current.getStart(), Math.max(current.getEnd(), next.getEnd()), current.getContig());
+          current = new SimpleBEDFeature(
+              current.getStart(),
+              Math.max(current.getEnd(), next.getEnd()),
+              current.getContig());
           if (!iterator.hasNext()) {
             break;
           }
