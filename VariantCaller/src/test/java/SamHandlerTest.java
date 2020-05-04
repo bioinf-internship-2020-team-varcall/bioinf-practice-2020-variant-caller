@@ -54,7 +54,7 @@ public class SamHandlerTest {
   @ParameterizedTest
   @MethodSource("provideArgumentsForCorrectNumberOfFilteredReads")
   public void samHandlerMustReturnCorrectNumberOfFilteredReads(int expectedSize,
-    String samFiles, String intervalKey,String intervalData) {
+      String samFiles, String intervalKey, String intervalData) {
     SamHandler samHandler = getSamHandler(samFiles, intervalKey, intervalData);
     Assertions.assertEquals(expectedSize, samHandler.getSamRecordsCount());
   }
