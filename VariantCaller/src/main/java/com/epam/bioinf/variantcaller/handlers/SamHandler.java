@@ -62,7 +62,7 @@ public class SamHandler {
           }
         }
       } catch (IOException e) {
-        throw new RuntimeIOException(e.getMessage(), e.getCause());
+        throw new RuntimeIOException(e.getMessage(), e);
       }
     }
 //    if (samRecords.isEmpty()) {

@@ -1,4 +1,13 @@
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+import com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaArgsSizeException;
+import com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaInvalidExtensionException;
+import com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaPathNotExistsException;
+import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionInvalidException;
+import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionInvalidExtensionException;
+import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionPathNotExistsException;
+import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamArgsSizeException;
+import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamInvalidExtensionException;
+import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamPathNotExistsException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -42,7 +51,7 @@ public class ParsedArgumentsTest {
     List<Path> invalidFasta = List.of();
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(FastaArgsSizeException.class, () ->
         new ParsedArguments(invalidFasta, correctBed, correctSam, CORRECT_REGION)
     );
   }
@@ -53,7 +62,7 @@ public class ParsedArgumentsTest {
     List<Path> correctBed = List.of();
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
     Optional<String> incorrectRegion = Optional.of("chr1 chr1 12 15");
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(RegionInvalidException.class, () ->
         new ParsedArguments(correctFasta, correctBed, correctSam, incorrectRegion)
     );
   }
@@ -65,7 +74,7 @@ public class ParsedArgumentsTest {
     );
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> invalidSam = List.of();
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(SamArgsSizeException.class, () ->
         new ParsedArguments(correctFasta, correctBed, invalidSam, CORRECT_REGION)
     );
   }
@@ -75,7 +84,7 @@ public class ParsedArgumentsTest {
     List<Path> invalidFasta = getPaths("test1.fasta", "test2.fasta");
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(FastaArgsSizeException.class, () ->
         new ParsedArguments(invalidFasta, correctBed, correctSam, CORRECT_REGION)
     );
   }
@@ -119,7 +128,7 @@ public class ParsedArgumentsTest {
     List<Path> fastaWithInvalidExt = getPaths("test1.fas");
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(FastaInvalidExtensionException.class, () ->
         new ParsedArguments(fastaWithInvalidExt, correctBed, correctSam, CORRECT_REGION)
     );
   }
@@ -129,7 +138,7 @@ public class ParsedArgumentsTest {
     List<Path> correctFasta = getPaths("test1.fasta");
     List<Path> bedWithInvalidExt = getPaths("test1.bek", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(RegionInvalidExtensionException.class, () ->
         new ParsedArguments(correctFasta, bedWithInvalidExt, correctSam, CORRECT_REGION)
     );
   }
@@ -139,7 +148,7 @@ public class ParsedArgumentsTest {
     List<Path> correctFasta = getPaths("test1.fasta");
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> samWithInvalidExt = getPaths("test1.samuel", "test2.sam");
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(SamInvalidExtensionException.class, () ->
         new ParsedArguments(correctFasta, correctBed, samWithInvalidExt, CORRECT_REGION)
     );
   }
@@ -149,7 +158,7 @@ public class ParsedArgumentsTest {
     List<Path> notExistingFasta = getPaths("test217.fasta");
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(FastaPathNotExistsException.class, () ->
         new ParsedArguments(notExistingFasta, correctBed, correctSam, CORRECT_REGION)
     );
   }
@@ -159,7 +168,7 @@ public class ParsedArgumentsTest {
     List<Path> correctFasta = getPaths("test1.fasta");
     List<Path> notExistingBed = getPaths("test217.bed", "test2.bed");
     List<Path> correctSam = getPaths("test1.sam", "test2.sam");
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(RegionPathNotExistsException.class, () ->
         new ParsedArguments(correctFasta, notExistingBed, correctSam, CORRECT_REGION)
     );
   }
@@ -169,7 +178,7 @@ public class ParsedArgumentsTest {
     List<Path> correctFasta = getPaths("test1.fasta");
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> notExistingSam = getPaths("test217.sam", "test2.sam");
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(SamPathNotExistsException.class, () ->
         new ParsedArguments(correctFasta, correctBed, notExistingSam, CORRECT_REGION)
     );
   }

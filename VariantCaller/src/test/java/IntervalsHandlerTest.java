@@ -1,5 +1,8 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+import com.epam.bioinf.variantcaller.exceptions.handlers.RegionHandlerException;
+import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionReadingException;
+import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionInvalidException;
 import com.epam.bioinf.variantcaller.handlers.IntervalsHandler;
 import com.epam.bioinf.variantcaller.helpers.TestHelper;
 import org.junit.jupiter.api.Test;
@@ -30,27 +33,27 @@ public class IntervalsHandlerTest {
   @ParameterizedTest
   @ValueSource(strings = {"chr1 a 123", "chr1 -12 123", "chr1 10 6"})
   void intervalsHandlerMustFailIfRegionPointsAreIncorrect(String testData) {
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(RegionHandlerException.class,
         () -> getIntervalsHandler("--region", testData));
   }
 
   @Test
   void intervalsHandlerMustFailIfFileCanNotBeDecoded() {
-    assertThrows(RuntimeException.class,
+    assertThrows(RegionReadingException.class,
         () -> getIntervalsHandler("--bed", "test3_malformed.bed"));
   }
 
   @Test
   void intervalsHandlerMustFailIfOneOfTheFilesCanNotBeDecoded() {
-    assertThrows(RuntimeException.class,
+    assertThrows(RegionReadingException.class,
         () -> getIntervalsHandler("--bed", "test1.bed", "test2.bed", "test3_malformed.bed"));
   }
 
   private static Stream<Arguments> provideArgumentsForExpectedIntervalsSize() {
     return Stream.of(
-        Arguments.of(1, (Object) new String[]{"--region", "chr1 12 123"}),
-        Arguments.of(7, (Object) new String[]{"--bed", "test1.bed"}),
-        Arguments.of(16, (Object) new String[]{"--bed", "test1.bed", "test2.bed"})
+        Arguments.of(1, new String[]{"--region", "chr1 12 123"}),
+        Arguments.of(7, new String[]{"--bed", "test1.bed"}),
+        Arguments.of(16, new String[]{"--bed", "test1.bed", "test2.bed"})
     );
   }
 
@@ -62,7 +65,7 @@ public class IntervalsHandlerTest {
 
   private String[] getArgs(String... input) {
     String key = input[0];
-    String keyValue = "";
+    String keyValue;
     if (key == "--region") {
       keyValue = input[1];
     } else {
