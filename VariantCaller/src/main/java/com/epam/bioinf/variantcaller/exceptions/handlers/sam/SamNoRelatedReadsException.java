@@ -1,4 +1,4 @@
-package com.epam.bioinf.variantcaller.exceptions.parser.sam;
+package com.epam.bioinf.variantcaller.exceptions.handlers.sam;
 
 import com.epam.bioinf.variantcaller.exceptions.parser.SamParserException;
 

@@ -1,7 +1,6 @@
 package com.epam.bioinf.variantcaller.handlers;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
-import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamNoRelatedReadsException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.SamReader;
@@ -33,6 +32,7 @@ public class SamHandler {
     } else {
       this.samRecords = read(parsedArguments.getSamPaths());
     }
+    removeDuplicatedReads();
   }
 
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")

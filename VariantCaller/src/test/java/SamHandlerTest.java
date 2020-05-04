@@ -1,7 +1,6 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
-import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamNoRelatedReadsException;
-import com.epam.bioinf.variantcaller.handlers.IntervalsHandler;
+import com.epam.bioinf.variantcaller.exceptions.handlers.sam.SamNoRelatedReadsException;
 import com.epam.bioinf.variantcaller.handlers.SamHandler;
 import com.epam.bioinf.variantcaller.helpers.TestHelper;
 import htsjdk.samtools.SAMFormatException;
@@ -11,12 +10,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
