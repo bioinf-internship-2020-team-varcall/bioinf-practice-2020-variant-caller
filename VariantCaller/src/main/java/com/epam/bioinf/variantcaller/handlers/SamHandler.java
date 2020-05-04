@@ -15,7 +15,9 @@ import java.util.stream.Collectors;
 
 /**
  * Class implementation is temporary and will be changed in later versions.
- * Class holds paths to SAM files and SAM records. Performs work with them.
+ * Class reads and holds SAM records. Reading is different depending if
+ * intervals are given. If given, getting intervals data from IntervalsHandler.
+ * @see IntervalsHandler
  */
 public class SamHandler {
   private List<SAMRecord> samRecords;
@@ -30,7 +32,6 @@ public class SamHandler {
     } else {
       this.samRecords = read(parsedArguments.getSamPaths());
     }
-
   }
 
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
@@ -56,7 +57,6 @@ public class SamHandler {
     for (Path path : samPaths) {
       try (SamReader reader = samFactory.open(path)) {
         for (SAMRecord record : reader) {
-          //System.out.println(record.getContig() + " " +record.getStart() + " " + record.getEnd());
           if (isInsideAnyInterval(record, intervals)) {
             samRecords.add(record);
           }
@@ -65,9 +65,18 @@ public class SamHandler {
         throw new RuntimeIOException(e.getMessage(), e.getCause());
       }
     }
+//    if (samRecords.isEmpty()) {
+//      throw new
+//    }
     return Collections.unmodifiableList(samRecords);
   }
 
+  /**
+   * Method checks if input record corresponds to any given interval.
+   * @param record - SAMRecord
+   * @param intervals - list of intervals
+   * @return true if record is located on same contig and in the interval range
+   */
   private static boolean isInsideAnyInterval(SAMRecord record, List<BEDFeature> intervals) {
     return intervals.stream()
         .anyMatch(interval -> interval.getContig().equals(record.getContig()) &&
@@ -85,7 +94,7 @@ public class SamHandler {
   }
 
   /**
-   * Temporary method
+   * Temporary method for testing.
    * @return samRecords size
    */
   public int getSamRecordsCount() {
