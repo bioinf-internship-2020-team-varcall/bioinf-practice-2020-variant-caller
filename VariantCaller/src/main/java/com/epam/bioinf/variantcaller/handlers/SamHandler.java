@@ -11,13 +11,16 @@ import htsjdk.tribble.bed.BEDFeature;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Class implementation is temporary and will be changed in later versions.
  * Class reads and holds SAM records. Reading is different depending if
  * intervals are given. If given, getting intervals data from IntervalsHandler.
+ *
  * @see IntervalsHandler
  */
 public class SamHandler {
@@ -75,7 +78,8 @@ public class SamHandler {
 
   /**
    * Method checks if input record corresponds to any given interval.
-   * @param record - SAMRecord
+   *
+   * @param record    - SAMRecord
    * @param intervals - list of intervals
    * @return true if record is located on same contig and in the interval range
    */
@@ -97,6 +101,7 @@ public class SamHandler {
 
   /**
    * Temporary method for testing.
+   *
    * @return samRecords size
    */
   public int getSamRecordsCount() {
