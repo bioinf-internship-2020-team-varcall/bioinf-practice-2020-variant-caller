@@ -88,7 +88,7 @@ public class IntervalsHandler {
     for (Path path : pathsToFiles) {
       try (
           final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
-              .getFeatureReader(path.toString(), new BEDCodec(), false);
+              .getFeatureReader(path.toString(), new BEDCodec(BEDCodec.StartOffset.ZERO), false);
           final CloseableTribbleIterator<BEDFeature> iterator = intervalsReader.iterator();
       ) {
         while (iterator.hasNext()) {
@@ -131,10 +131,14 @@ public class IntervalsHandler {
    * @return intervals with merged overlapping intervals
    */
   private static List<BEDFeature> mergeOverlappingIntervals(List<BEDFeature> intervals) {
+    Comparator<BEDFeature> intervalsComparator = Comparator
+        .comparing(BEDFeature::getContig)
+        .thenComparing(BEDFeature::getStart);
+
     List<BEDFeature> sortedIntervals = intervals.stream()
-        .sorted(Comparator.comparing(BEDFeature::getStart))
-        .sorted(Comparator.comparing(BEDFeature::getContig))
+        .sorted(intervalsComparator)
         .collect(Collectors.toList());
+
     List<BEDFeature> verifiedIntervals = new ArrayList<>();
     Iterator<BEDFeature> iterator = sortedIntervals.iterator();
     BEDFeature current = iterator.next();
