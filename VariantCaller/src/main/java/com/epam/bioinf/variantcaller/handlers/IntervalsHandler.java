@@ -1,7 +1,6 @@
 package com.epam.bioinf.variantcaller.handlers;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
-import com.epam.bioinf.variantcaller.exceptions.handlers.RegionHandlerException;
 import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalEndException;
 import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalIntervalException;
 import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalStartException;
@@ -27,40 +26,22 @@ import java.util.regex.Pattern;
  * Current implementation may differ from final version.
  */
 public class IntervalsHandler {
-  private List<BEDFeature> intervals;
   private static final Pattern regionSplit = Pattern.compile(" ");
 
   /**
-   * Constructor reads region information and depending on it
+   * Method reads region information and depending on it
    * creates a single interval or parses multiple from files
-   * and stores them.
+   * and returns them.
    *
    * @param parsedArguments with region information.
    * @see ParsedArguments
    */
-  public IntervalsHandler(ParsedArguments parsedArguments) {
-    intervals = parsedArguments
+  public static List<BEDFeature> getIntervals(ParsedArguments parsedArguments) {
+    return parsedArguments
         .getRegionData()
         .map(IntervalsHandler::getIntervalFromRegionData)
         .orElseGet(
             () -> parseIntervalsFromFiles(parsedArguments.getBedPaths()));
-  }
-
-  /**
-   * Temporary method to check class functionality.
-   * Prints list of intervals to stdout.
-   */
-  public void listIntervals() {
-    intervals.stream().map(BEDFeature::getContig).forEach(System.out::println);
-  }
-
-  /**
-   * Returns stored intervals.
-   *
-   * @return list of intervals.
-   */
-  public List<BEDFeature> getIntervals() {
-    return intervals;
   }
 
   private static List<BEDFeature> getIntervalFromRegionData(String region) {
