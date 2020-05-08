@@ -1,45 +1,55 @@
 package com.epam.bioinf.variantcaller.handlers;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
-import com.epam.bioinf.variantcaller.exceptions.handlers.fasta.FastaMultipleSequencesException;
-import htsjdk.samtools.reference.FastaSequenceFile;
-import htsjdk.samtools.reference.ReferenceSequence;
+import com.epam.bioinf.variantcaller.exceptions.handlers.fasta.FastaHandlerUnableToFindEntryException;
+import htsjdk.samtools.SAMException;
+import htsjdk.samtools.reference.*;
+
+import java.io.IOException;
 
 /**
- * Class holds a sequence and performs work with it.
- * This implementation is temporary and will be changed in future versions.
+ * Class holds a reference file with sequences and performs work with it.
+ * This implementation may change in future versions.
  */
 public class FastaHandler {
-  private final ReferenceSequence sequence;
+  private IndexedFastaSequenceFile fastaSequenceFile;
 
   /**
-   * Constructor checks if a provided file has only one sequence and if true holds this sequence
+   * Constructor creates indexed sequence file and stores it.
+   * Throwable exception is handled by ParsedArguments
+   * @param parsedArguments parsedArguments with validated path to fasta file
+   * @see ParsedArguments
    */
   public FastaHandler(ParsedArguments parsedArguments) {
-    try (FastaSequenceFile fastaSequenceFile =
-             new FastaSequenceFile(parsedArguments.getFastaPath(), true)) {
-      sequence = fastaSequenceFile.nextSequence();
-      if (fastaSequenceFile.nextSequence() != null) {
-        throw new FastaMultipleSequencesException();
-      }
+    try {
+      FastaSequenceIndex fastaSequenceIndex = FastaSequenceIndexCreator
+          .buildFromFasta(parsedArguments.getFastaPath());
+      fastaSequenceFile = new IndexedFastaSequenceFile(
+          parsedArguments.getFastaPath(), fastaSequenceIndex);
+    } catch (IOException e) { // Handled by ParsedArguments
+      e.printStackTrace();
     }
   }
 
   /**
-   * Method counts GC content in a sequence
+   * Return sequence at specified contig and range
+   * @param contig reference chromosome
+   * @param start range start index
+   * @param stop range end index
+   * @return ReferenceSequence
    */
-  public double getGcContent() {
-    String s = sequence.getBaseString();
-    return s
-        .chars()
-        .filter(c -> c == 'G' || c == 'C')
-        .count() * 1.0 / s.length() * 100.0;
+  public ReferenceSequence getSubsequence(String contig, long start, long stop) {
+    try {
+      return fastaSequenceFile.getSubsequenceAt(contig, start, stop);
+    } catch (SAMException e) {
+      throw new FastaHandlerUnableToFindEntryException(e.getMessage());
+    }
   }
 
   /**
-   * Method counts nucleotides in a sequence
+   * Method for testing class
    */
-  public int countNucleotides() {
-    return sequence.getBaseString().length();
+  public IndexedFastaSequenceFile getFastaSequenceFile() {
+    return fastaSequenceFile;
   }
 }
