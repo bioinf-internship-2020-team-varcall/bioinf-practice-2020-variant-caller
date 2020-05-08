@@ -117,10 +117,6 @@ public class ParsedArguments {
     return regionData;
   }
 
-  public boolean isIntervalsSet() {
-    return !bedPaths.isEmpty() || regionData.isPresent();
-  }
-
   /**
    * Class holds allowed extensions
    */
