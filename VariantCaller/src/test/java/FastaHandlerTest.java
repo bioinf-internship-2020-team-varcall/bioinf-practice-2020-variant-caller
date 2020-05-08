@@ -3,7 +3,15 @@ import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.exceptions.handlers.fasta.FastaMultipleSequencesException;
 import com.epam.bioinf.variantcaller.handlers.FastaHandler;
 import htsjdk.samtools.SAMException;
+import htsjdk.samtools.reference.FastaSequenceFile;
+import htsjdk.samtools.reference.IndexedFastaSequenceFile;
+import htsjdk.samtools.reference.ReferenceSequence;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,48 +20,41 @@ import static org.junit.jupiter.api.Assertions.*;
  * These tests are temporary and will be changed in future versions.
  */
 public class FastaHandlerTest {
+  @ParameterizedTest
+  @MethodSource("provideArgumentsForMustReturnCorrectSubsequence")
+  public void fastaHandlerMustReturnCorrectSubsequence(
+      String fileName, String expectedBaseString, String contig, long start, long stop) {
+    FastaHandler fastaHandler = getFastaHandler(fileName);
+    ReferenceSequence referenceSequence = fastaHandler.getSubsequence(contig, start, stop);
+    assertEquals(expectedBaseString, referenceSequence.getBaseString());
+  }
 
-  @Test
-  public void fastaHandlerMustReturnCorrectGcContentWithMockExample() {
+  @ParameterizedTest
+  @MethodSource("provideArgumentsForMustFailGettingIncorrectSubsequence")
+  public void fastaHandlerFailGettingIncorrectSubsequence(String contig, long start, long stop) {
     FastaHandler fastaHandler = getFastaHandler("test1.fasta");
-    double expectedGcContent = 69.52;
-    double actualGcContent = fastaHandler.getGcContent();
-    assertEquals(expectedGcContent, actualGcContent, 0.01);
+    assertThrows(SAMException.class, () -> fastaHandler.getSubsequence(contig, start, stop));
   }
 
   @Test
-  public void fastaHandlerMustReturnCorrectCountOfNucleotidesWithMockExample() {
+  public void fastaHandlerMustReturnIndexedFile() {
     FastaHandler fastaHandler = getFastaHandler("test1.fasta");
-    int expectedNucleotidesCount = 420;
-    assertEquals(expectedNucleotidesCount, fastaHandler.countNucleotides());
+    IndexedFastaSequenceFile sequenceFile = fastaHandler.getFastaSequenceFile();
+    assertTrue(sequenceFile.isIndexed());
   }
 
-  @Test
-  public void fastaHandlerMustReturnCorrectCountOfNucleotidesWithRealExample() {
-    FastaHandler fastaHandler = getFastaHandler("test1.fna");
-    int expectedNucleotidesCount = 4641652;
-    assertEquals(expectedNucleotidesCount, fastaHandler.countNucleotides());
-  }
-
-  @Test
-  public void fastaHandlerMustReturnCorrectGcContentWithRealExample() {
-    FastaHandler fastaHandler = getFastaHandler("test1.fna");
-    double expectedGcContent = 50.8;
-    double actualGcContent = fastaHandler.getGcContent();
-    assertEquals(expectedGcContent, actualGcContent, 0.01);
-  }
-
-  @Test
-  public void fastaHandlerMustFailIfNoSequenceWasProvided() {
-    assertThrows(SAMException.class, () ->
-        getFastaHandler("test2.fasta")
+  private static Stream<Arguments> provideArgumentsForMustReturnCorrectSubsequence() {
+    return Stream.of(
+        Arguments.of("test1.fasta", "CCCCTA", "TEST", 10, 15),
+        Arguments.of("test3.fasta", "CCCCTA", "chr1", 10, 15),
+        Arguments.of("test1.fna", "AGCTTT", "NC_000913.3", 1, 6)
     );
   }
 
-  @Test
-  public void fastaHandlerMustFailIfMultipleSequencesWereProvided() {
-    assertThrows(FastaMultipleSequencesException.class, () ->
-        getFastaHandler("test3.fasta")
+  private static Stream<Arguments> provideArgumentsForMustFailGettingIncorrectSubsequence() {
+    return Stream.of(
+        Arguments.of("TEST1", 10, 15),
+        Arguments.of("TEST", 10, 1500)
     );
   }
 
