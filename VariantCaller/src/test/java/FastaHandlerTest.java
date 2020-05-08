@@ -1,9 +1,7 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
-import com.epam.bioinf.variantcaller.exceptions.handlers.fasta.FastaMultipleSequencesException;
+import com.epam.bioinf.variantcaller.exceptions.handlers.fasta.FastaHandlerUnableToFindEntryException;
 import com.epam.bioinf.variantcaller.handlers.FastaHandler;
-import htsjdk.samtools.SAMException;
-import htsjdk.samtools.reference.FastaSequenceFile;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
 import org.junit.jupiter.api.Test;
@@ -33,7 +31,8 @@ public class FastaHandlerTest {
   @MethodSource("provideArgumentsForMustFailGettingIncorrectSubsequence")
   public void fastaHandlerFailGettingIncorrectSubsequence(String contig, long start, long stop) {
     FastaHandler fastaHandler = getFastaHandler("test1.fasta");
-    assertThrows(SAMException.class, () -> fastaHandler.getSubsequence(contig, start, stop));
+    assertThrows(FastaHandlerUnableToFindEntryException.class,
+        () -> fastaHandler.getSubsequence(contig, start, stop));
   }
 
   @Test
