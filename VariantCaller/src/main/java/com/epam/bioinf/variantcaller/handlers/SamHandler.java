@@ -30,39 +30,22 @@ public class SamHandler {
    * Constructor gets pre-validated paths to SAM files from ParsedArguments.
    */
   public SamHandler(ParsedArguments parsedArguments) {
-    if (parsedArguments.isIntervalsSet()) {
-      IntervalsHandler intervalsHandler = new IntervalsHandler(parsedArguments);
-      this.samRecords = read(parsedArguments.getSamPaths(), intervalsHandler.getIntervals());
-    } else {
-      this.samRecords = read(parsedArguments.getSamPaths());
-    }
+    List<BEDFeature> intervals = IntervalsHandler.getIntervals(parsedArguments);
+    this.samRecords = read(parsedArguments.getSamPaths(), intervals);
     removeDuplicatedReads();
   }
 
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
-  private static List<SAMRecord> read(List<Path> samPaths) {
-    List<SAMRecord> samRecords = new ArrayList<>();
-    SamReaderFactory samFactory = SamReaderFactory.makeDefault();
-    for (Path path : samPaths) {
-      try (SamReader reader = samFactory.open(path)) {
-        for (SAMRecord record : reader) {
-          samRecords.add(record);
-        }
-      } catch (IOException e) {
-        throw new RuntimeIOException(e.getMessage(), e.getCause());
-      }
-    }
-    return Collections.unmodifiableList(samRecords);
-  }
-
-  @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   private static List<SAMRecord> read(List<Path> samPaths, List<BEDFeature> intervals) {
+    boolean intervalsEmpty = intervals.isEmpty();
     List<SAMRecord> samRecords = new ArrayList<>();
     SamReaderFactory samFactory = SamReaderFactory.makeDefault();
     for (Path path : samPaths) {
       try (SamReader reader = samFactory.open(path)) {
         for (SAMRecord record : reader) {
-          if (isInsideAnyInterval(record, intervals)) {
+          if (intervalsEmpty) {
+            samRecords.add(record);
+          } else if (isInsideAnyInterval(record, intervals)) {
             samRecords.add(record);
           }
         }
@@ -91,8 +74,7 @@ public class SamHandler {
   }
 
   private void removeDuplicatedReads() {
-    samRecords =
-        samRecords.stream().distinct().collect(Collectors.toList());
+    samRecords = samRecords.stream().distinct().collect(Collectors.toList());
   }
 
   public List<SAMRecord> getSamRecords() {
