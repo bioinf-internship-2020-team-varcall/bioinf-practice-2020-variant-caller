@@ -37,13 +37,13 @@ public class SamHandler {
 
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   private static List<SAMRecord> read(List<Path> samPaths, List<BEDFeature> intervals) {
-    boolean intervalsEmpty = intervals.isEmpty();
+    boolean hasEmptyIntervals = intervals.isEmpty();
     List<SAMRecord> samRecords = new ArrayList<>();
     SamReaderFactory samFactory = SamReaderFactory.makeDefault();
     for (Path path : samPaths) {
       try (SamReader reader = samFactory.open(path)) {
         for (SAMRecord record : reader) {
-          if (intervalsEmpty) {
+          if (hasEmptyIntervals) {
             samRecords.add(record);
           } else if (isInsideAnyInterval(record, intervals)) {
             samRecords.add(record);
