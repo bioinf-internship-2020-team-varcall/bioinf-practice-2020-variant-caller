@@ -2,7 +2,6 @@ import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.exceptions.handlers.RegionHandlerException;
 import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionReadingException;
-import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionInvalidException;
 import com.epam.bioinf.variantcaller.handlers.IntervalsHandler;
 import com.epam.bioinf.variantcaller.helpers.TestHelper;
 import org.junit.jupiter.api.Test;
@@ -52,11 +51,18 @@ public class IntervalsHandlerTest {
         () -> IntervalsHandler.getIntervals(parsedArguments));
   }
 
+  @Test
+  void intervalsHandlerMustReturnCorrectOverlappingIntervalsSize() {
+    final long expectedSize = 3;
+    ParsedArguments parsedArguments = getParsedArguments("--bed", "test4_overlapping.bed");
+    assertEquals(expectedSize, IntervalsHandler.getIntervals(parsedArguments).size());
+  }
+
   private static Stream<Arguments> provideArgumentsForExpectedIntervalsSize() {
     return Stream.of(
         Arguments.of(1, new String[]{"--region", "chr1 12 123"}),
         Arguments.of(7, new String[]{"--bed", "test1.bed"}),
-        Arguments.of(16, new String[]{"--bed", "test1.bed", "test2.bed"})
+        Arguments.of(8, new String[]{"--bed", "test1.bed", "test2.bed"})
     );
   }
 
