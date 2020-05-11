@@ -26,27 +26,30 @@ public class IntervalsHandlerTest {
   @MethodSource("provideArgumentsForExpectedIntervalsSize")
   public void intervalsHandlerMustReturnCorrectIntervalsSize(int expectedSize,
       String[] flagData) {
-    IntervalsHandler intervalsHandler = getIntervalsHandler(flagData);
-    assertEquals(expectedSize, intervalsHandler.getIntervals().size());
+    assertEquals(expectedSize, IntervalsHandler.getIntervals(getParsedArguments(flagData)).size());
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"chr1 a 123", "chr1 -12 123", "chr1 10 6"})
   void intervalsHandlerMustFailIfRegionPointsAreIncorrect(String testData) {
+    ParsedArguments parsedArguments = getParsedArguments("--region", testData);
     assertThrows(RegionHandlerException.class,
-        () -> getIntervalsHandler("--region", testData));
+        () -> IntervalsHandler.getIntervals(parsedArguments));
   }
 
   @Test
   void intervalsHandlerMustFailIfFileCanNotBeDecoded() {
+    ParsedArguments parsedArguments = getParsedArguments("--bed", "test3_malformed.bed");
     assertThrows(RegionReadingException.class,
-        () -> getIntervalsHandler("--bed", "test3_malformed.bed"));
+        () -> IntervalsHandler.getIntervals(parsedArguments));
   }
 
   @Test
   void intervalsHandlerMustFailIfOneOfTheFilesCanNotBeDecoded() {
+    ParsedArguments parsedArguments =
+        getParsedArguments("--bed", "test1.bed", "test2.bed", "test3_malformed.bed");
     assertThrows(RegionReadingException.class,
-        () -> getIntervalsHandler("--bed", "test1.bed", "test2.bed", "test3_malformed.bed"));
+        () -> IntervalsHandler.getIntervals(parsedArguments));
   }
 
   @Test
@@ -64,20 +67,14 @@ public class IntervalsHandlerTest {
     );
   }
 
-  private IntervalsHandler getIntervalsHandler(String... arguments) {
+  private ParsedArguments getParsedArguments(String... arguments) {
     String[] correctTestArgs = getArgs(arguments);
-    ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
-    return new IntervalsHandler(parsedArguments);
+    return CommandLineParser.parse(correctTestArgs);
   }
 
   private String[] getArgs(String... input) {
     String key = input[0];
-    String keyValue;
-    if (key == "--region") {
-      keyValue = input[1];
-    } else {
-      keyValue = collectPathsToStringWithoutKey(input);
-    }
+    String keyValue = key.equals("--region") ? input[1] : collectPathsToStringWithoutKey(input);
     return new String[]{
         "--fasta", testFilePath("test1.fasta"),
         key, keyValue,
