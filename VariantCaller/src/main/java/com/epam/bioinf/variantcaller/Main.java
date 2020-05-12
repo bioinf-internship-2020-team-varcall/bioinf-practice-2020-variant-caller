@@ -21,6 +21,7 @@ public class Main {
     IndexedFastaSequenceFile fastaSequenceFile =
         new FastaHandler(parsedArguments).getFastaSequenceFile();
     List<SAMRecord> samRecords = new SamHandler(parsedArguments).getSamRecords();
-    new Caller().call(fastaSequenceFile, samRecords);
+    var result = new Caller().call(fastaSequenceFile, samRecords);
+    result.forEach(System.out::println);
   }
 }

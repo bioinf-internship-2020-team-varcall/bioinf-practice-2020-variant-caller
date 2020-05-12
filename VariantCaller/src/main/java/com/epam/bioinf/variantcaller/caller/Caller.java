@@ -5,7 +5,6 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
-import org.apache.commons.compress.utils.Sets;
 
 import java.util.*;
 
@@ -18,20 +17,24 @@ public class Caller {
     variants = new HashMap<>();
   }
 
-//  public PotentialVariants[] call(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
-//    this.fastaSequenceFile = fastaSequenceFile;
-//    this.samRecords = samRecords;
-//    initVariants();
-//    HashMap<String, HashMap<Integer, PotentialVariants>> result = new HashMap<>();
-//    variants.keySet().forEach(key -> {
-//      Arrays.stream(variants.get(key)).map(el -> )
-//    });
-//  }
-
-  public void call(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
+  public ArrayList<Variant> call(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
     this.fastaSequenceFile = fastaSequenceFile;
     this.samRecords = samRecords;
     initVariants();
+    ArrayList<Variant> res = new ArrayList<>();
+    variants.keySet().forEach(key -> {
+      var potentialVariants = variants.get(key);
+      for (int i = 0; i < potentialVariants.length; i++) {
+        if (potentialVariants[i] != null && potentialVariants[i].getVariants().size() > 0) {
+          res.add(new Variant(key,
+              i,
+              potentialVariants[i].getVariants(),
+              potentialVariants[i].getRefAllele())
+          );
+        }
+      }
+    });
+    return res;
   }
 
   private void initVariants() {
