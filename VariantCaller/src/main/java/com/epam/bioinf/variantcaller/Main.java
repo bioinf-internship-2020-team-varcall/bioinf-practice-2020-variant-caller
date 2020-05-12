@@ -12,13 +12,14 @@ import java.util.List;
 
 /**
  * Class launches program with command line arguments(implementation is
- *  temporary and will be updated in future versions,
+ * temporary and will be updated in future versions,
  * now it is used for exception check in integration tests)
  */
 public class Main {
   public static void main(String[] args) {
     ParsedArguments parsedArguments = CommandLineParser.parse(args);
-    IndexedFastaSequenceFile fastaSequenceFile = new FastaHandler(parsedArguments).getFastaSequenceFile();
+    IndexedFastaSequenceFile fastaSequenceFile =
+        new FastaHandler(parsedArguments).getFastaSequenceFile();
     List<SAMRecord> samRecords = new SamHandler(parsedArguments).getSamRecords();
     new Caller().call(fastaSequenceFile, samRecords);
   }

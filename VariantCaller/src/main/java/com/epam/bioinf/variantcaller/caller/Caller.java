@@ -12,47 +12,41 @@ import java.util.*;
 public class Caller {
   private IndexedFastaSequenceFile fastaSequenceFile;
   private List<SAMRecord> samRecords;
-  private HashMap<String, PotentialVariants[]> variants;
-  private List<PotentialVariants> potentialVariantsList;
+  private final HashMap<String, PotentialVariants[]> variants;
 
   public Caller() {
     variants = new HashMap<>();
-    potentialVariantsList = new ArrayList<>();
   }
+
+//  public PotentialVariants[] call(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
+//    this.fastaSequenceFile = fastaSequenceFile;
+//    this.samRecords = samRecords;
+//    initVariants();
+//    HashMap<String, HashMap<Integer, PotentialVariants>> result = new HashMap<>();
+//    variants.keySet().forEach(key -> {
+//      Arrays.stream(variants.get(key)).map(el -> )
+//    });
+//  }
 
   public void call(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
     this.fastaSequenceFile = fastaSequenceFile;
     this.samRecords = samRecords;
     initVariants();
-//        printVariants();
   }
-
-//    public void printVariants() {
-//        variants.keySet().forEach(key -> {
-//            System.out.println(key);
-//            var entry = variants.get(key);
-//            entry.keySet().forEach(pos -> {
-//                if (entry.get(pos).getVariants()[0] >= 2
-//                        || entry.get(pos).getVariants()[1] >= 2
-//                        || entry.get(pos).getVariants()[2] >= 2
-//                        || entry.get(pos).getVariants()[3] >= 2) {
-//                    System.out.println(Arrays.toString(entry.get(pos).getVariants()));
-//                }
-//            });
-//        });
-//    }
 
   private void initVariants() {
     samRecords.forEach(samRecord -> {
       String contig = samRecord.getContig();
       if (contig != null) {
         if (!variants.containsKey(contig)) {
-          variants.put(contig, new PotentialVariants[fastaSequenceFile.getSequence(contig).length()]);
+          variants.put(contig,
+              new PotentialVariants[fastaSequenceFile.getSequence(contig).length()]);
         }
 
         PotentialVariants[] variantsByContig = variants.get(contig);
         int start = samRecord.getStart();
-        ReferenceSequence subsequenceAt = fastaSequenceFile.getSubsequenceAt(contig, start, samRecord.getEnd());
+        ReferenceSequence subsequenceAt =
+            fastaSequenceFile.getSubsequenceAt(contig, start, samRecord.getEnd());
         byte[] subsequenceBases = subsequenceAt.getBases();
 
         int refInd = 0;
@@ -63,13 +57,12 @@ public class Caller {
           int length = cigarElement.getLength();
           if (operator.isAlignment()) {
             for (int j = 0; j < length - 1; j++) {
-              var element = variantsByContig[start + refInd];
-              if (element == null) {
-                element = new PotentialVariants(subsequenceBases[refInd]);
+              if (variantsByContig[start + refInd] == null) {
+                variantsByContig[start + refInd] = new PotentialVariants(subsequenceBases[refInd]);
               } else {
                 var c = readBases[readInd];
-                if (element.getRefChar() != c) {
-                  element.addPotentialVariant(c);
+                if (variantsByContig[start + refInd].getRefChar() != c) {
+                  variantsByContig[start + refInd].addPotentialVariant(c);
                 }
               }
               refInd++;
