@@ -64,9 +64,9 @@ public class SamHandlerTest {
   private static Stream<Arguments> provideArgumentsForCorrectNumberOfFilteredReads() {
     return Stream.of(
         Arguments.of(4, "test1.sam", "--region", "chr1 1 556"),
-        Arguments.of(6, "test1.sam", "--bed", "test1.bed"),
+        Arguments.of(9, "test1.sam", "--bed", "test1.bed"),
         Arguments.of(5, "test1.sam test2.sam", "--region", "chr1 1 556"),
-        Arguments.of(7, "test1.sam test2.sam", "--bed", "test1.bed")
+        Arguments.of(10, "test1.sam test2.sam", "--bed", "test1.bed")
     );
   }
 
