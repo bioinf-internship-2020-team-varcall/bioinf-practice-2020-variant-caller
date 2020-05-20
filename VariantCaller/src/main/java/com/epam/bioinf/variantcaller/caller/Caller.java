@@ -18,10 +18,18 @@ public class Caller {
     variants = new HashMap<>();
   }
 
-  public void call(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
+  public ArrayList<Variant> call(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
     this.fastaSequenceFile = fastaSequenceFile;
     this.samRecords = samRecords;
     initVariants();
+    ArrayList<Variant> variants = new ArrayList<>();
+    this.variants.keySet().forEach(contigKey -> {
+      HashMap potentialVariants = this.variants.get(contigKey);
+      this.variants.get(contigKey).forEach((posKey, potentialVariant) -> {
+        variants.add(new Variant(contigKey, posKey, potentialVariant.getVariants(), potentialVariant.getRefAllele()));
+      });
+    });
+    return variants;
   }
 
   private void initVariants() {
