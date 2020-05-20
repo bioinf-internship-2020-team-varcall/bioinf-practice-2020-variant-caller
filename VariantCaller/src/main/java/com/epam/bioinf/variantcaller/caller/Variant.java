@@ -18,6 +18,14 @@ public class Variant {
     this.refAllele = refAllele;
   }
 
+  public String getContig() {
+    return contig;
+  }
+
+  public void setContig(String contig) {
+    this.contig = contig;
+  }
+
   public int getPos() {
     return pos;
   }
