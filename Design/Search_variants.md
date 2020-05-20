@@ -16,11 +16,11 @@
 
 ## Оценка сложности алгоритма по времени
 
-O(количество ридов) * O(размер рида) * O(количество измененных позиций)
+O(количество ридов) * O(размер рида) + O(количество измененных позиций)
 
 ## Оценка сложности алгоритма по памяти
 
-O(количество хромосом покрытых ридами) * O(количество измененных позиций в хромосоме)
+O(количество хромосом покрытых ридами) * O(количество измененных позиций)
 
 Мы создаем объект для каждой измененной позиции в геноме. Размер каждого такого объекта зависит от количества приходящихся на эту позицию символов в ридах, отличающихся от референса.
 
@@ -45,7 +45,6 @@ package com.epam.bioinf.variantcaller.caller;
 class Caller {
   private HashMap<String, HashMap<Integer, Variant>> variants; // Храним варианты как словарь, где ключ - это контиг, а значение - другой словарь, где его ключ - это позиция в геноме, а значением - объект, хранящий потенциальные варианты
   List<Variant> call(HashMap<Integer, ReferenceSequence> referenceSequences, List<SAMRecord> samRecords); // Последовательности передаются как словарь, где ключ - это контиг индекс и значение - последовательность
-  void initVariants(); // создаем и инициализируем варианты для нужных позиций из ридов
   void printPotentialVariants(); // Временный метод вывода вариантов в консоль
 }
 ```
@@ -59,9 +58,9 @@ package com.epam.bioinf.variantcaller.caller;
 class PotentialVariant {
   ArrayList<Character> potentialVariants; // Сохраняем все потенциальные варианты
 
-  PotentialVariant(Character referenceChar, int position); // Инициализируем список
+  PotentialVariant(Character referenceChar); // Инициализируем список
   void addPotentialVariant(Character potentialVariant); // Добавляем символ к potentialVariants
-  public List<Character> getPotentialVariants(); // Возвращаем список потенциальных вариантов
+  public List<Character> getBases(); // Возвращаем список потенциальных вариантов
   ArrayList<Allele> getVariants(); // Получение вариантов для вывода VCF
 }
 ```
