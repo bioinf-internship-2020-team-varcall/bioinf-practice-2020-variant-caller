@@ -5,36 +5,23 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
+import org.apache.commons.compress.utils.Sets;
 
 import java.util.*;
 
 public class Caller {
   private IndexedFastaSequenceFile fastaSequenceFile;
   private List<SAMRecord> samRecords;
-  private final HashMap<String, PotentialVariants[]> variants;
+  private final HashMap<String, HashMap<Integer, PotentialVariants>> variants;
 
   public Caller() {
     variants = new HashMap<>();
   }
 
-  public ArrayList<Variant> call(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
+  public void call(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
     this.fastaSequenceFile = fastaSequenceFile;
     this.samRecords = samRecords;
     initVariants();
-    ArrayList<Variant> res = new ArrayList<>();
-    variants.keySet().forEach(key -> {
-      var potentialVariants = variants.get(key);
-      for (int i = 0; i < potentialVariants.length; i++) {
-        if (potentialVariants[i] != null && potentialVariants[i].getVariants().size() > 0) {
-          res.add(new Variant(key,
-              i,
-              potentialVariants[i].getVariants(),
-              potentialVariants[i].getRefAllele())
-          );
-        }
-      }
-    });
-    return res;
   }
 
   private void initVariants() {
@@ -43,10 +30,10 @@ public class Caller {
       if (contig != null) {
         if (!variants.containsKey(contig)) {
           variants.put(contig,
-              new PotentialVariants[fastaSequenceFile.getSequence(contig).length()]);
+              new HashMap<Integer, PotentialVariants>());
         }
 
-        PotentialVariants[] variantsByContig = variants.get(contig);
+        HashMap<Integer, PotentialVariants> variantsByContig = variants.get(contig);
         int start = samRecord.getStart();
         ReferenceSequence subsequenceAt =
             fastaSequenceFile.getSubsequenceAt(contig, start, samRecord.getEnd());
@@ -60,14 +47,20 @@ public class Caller {
           int length = cigarElement.getLength();
           if (operator.isAlignment()) {
             for (int j = 0; j < length - 1; j++) {
-              if (variantsByContig[start + refInd] == null) {
-                variantsByContig[start + refInd] = new PotentialVariants(subsequenceBases[refInd]);
-              } else {
-                var c = readBases[readInd];
-                if (variantsByContig[start + refInd].getRefChar() != c) {
-                  variantsByContig[start + refInd].addPotentialVariant(c);
+
+              int constReadInd = readInd;
+
+              variantsByContig.compute(readInd, (key, val) -> {
+                byte c = readBases[constReadInd];
+                if (val == null) {
+                  val = new PotentialVariants(subsequenceBases[constReadInd]);
                 }
-              }
+                if (val.getRefChar() != c) {
+                  val.addPotentialVariant(c);
+                }
+                return val;
+              });
+
               refInd++;
               readInd++;
             }
@@ -79,6 +72,8 @@ public class Caller {
             refInd++;
           }
         }
+        //variants.computeIfPresent(contig, (key, value) -> value = variantsByContig);
+        variants.put(contig, variantsByContig);
       }
     });
   }

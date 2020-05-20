@@ -40,18 +40,20 @@ public class PotentialVariants {
     Long[] res = {0L, 0L, 0L, 0L};
     potentialVariants.forEach(pv -> {
       switch (pv) {
-        case (byte) 'A':
-          res[0]++;
-          break;
-        case (byte) 'C':
-          res[1]++;
-          break;
-        case (byte) 'G':
-          res[2]++;
-          break;
-        case (byte) 'T':
-          res[3]++;
-          break;
+          case (byte) 'A':
+            res[0]++;
+            break;
+          case (byte) 'C':
+            res[1]++;
+            break;
+          case (byte) 'G':
+            res[2]++;
+            break;
+          case (byte) 'T':
+            res[3]++;
+            break;
+          default:
+            break;
       }
     });
     ArrayList<Allele> variants = new ArrayList<>();
