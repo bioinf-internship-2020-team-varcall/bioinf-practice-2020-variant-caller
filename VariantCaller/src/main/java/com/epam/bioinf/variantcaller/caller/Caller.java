@@ -28,52 +28,52 @@ public class Caller {
     samRecords.forEach(samRecord -> {
       String contig = samRecord.getContig();
       if (contig != null) {
-        if (!variants.containsKey(contig)) {
-          variants.put(contig,
-              new HashMap<Integer, PotentialVariants>());
-        }
 
-        HashMap<Integer, PotentialVariants> variantsByContig = variants.get(contig);
-        int start = samRecord.getStart();
-        ReferenceSequence subsequenceAt =
-            fastaSequenceFile.getSubsequenceAt(contig, start, samRecord.getEnd());
-        byte[] subsequenceBases = subsequenceAt.getBases();
-
-        int refInd = 0;
-        int readInd = 0;
-        byte[] readBases = samRecord.getReadBases();
-        for (CigarElement cigarElement : samRecord.getCigar().getCigarElements()) {
-          CigarOperator operator = cigarElement.getOperator();
-          int length = cigarElement.getLength();
-          if (operator.isAlignment()) {
-            for (int j = 0; j < length - 1; j++) {
-
-              int constReadInd = readInd;
-
-              variantsByContig.compute(readInd, (key, val) -> {
-                byte c = readBases[constReadInd];
-                if (val == null) {
-                  val = new PotentialVariants(subsequenceBases[constReadInd]);
-                }
-                if (val.getRefChar() != c) {
-                  val.addPotentialVariant(c);
-                }
-                return val;
-              });
-
-              refInd++;
-              readInd++;
-            }
-          } else if (operator.equals(CigarOperator.D)) {
-            refInd += length + 1;
-            readInd++;
-          } else if (operator.equals(CigarOperator.I)) {
-            readInd += length + 1;
-            refInd++;
+        variants.compute(contig, (contigKey , variantsByContig) -> {
+          if (variantsByContig == null) {
+            variantsByContig = new HashMap<Integer, PotentialVariants>();
           }
-        }
-        //variants.computeIfPresent(contig, (key, value) -> value = variantsByContig);
-        variants.put(contig, variantsByContig);
+
+          int start = samRecord.getStart();
+          ReferenceSequence subsequenceAt =
+              fastaSequenceFile.getSubsequenceAt(contig, start, samRecord.getEnd());
+          byte[] subsequenceBases = subsequenceAt.getBases();
+
+          int refInd = 0;
+          int readInd = 0;
+          byte[] readBases = samRecord.getReadBases();
+          for (CigarElement cigarElement : samRecord.getCigar().getCigarElements()) {
+            CigarOperator operator = cigarElement.getOperator();
+            int length = cigarElement.getLength();
+            if (operator.isAlignment()) {
+              for (int j = 0; j < length - 1; j++) {
+
+                int constReadInd = readInd;
+
+                variantsByContig.compute(readInd, (posKey, potentialVariant) -> {
+                  byte c = readBases[constReadInd];
+                  if (potentialVariant == null) {
+                    potentialVariant = new PotentialVariants(subsequenceBases[constReadInd]);
+                  }
+                  if (potentialVariant.getRefChar() != c) {
+                    potentialVariant.addPotentialVariant(c);
+                  }
+                  return potentialVariant;
+                });
+
+                refInd++;
+                readInd++;
+              }
+            } else if (operator.equals(CigarOperator.D)) {
+              refInd += length + 1;
+              readInd++;
+            } else if (operator.equals(CigarOperator.I)) {
+              readInd += length + 1;
+              refInd++;
+            }
+          }
+          return variantsByContig;
+        });
       }
     });
   }
