@@ -19,16 +19,16 @@ public class VCFHandler(Path outputFilePath, List<Variant> variants) {
 		}
 	}
 	
-	private VariantContextWriter configureVcfWriter(ParsedArguments parsedArgs) {
+	private VariantContextWriter configureVcfWriter(Path outputFilePath) {
 		//возвращает VariantContextWriter с выходным файлом полученным из ParsedArgs.
 	}
 	
-	private VCFHeader getHeader(ParsedArguments parsedArgs) {
+	private VCFHeader getHeader() {
 		//возвращает VCFHeader с кратким описанием.
 		//Возможно добавление SequenceDictionary.
 	}
 
-	private List<VariantContext> getVariantContexts(? variants) {
+	private List<VariantContext> getVariantContexts(List<Variant> variants) {
 		//точная структура данных variants пока не известна.
 		//создает List<VariantContext> итерируя по variants превращая их в VariantContext через VariantContextBuilder
 	}
@@ -38,7 +38,7 @@ Unit-тесты:
   * Vcf must be writtenif valid variants provided
   * Must return correct header
   * Must return correct variant contexts with valid variants
-  * Must fail if invalid variants provided
+  * Must fail with VcfInvalidVariantsProvidedException if invalid variants provided
   
 ### VcfInvalidVariantsProvidedException
 
