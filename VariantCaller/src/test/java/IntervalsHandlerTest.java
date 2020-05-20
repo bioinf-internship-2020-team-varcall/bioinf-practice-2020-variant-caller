@@ -61,8 +61,8 @@ public class IntervalsHandlerTest {
   private static Stream<Arguments> provideArgumentsForExpectedIntervalsSize() {
     return Stream.of(
         Arguments.of(1, new String[]{"--region", "chr1 12 123"}),
-        Arguments.of(7, new String[]{"--bed", "test1.bed"}),
-        Arguments.of(8, new String[]{"--bed", "test1.bed", "test2.bed"})
+        Arguments.of(5, new String[]{"--bed", "test1.bed"}),
+        Arguments.of(6, new String[]{"--bed", "test1.bed", "test2.bed"})
     );
   }
 
