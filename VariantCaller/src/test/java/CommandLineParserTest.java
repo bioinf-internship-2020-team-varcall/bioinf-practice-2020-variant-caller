@@ -1,19 +1,18 @@
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionBothIntervalOptionsException;
 import org.junit.jupiter.api.Test;
 import joptsimple.OptionException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -32,7 +31,7 @@ public class CommandLineParserTest {
   @Test
   public void parserMustFailWithExcessParameters() {
     String[] invalidTestArgs = getArgs("--fasta", "--bed", "--sam", "--region");
-    assertThrows(IllegalArgumentException.class, () ->
+    assertThrows(RegionBothIntervalOptionsException.class, () ->
         CommandLineParser.parse(invalidTestArgs)
     );
   }

@@ -1,6 +1,10 @@
 package com.epam.bioinf.variantcaller.handlers;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalEndException;
+import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalIntervalException;
+import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionIllegalStartException;
+import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionReadingException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import htsjdk.tribble.AbstractFeatureReader;
 import htsjdk.tribble.CloseableTribbleIterator;
@@ -12,52 +16,31 @@ import htsjdk.tribble.bed.SimpleBEDFeature;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
-
-import static com.epam.bioinf.variantcaller.helpers.exceptions.messages.IntervalsHandlerMessages.*;
+import java.util.stream.Collectors;
 
 /**
  * Class reads and stores intervals for VariantCaller.
  * Current implementation may differ from final version.
  */
 public class IntervalsHandler {
-  private List<BEDFeature> intervals;
   private static final Pattern regionSplit = Pattern.compile(" ");
 
   /**
-   * Constructor reads region information and depending on it
+   * Method reads region information and depending on it
    * creates a single interval or parses multiple from files
-   * and stores them.
+   * and returns them.
    *
-   * @param parsedArguments with region information
+   * @param parsedArguments with region information.
    * @see ParsedArguments
    */
-  public IntervalsHandler(ParsedArguments parsedArguments) {
-    intervals = parsedArguments
+  public static List<BEDFeature> getIntervals(ParsedArguments parsedArguments) {
+    return parsedArguments
         .getRegionData()
         .map(IntervalsHandler::getIntervalFromRegionData)
         .orElseGet(
             () -> parseIntervalsFromFiles(parsedArguments.getBedPaths()));
-  }
-
-  /**
-   * Temporary method to check class functionality.
-   * Prints list of intervals to stdout.
-   */
-  public void listIntervals() {
-    intervals.stream().map(BEDFeature::getContig).forEach(System.out::println);
-  }
-
-  /**
-   * Returns stored intervals.
-   *
-   * @return list of intervals
-   */
-  public List<BEDFeature> getIntervals() {
-    return intervals;
   }
 
   private static List<BEDFeature> getIntervalFromRegionData(String region) {
@@ -69,8 +52,9 @@ public class IntervalsHandler {
 
   /**
    * Getting single interval from string.
-   * @param region contains data about start, end and name
-   * @return single interval
+   *
+   * @param region contains data about start, end and name.
+   * @return single interval.
    */
   private static BEDFeature parseFeatureFromString(String region) {
     String[] regionData = regionSplit.split(region);
@@ -86,7 +70,7 @@ public class IntervalsHandler {
     for (Path path : pathsToFiles) {
       try (
           final FeatureReader<BEDFeature> intervalsReader = AbstractFeatureReader
-            .getFeatureReader(path.toString(), new BEDCodec(), false);
+              .getFeatureReader(path.toString(), new BEDCodec(BEDCodec.StartOffset.ZERO), false);
           final CloseableTribbleIterator<BEDFeature> iterator = intervalsReader.iterator();
       ) {
         while (iterator.hasNext()) {
@@ -95,8 +79,11 @@ public class IntervalsHandler {
           parsedIntervals.add(bedFeature);
         }
       } catch (IOException | TribbleException.MalformedFeatureFile exception) {
-        throw new RuntimeException(ERROR_READING_EXC, exception);
+        throw new RegionReadingException(exception);
       }
+    }
+    if (parsedIntervals.size() >= 2) {
+      parsedIntervals = mergeOverlappingIntervals(parsedIntervals);
     }
     return Collections.unmodifiableList(parsedIntervals);
   }
@@ -105,21 +92,57 @@ public class IntervalsHandler {
     try {
       return Integer.parseInt(point);
     } catch (NumberFormatException exception) {
-      throw new IllegalArgumentException(INVALID_REGION_EXC, exception.getCause());
+      throw new RegionIllegalIntervalException(exception);
     }
   }
 
   private static void validate(BEDFeature bedFeature) {
     final int start = bedFeature.getStart();
     final int end = bedFeature.getEnd();
-    String errorMessage = "";
     if (start < 1) {
-      errorMessage = INTERVAL_START_EXC;
+      throw new RegionIllegalStartException();
     } else if (end < 1 || end < start - 1) {
-      errorMessage = INTERVAL_END_EXC;
+      throw new RegionIllegalEndException();
     }
-    if (!errorMessage.isEmpty()) {
-      throw new IllegalArgumentException(errorMessage);
+  }
+
+  /**
+   * Method checks if provided intervals have overlaps and
+   * if such are present constructs new one from them.
+   * @param intervals with possible overlapping intervals
+   * @return intervals with merged overlapping intervals
+   */
+  private static List<BEDFeature> mergeOverlappingIntervals(List<BEDFeature> intervals) {
+    Comparator<BEDFeature> intervalsComparator = Comparator
+        .comparing(BEDFeature::getContig)
+        .thenComparing(BEDFeature::getStart);
+
+    List<BEDFeature> sortedIntervals = intervals.stream()
+        .sorted(intervalsComparator)
+        .collect(Collectors.toList());
+
+    List<BEDFeature> verifiedIntervals = new ArrayList<>();
+    Iterator<BEDFeature> iterator = sortedIntervals.iterator();
+    BEDFeature current = iterator.next();
+
+    while (iterator.hasNext()) {
+      BEDFeature next = iterator.next();
+      if (current.getContig().equals(next.getContig())) {
+        if (current.getEnd() >= next.getStart()) {
+          current = new SimpleBEDFeature(
+              current.getStart(),
+              Math.max(current.getEnd(), next.getEnd()),
+              current.getContig());
+          if (!iterator.hasNext()) {
+            break;
+          }
+          continue;
+        }
+      }
+      verifiedIntervals.add(current);
+      current = next;
     }
+    verifiedIntervals.add(current);
+    return verifiedIntervals;
   }
 }
