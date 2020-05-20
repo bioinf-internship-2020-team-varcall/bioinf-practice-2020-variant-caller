@@ -7,11 +7,11 @@
 ```java
 package com.epam.bioinf.variantcaller.handlers;
 
-public class VCFHandler(ParsedArguments parsedArguments, ?  variants) {
+public class VCFHandler(Path outputFilePath, List<Variant> variants) {
 	List<VariantContext> variantContexts;
 	
 	VCFHandler() {
-		VariantContextWriter writer = getWriter(parsedArguments);
+		VariantContextWriter writer = configureVcfWriter(outputFilePath);
 		VCFHeader header = getHeader();
 		variantContexts = getVariantContexts(variants);
 		for (VariantContext vc : variantContexts) {
@@ -19,7 +19,7 @@ public class VCFHandler(ParsedArguments parsedArguments, ?  variants) {
 		}
 	}
 	
-	private VariantContextWriter getWriter(ParsedArguments parsedArgs) {
+	private VariantContextWriter configureVcfWriter(ParsedArguments parsedArgs) {
 		//возвращает VariantContextWriter с выходным файлом полученным из ParsedArgs.
 	}
 	
@@ -35,9 +35,27 @@ public class VCFHandler(ParsedArguments parsedArguments, ?  variants) {
 }
 ```
 Unit-тесты:
+  * Vcf must be writtenif valid variants provided
   * Must return correct header
   * Must return correct variant contexts with valid variants
   * Must fail if invalid variants provided
+  
+### VcfInvalidVariantsProvidedException
+
+```java
+public class VcfInvalidVariantsProvidedException extends VcfHandlerException {
+
+  // invokes super class constructor
+  private static final String INTERVAL_END = "Invalid variants were provided";
+}
+```
+
+```java
+public class VcfHandlerException extends HandlerException {
+  // invokes super class constructor
+}
+```
+  
 
 ### Изменения в CommandLineParser
 ```java
@@ -48,6 +66,7 @@ public class CommandLineParser {
 
   private final String OUTPUT_KEY = "output"; // Ключ для выходного файла
 
+//опциональный параметр
   OptionParser optionParser = new OptionParser() {
       {
         accepts(OUTPUT_KEY); 
