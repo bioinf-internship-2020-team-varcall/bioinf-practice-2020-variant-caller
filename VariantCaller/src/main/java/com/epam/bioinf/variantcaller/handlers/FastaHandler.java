@@ -5,7 +5,10 @@ import com.epam.bioinf.variantcaller.exceptions.handlers.fasta.FastaHandlerUnabl
 import htsjdk.samtools.SAMException;
 import htsjdk.samtools.reference.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 
 /**
  * Class holds a reference file with sequences and performs work with it.
@@ -21,11 +24,23 @@ public class FastaHandler {
    * @see ParsedArguments
    */
   public FastaHandler(ParsedArguments parsedArguments) {
+    // Temporary redirection of AsciiLineReader warning
     try {
+      File tempWarningOutput = File.createTempFile("warn", ".tmp");
+      final PrintStream err = new PrintStream(System.err);
+      try {
+        System.setErr(new PrintStream(tempWarningOutput));
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+
       FastaSequenceIndex fastaSequenceIndex = FastaSequenceIndexCreator
           .buildFromFasta(parsedArguments.getFastaPath());
       fastaSequenceFile = new IndexedFastaSequenceFile(
           parsedArguments.getFastaPath(), fastaSequenceIndex);
+
+      System.setErr(err);
+      tempWarningOutput.deleteOnExit();
     } catch (IOException e) { // Handled by ParsedArguments
       e.printStackTrace();
     }
