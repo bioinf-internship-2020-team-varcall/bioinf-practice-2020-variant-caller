@@ -1,14 +1,13 @@
 package com.epam.bioinf.variantcaller.caller;
 
+import com.epam.bioinf.variantcaller.helpers.ProgressBar;
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
-import org.apache.commons.compress.utils.Sets;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Caller {
   private IndexedFastaSequenceFile fastaSequenceFile;
@@ -38,6 +37,7 @@ public class Caller {
   }
 
   private void initVariants() {
+    ProgressBar progressBar = new ProgressBar(samRecords.size());
     samRecords.forEach(samRecord -> {
       String contig = samRecord.getContig();
       if (contig != null) {
@@ -116,6 +116,7 @@ public class Caller {
           return variantsByContig;
         });
       }
+      progressBar.process();
     });
   }
 }
