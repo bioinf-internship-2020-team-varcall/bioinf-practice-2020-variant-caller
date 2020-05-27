@@ -40,6 +40,6 @@ public class ProgressBar {
     for (int i = 0; i < barSize - chunks; i++) {
       barBuilder.append(defaultBarChar);
     }
-    System.out.print("Processing reads: " + percentage + "% [" + barBuilder.toString() + "]\r");
+    System.out.print("Processing reads: " + percentage + "% [" + barBuilder.toString() + "](" + done + "/" + total +")\r");
   }
 }
