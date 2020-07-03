@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9621838ed0325ef3ce8d7bffbb17c93b98afe550ea04eeea7f2e9b68d7d9683b
-size 40
+# Mock BED file for integration testing.

@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7120460e2856dc850d6501e69d2a6f60ac050867dcb284d864307c2b090bbe20
-size 113
+track name="test bed with overlapping intervals"
+#a comment
+chr3	4	5
+chr1	1	4
+chr2	1	4
+chr1	2	3
+chr3	1	4
+chr2	3	5
