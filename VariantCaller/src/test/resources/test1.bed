@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a88d0daa604be3603cac4a4e9056fdbe4207344a3940310dbed65362533b949a
-size 128
+track name="test bed"
+#a comment
+chr1	1	556
+chr1	200	201
+chr3	1	301
+chr1	100000	100010
+chr1	100020	100040
+chr2	1	99
+chr2	20	100

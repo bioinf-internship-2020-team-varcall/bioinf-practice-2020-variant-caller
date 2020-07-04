@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:808c7f7c2e2bbc0291cc56556f9a90dba70d95b355de87b598f1339f126bed34
-size 700
+@HD	VN:1.5	SO:unsorted
+@SQ	SN:Sheila	LN:20
+@SQ	SN:chr1	LN:101
+@RG	ID:ID	SM:foo
+Fred	16	chr1	1	86	10M	*	0	0	GCTAGCTCAG	**********	P0:i:0
+Fred	16	Sheila	1	86	10M	*	0	0	GCTAGCTCAG	**********	P1:i:127
+Fred	16	Sheila	1	86	10M	*	0	0	GCTAGCTCAG	**********	P2:i:128
+Fred	16	Sheila	1	86	10M	*	0	0	GCTAGCTCAG	**********	P3:i:255
+Fred	16	Sheila	1	86	10M	*	0	0	GCTAGCTCAG	**********	P4:i:256
+Fred	16	Sheila	1	86	10M	*	0	0	GCTAGCTCAG	**********	P5:i:32767
+Fred	16	Sheila	1	86	10M	*	0	0	GCTAGCTCAG	**********	P6:i:32768
+Fred	16	Sheila	1	86	10M	*	0	0	GCTAGCTCAG	**********	P7:i:65535
+Fred	16	Sheila	1	86	10M	*	0	0	GCTAGCTCAG	**********	P8:i:65536
+Fred	16	Sheila	1	86	10M	*	0	0	GCTAGCTCAG	**********	P9:i:2147483647

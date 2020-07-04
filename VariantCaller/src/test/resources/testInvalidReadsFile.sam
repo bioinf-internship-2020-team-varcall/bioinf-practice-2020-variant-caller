@@ -1,3 +1,7 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3d905e3be3558ed40b94f464f23e6c46ab6592993c3e1b925b644a43f60cc404
-size 115
+@HD	VN:1.0	SO:unsorted
+@SQ	SN:chr1	LN:101
+@SQ	SN:chr2	LN:101
+@SQ	SN:chr3	LN:101
+@RG	ID:0	SM:Hi,Mom!
+asd
+asd
