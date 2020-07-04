@@ -35,6 +35,7 @@ public class ProgressBar {
     char doneBarChar = '=';
     String barBuilder = String.valueOf(doneBarChar).repeat(chunks) +
         String.valueOf(defaultBarChar).repeat(barSize - chunks);
-    System.out.print("Processing reads: " + percentage + "% [" + barBuilder + "](" + done + "/" + total +")\r");
+    System.out.print("Processing reads: " + percentage
+        + "% [" + barBuilder + "](" + done + "/" + total + ")\r");
   }
 }

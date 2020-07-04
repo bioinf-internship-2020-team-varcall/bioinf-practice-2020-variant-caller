@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Class holds a reference file with sequences and performs work with it.
@@ -27,9 +29,9 @@ public class FastaHandler {
     // Temporary redirection of AsciiLineReader warning
     try {
       File tempWarningOutput = File.createTempFile("warn", ".tmp");
-      final PrintStream err = new PrintStream(System.err);
+      final PrintStream err = System.err;
       try {
-        System.setErr(new PrintStream(tempWarningOutput));
+        System.setErr(new PrintStream(tempWarningOutput, Charset.defaultCharset()));
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
