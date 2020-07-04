@@ -83,25 +83,6 @@ public class Caller {
                     return potentialVariant;
                   }
                 });
-
-// Same code as above but avoiding compute
-//
-//                byte c = readBases[constReadInd];
-//                byte refChar = subsequenceBases[constRefInd];
-//                if (variantsByContig.get(start + refInd) == null) {
-//                  if (c != refChar) {
-//                    PotentialVariants potentialVariants = new PotentialVariants(refChar);
-//                    potentialVariants.addPotentialVariant(c);
-//                    variantsByContig.put(start + refInd ,potentialVariants);
-//                  }
-//                } else {
-//                  PotentialVariants potentialVariants = variantsByContig.get(start + refInd);
-//                  if (c != potentialVariants.getRefChar()) {
-//                    potentialVariants.addPotentialVariant(c);
-//                    variantsByContig.put(start + refInd, potentialVariants);
-//                  }
-//                }
-
                 refInd++;
                 readInd++;
               }

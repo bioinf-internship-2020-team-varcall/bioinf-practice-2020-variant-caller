@@ -33,13 +33,8 @@ public class ProgressBar {
     int barSize = 10;
     char defaultBarChar = '-';
     char doneBarChar = '=';
-    StringBuilder barBuilder = new StringBuilder();
-    for (int i = 0; i < chunks; i++) {
-      barBuilder.append(doneBarChar);
-    }
-    for (int i = 0; i < barSize - chunks; i++) {
-      barBuilder.append(defaultBarChar);
-    }
-    System.out.print("Processing reads: " + percentage + "% [" + barBuilder.toString() + "](" + done + "/" + total +")\r");
+    String barBuilder = String.valueOf(doneBarChar).repeat(chunks) +
+        String.valueOf(defaultBarChar).repeat(barSize - chunks);
+    System.out.print("Processing reads: " + percentage + "% [" + barBuilder + "](" + done + "/" + total +")\r");
   }
 }
