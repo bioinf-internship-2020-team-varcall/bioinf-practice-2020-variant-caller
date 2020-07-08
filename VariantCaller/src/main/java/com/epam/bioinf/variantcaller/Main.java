@@ -22,7 +22,7 @@ public class Main {
     IndexedFastaSequenceFile fastaSequenceFile =
         new FastaHandler(parsedArguments).getFastaSequenceFile();
     List<SAMRecord> samRecords = new SamHandler(parsedArguments).getSamRecords();
-    new Caller().call(fastaSequenceFile, samRecords);
+    new Caller(fastaSequenceFile, samRecords).call();
     System.out.println("Success");
   }
 }

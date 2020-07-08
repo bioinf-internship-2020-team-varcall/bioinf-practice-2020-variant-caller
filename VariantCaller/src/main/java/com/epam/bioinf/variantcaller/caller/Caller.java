@@ -14,25 +14,24 @@ public class Caller {
   private List<SAMRecord> samRecords;
   private final HashMap<String, HashMap<Integer, PotentialVariants>> variants;
 
-  public Caller() {
-    variants = new HashMap<>();
-  }
-
-  public ArrayList<Variant> call(IndexedFastaSequenceFile fastaSequenceFile,
+  public Caller(IndexedFastaSequenceFile fastaSequenceFile,
       List<SAMRecord> samRecords) {
+    variants = new HashMap<>();
     this.fastaSequenceFile = fastaSequenceFile;
     this.samRecords = samRecords;
+  }
+
+  public ArrayList<Variant> call() {
     initVariants();
     ArrayList<Variant> variants = new ArrayList<>();
     this.variants.forEach((contigKey, contigValue) -> {
       contigValue.forEach((posKey, potentialVariant) -> {
-        if (potentialVariant.getVariants().size() > 0) {
+        if (potentialVariant.getVariants().isEmpty()) {
           variants.add(new Variant(contigKey, posKey, potentialVariant.getVariants(),
               potentialVariant.getRefAllele()));
         }
       });
     });
-
     return variants;
   }
 
