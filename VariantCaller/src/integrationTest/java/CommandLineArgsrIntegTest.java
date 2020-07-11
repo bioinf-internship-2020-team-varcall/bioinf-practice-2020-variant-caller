@@ -29,6 +29,9 @@ public class CommandLineArgsrIntegTest {
         "--sam", integTestFilePath("test1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
+    if (!processInfo.errorString.isEmpty()) {
+      System.err.println(processInfo.errorString);
+    }
     assertTrue(processInfo.errorString.isEmpty());
     assertEquals(0, processInfo.exitValue);
   }
