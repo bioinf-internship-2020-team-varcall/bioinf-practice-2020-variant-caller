@@ -8,8 +8,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -17,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static helpers.UnitTestHelper.commonTestFilePath;
 import static java.io.File.pathSeparatorChar;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,23 +47,23 @@ public class CommandLineParserTest {
   public void parserMustReturnCorrectParsedArgumentsWithValidArguments() {
     String[] correctTestArgs = getArgs("--fasta", "--bed", "--sam");
     ParsedArguments result = CommandLineParser.parse(correctTestArgs);
-    assertEquals(result.getFastaPath(), Paths.get(testFilePath("test1.fasta")));
-    assertEquals(result.getBedPaths().get(0), Paths.get(testFilePath("test1.bed")));
-    assertEquals(result.getSamPaths().get(0), Paths.get(testFilePath("test1.sam")));
+    assertEquals(result.getFastaPath(), Paths.get(commonTestFilePath("test1.fasta")));
+    assertEquals(result.getBedPaths().get(0), Paths.get(commonTestFilePath("test1.bed")));
+    assertEquals(result.getSamPaths().get(0), Paths.get(commonTestFilePath("test1.sam")));
   }
 
   @Test
   public void parserMustReturnCorrectParsedArgumentsIfMultipleArgumentsProvided() {
     String[] correctTestArgs = getMultipleArgs();
     ParsedArguments result = CommandLineParser.parse(correctTestArgs);
-    Path expectedFastaPath = Paths.get(testFilePath("test1.fasta"));
+    Path expectedFastaPath = Paths.get(commonTestFilePath("test1.fasta"));
     List<Path> expectedBedPaths = List.of(
-        Paths.get(testFilePath("test1.bed")),
-        Paths.get(testFilePath("test2.bed"))
+        Paths.get(commonTestFilePath("test1.bed")),
+        Paths.get(commonTestFilePath("test2.bed"))
     );
     List<Path> expectedSamPaths = List.of(
-        Paths.get(testFilePath("test1.sam")),
-        Paths.get(testFilePath("test2.sam"))
+        Paths.get(commonTestFilePath("test1.sam")),
+        Paths.get(commonTestFilePath("test2.sam"))
     );
 
     Path parsedFastaPath = result.getFastaPath();
@@ -98,9 +97,9 @@ public class CommandLineParserTest {
 
   private String[] getMultipleArgs() {
     return new String[] {
-        "--fasta", testFilePath("test1.fasta"),
-        "--bed", testFilePath("test1.bed") + pathSeparatorChar + testFilePath("test2.bed"),
-        "--sam", testFilePath("test1.sam") + pathSeparatorChar + testFilePath("test2.sam")
+        "--fasta", commonTestFilePath("test1.fasta"),
+        "--bed", commonTestFilePath("test1.bed") + pathSeparatorChar + commonTestFilePath("test2.bed"),
+        "--sam", commonTestFilePath("test1.sam") + pathSeparatorChar + commonTestFilePath("test2.sam")
     };
   }
 
@@ -116,11 +115,11 @@ public class CommandLineParserTest {
   private String evaluateKey(String key) {
     switch (key) {
         case ("--fasta"):
-          return testFilePath("test1.fasta");
+          return commonTestFilePath("test1.fasta");
         case ("--sam"):
-          return testFilePath("test1.sam");
+          return commonTestFilePath("test1.sam");
         case ("--bed"):
-          return testFilePath("test1.bed");
+          return commonTestFilePath("test1.bed");
         case ("--region"):
           return "chr1 10 20";
         default:

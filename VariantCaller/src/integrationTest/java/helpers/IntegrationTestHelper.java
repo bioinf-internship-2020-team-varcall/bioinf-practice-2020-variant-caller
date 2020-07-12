@@ -1,24 +1,16 @@
-package com.epam.bioinf.variantcaller.helpers;
+package helpers;
 
 import java.nio.file.Path;
+import java.util.regex.Pattern;
 
-/**
- * Class contains constants and helper methods for unit and integration tests
- */
-public final class TestHelper {
+public class IntegrationTestHelper {
   public static final Path INTEGRATION_TEST_RESOURCES_ROOT = Path
       .of("src", "integrationTest", "resources")
       .toAbsolutePath();
-  public static final Path TEST_RESOURCES_ROOT = Path
-      .of("src", "test", "resources")
-      .toAbsolutePath();
+
   public static final Path PATH_TO_BUILT_JAR = Path
       .of("build", "libs", "VariantCaller.jar")
       .toAbsolutePath();
-
-  private TestHelper() {
-    // restrict instantiation
-  }
 
   /**
    * Method returns a path to a integration test resource with given filename
@@ -30,7 +22,11 @@ public final class TestHelper {
   /**
    * Method returns a path to a unit test resource with given filename
    */
-  public static String testFilePath(String filename) {
-    return TEST_RESOURCES_ROOT.resolve(filename).toString();
+  public static String commonTestFilePath(String filename) {
+    return INTEGRATION_TEST_RESOURCES_ROOT.resolve("common").resolve(filename).toString();
+  }
+
+  public static boolean checkIfCommon(String filename) {
+    return Pattern.matches("inttest[0-9].*", filename);
   }
 }

@@ -2,7 +2,6 @@ import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.exceptions.handlers.sam.SamNoRelatedReadsException;
 import com.epam.bioinf.variantcaller.handlers.SamHandler;
-import com.epam.bioinf.variantcaller.helpers.TestHelper;
 import htsjdk.samtools.SAMFormatException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
+import static helpers.UnitTestHelper.*;
 import static java.io.File.pathSeparator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,7 +43,7 @@ public class SamHandlerTest {
   @Test
   public void samHandlerMustFailIfInvalidOrEmptyFileProvided() {
     assertThrows(SAMFormatException.class,
-        () -> getSamHandler("testInvalidReadsFile.sam"));
+        () -> getSamHandler("invalid_reads.sam"));
   }
 
   @ParameterizedTest
@@ -79,7 +78,7 @@ public class SamHandlerTest {
   private String[] getArgs(String... input) {
     String samFilesPaths = collectPaths(input[0]);
     List<String> result = new ArrayList<>(List.of(
-        "--fasta", testFilePath("test1.fasta"),
+        "--fasta", commonTestFilePath("test1.fasta"),
         "--sam", samFilesPaths));
     if (input.length != 1) {
       String key = input[1];
@@ -91,7 +90,7 @@ public class SamHandlerTest {
 
   private String collectPaths(String input) {
     return Arrays.stream(fileSplit.split(input))
-        .map(TestHelper::testFilePath)
+        .map(filename -> checkIfCommon(filename) ? commonTestFilePath(filename) : samCasesTestFilePath(filename))
         .collect(Collectors.joining(pathSeparator));
   }
 }

@@ -3,7 +3,6 @@ import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.exceptions.handlers.RegionHandlerException;
 import com.epam.bioinf.variantcaller.exceptions.handlers.region.RegionReadingException;
 import com.epam.bioinf.variantcaller.handlers.IntervalsHandler;
-import com.epam.bioinf.variantcaller.helpers.TestHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,7 +13,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
+import static helpers.UnitTestHelper.*;
 import static java.io.File.pathSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,7 +23,7 @@ public class IntervalsHandlerTest {
   @ParameterizedTest
   @MethodSource("provideArgumentsForExpectedIntervalsSize")
   public void intervalsHandlerMustReturnCorrectIntervalsSize(int expectedSize,
-      String[] flagData) {
+                                                             String[] flagData) {
     assertEquals(expectedSize, IntervalsHandler.getIntervals(getParsedArguments(flagData)).size());
   }
 
@@ -38,7 +37,7 @@ public class IntervalsHandlerTest {
 
   @Test
   void intervalsHandlerMustFailIfFileCanNotBeDecoded() {
-    ParsedArguments parsedArguments = getParsedArguments("--bed", "test3_malformed.bed");
+    ParsedArguments parsedArguments = getParsedArguments("--bed", "malformed.bed");
     assertThrows(RegionReadingException.class,
         () -> IntervalsHandler.getIntervals(parsedArguments));
   }
@@ -46,7 +45,7 @@ public class IntervalsHandlerTest {
   @Test
   void intervalsHandlerMustFailIfOneOfTheFilesCanNotBeDecoded() {
     ParsedArguments parsedArguments =
-        getParsedArguments("--bed", "test1.bed", "test2.bed", "test3_malformed.bed");
+        getParsedArguments("--bed", "test1.bed", "test2.bed", "malformed.bed");
     assertThrows(RegionReadingException.class,
         () -> IntervalsHandler.getIntervals(parsedArguments));
   }
@@ -54,7 +53,7 @@ public class IntervalsHandlerTest {
   @Test
   void intervalsHandlerMustReturnCorrectOverlappingIntervalsSize() {
     final long expectedSize = 3;
-    ParsedArguments parsedArguments = getParsedArguments("--bed", "test4_overlapping.bed");
+    ParsedArguments parsedArguments = getParsedArguments("--bed", "overlapping.bed");
     assertEquals(expectedSize, IntervalsHandler.getIntervals(parsedArguments).size());
   }
 
@@ -75,16 +74,18 @@ public class IntervalsHandlerTest {
     String key = input[0];
     String keyValue = key.equals("--region") ? input[1] : collectPathsToStringWithoutKey(input);
     return new String[]{
-        "--fasta", testFilePath("test1.fasta"),
+        "--fasta", commonTestFilePath("test1.fasta"),
         key, keyValue,
-        "--sam", testFilePath("test1.sam")
+        "--sam", commonTestFilePath("test1.sam")
     };
   }
 
   private String collectPathsToStringWithoutKey(String... input) {
     return Arrays.stream(input)
         .skip(1)
-        .map(TestHelper::testFilePath)
+        .map(filename ->
+            checkIfCommon(filename) ? commonTestFilePath(filename) : intervalsCasesTestFilePath(filename)
+        )
         .collect(Collectors.joining(pathSeparator));
   }
 }
