@@ -84,7 +84,8 @@ public class IntervalsHandlerTest {
     return Arrays.stream(input)
         .skip(1)
         .map(filename ->
-            checkIfCommon(filename) ? commonTestFilePath(filename) : intervalsCasesTestFilePath(filename)
+            checkIfCommon(filename) ?
+                commonTestFilePath(filename) : intervalsCasesTestFilePath(filename)
         )
         .collect(Collectors.joining(pathSeparator));
   }

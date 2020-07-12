@@ -49,7 +49,9 @@ public class SamHandlerTest {
   @ParameterizedTest
   @MethodSource("provideArgumentsForCorrectNumberOfFilteredReads")
   public void samHandlerMustReturnCorrectNumberOfFilteredReads(int expectedSize,
-      String samFiles, String intervalKey, String intervalData) {
+                                                               String samFiles,
+                                                               String intervalKey,
+                                                               String intervalData) {
     SamHandler samHandler = getSamHandler(samFiles, intervalKey, intervalData);
     Assertions.assertEquals(expectedSize, samHandler.getSamRecordsCount());
   }
@@ -90,7 +92,8 @@ public class SamHandlerTest {
 
   private String collectPaths(String input) {
     return Arrays.stream(fileSplit.split(input))
-        .map(filename -> checkIfCommon(filename) ? commonTestFilePath(filename) : samCasesTestFilePath(filename))
+        .map(filename -> checkIfCommon(filename) ?
+            commonTestFilePath(filename) : samCasesTestFilePath(filename))
         .collect(Collectors.joining(pathSeparator));
   }
 }

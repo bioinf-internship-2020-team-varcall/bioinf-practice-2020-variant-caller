@@ -98,8 +98,10 @@ public class CommandLineParserTest {
   private String[] getMultipleArgs() {
     return new String[] {
         "--fasta", commonTestFilePath("test1.fasta"),
-        "--bed", commonTestFilePath("test1.bed") + pathSeparatorChar + commonTestFilePath("test2.bed"),
-        "--sam", commonTestFilePath("test1.sam") + pathSeparatorChar + commonTestFilePath("test2.sam")
+        "--bed", commonTestFilePath("test1.bed") + pathSeparatorChar
+          + commonTestFilePath("test2.bed"),
+        "--sam", commonTestFilePath("test1.sam") + pathSeparatorChar
+          + commonTestFilePath("test2.sam")
     };
   }
 

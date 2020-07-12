@@ -23,14 +23,16 @@ public final class UnitTestHelper {
   }
 
   /**
-   * Method returns a path to unit test resources with given filename related to special intervals test cases
+   * Method returns a path to unit test resources
+   * with given filename related to special intervals test cases
    */
   public static String intervalsCasesTestFilePath(String filename) {
     return TEST_RESOURCES_ROOT.resolve("intervals").resolve(filename).toString();
   }
 
   /**
-   * Method returns a path to unit test resources with given filename related to special sam test cases
+   * Method returns a path to unit test resources
+   * with given filename related to special sam test cases
    */
   public static String samCasesTestFilePath(String filename) {
     return TEST_RESOURCES_ROOT.resolve("sam").resolve(filename).toString();
