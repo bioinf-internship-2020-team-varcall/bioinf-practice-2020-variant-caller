@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static helpers.IntegrationTestHelper.PATH_TO_BUILT_JAR;
-import static helpers.IntegrationTestHelper.integTestFilePath;
+import static helpers.IntegrationTestHelper.intCommonTestFilePath;
 import static java.io.File.pathSeparatorChar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,9 +24,9 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustWorkWithCorrectArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
-        "--fasta", integTestFilePath("inttest1.fasta"),
-        "--bed", integTestFilePath("inttest1.bed"),
-        "--sam", integTestFilePath("inttest1.sam")
+        "--fasta", intCommonTestFilePath("inttest1.fasta"),
+        "--bed", intCommonTestFilePath("inttest1.bed"),
+        "--sam", intCommonTestFilePath("inttest1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
     assertTrue(processInfo.errorString.isEmpty());
@@ -36,10 +36,10 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustFailWithInvalidArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
-        "--fasta", integTestFilePath("inttest1.fasta") + pathSeparatorChar
-        + integTestFilePath("inttest2.fasta"),
-        "--bed", integTestFilePath("inttest1.bed"),
-        "--sam", integTestFilePath("inttest1.sam")
+        "--fasta", intCommonTestFilePath("inttest1.fasta") + pathSeparatorChar
+          + intCommonTestFilePath("inttest2.fasta"),
+        "--bed", intCommonTestFilePath("inttest1.bed"),
+        "--sam", intCommonTestFilePath("inttest1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
     assertEquals("Exception in thread \"main\" "
@@ -72,6 +72,7 @@ public class CommandLineArgsrIntegTest {
     );
     p.waitFor();
     String errorLine = error.readLine();
+    System.out.println(errorLine);
     error.close();
     return new ProcessInfo(p.exitValue(), errorLine);
   }

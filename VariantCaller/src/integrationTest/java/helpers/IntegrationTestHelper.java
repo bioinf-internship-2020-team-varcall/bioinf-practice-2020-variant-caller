@@ -13,16 +13,9 @@ public class IntegrationTestHelper {
       .toAbsolutePath();
 
   /**
-   * Method returns a path to a integration test resource with given filename
-   */
-  public static String integTestFilePath(String filename) {
-    return INTEGRATION_TEST_RESOURCES_ROOT.resolve(filename).toString();
-  }
-
-  /**
    * Method returns a path to a unit test resource with given filename
    */
-  public static String commonTestFilePath(String filename) {
+  public static String intCommonTestFilePath(String filename) {
     return INTEGRATION_TEST_RESOURCES_ROOT.resolve("common").resolve(filename).toString();
   }
 
