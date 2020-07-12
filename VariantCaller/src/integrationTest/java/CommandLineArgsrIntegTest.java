@@ -29,7 +29,7 @@ public class CommandLineArgsrIntegTest {
         "--sam", intCommonTestFilePath("inttest1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
-    assertTrue(processInfo.errorString.isEmpty());
+    assertTrue(processInfo.errorString.isEmpty(), processInfo.errorString);
     assertEquals(0, processInfo.exitValue);
   }
 
@@ -72,7 +72,6 @@ public class CommandLineArgsrIntegTest {
     );
     p.waitFor();
     String errorLine = error.readLine();
-    System.out.println(errorLine);
     error.close();
     return new ProcessInfo(p.exitValue(), errorLine);
   }
