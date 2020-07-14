@@ -1,0 +1,8 @@
+track name="test bed with overlapping intervals"
+#a comment
+chr3	4	5
+chr1	1	4
+chr2	1	4
+chr1	2	3
+chr3	1	4
+chr2	3	5
