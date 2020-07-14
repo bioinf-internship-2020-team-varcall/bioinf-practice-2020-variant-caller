@@ -1,43 +1,42 @@
 package com.epam.bioinf.variantcaller.caller;
 
+import com.epam.bioinf.variantcaller.helpers.ProgressBar;
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
-import org.apache.commons.compress.utils.Sets;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Caller {
   private IndexedFastaSequenceFile fastaSequenceFile;
   private List<SAMRecord> samRecords;
   private final HashMap<String, HashMap<Integer, PotentialVariants>> variants;
 
-  public Caller() {
-    variants = new HashMap<>();
-  }
-
-  public ArrayList<Variant> call(IndexedFastaSequenceFile fastaSequenceFile,
+  public Caller(IndexedFastaSequenceFile fastaSequenceFile,
       List<SAMRecord> samRecords) {
+    variants = new HashMap<>();
     this.fastaSequenceFile = fastaSequenceFile;
     this.samRecords = samRecords;
+  }
+
+  public ArrayList<Variant> call() {
     initVariants();
     ArrayList<Variant> variants = new ArrayList<>();
     this.variants.forEach((contigKey, contigValue) -> {
       contigValue.forEach((posKey, potentialVariant) -> {
-        if (potentialVariant.getVariants().size() > 0) {
+        if (!potentialVariant.getVariants().isEmpty()) {
           variants.add(new Variant(contigKey, posKey, potentialVariant.getVariants(),
               potentialVariant.getRefAllele()));
         }
       });
     });
-
     return variants;
   }
 
   private void initVariants() {
+    ProgressBar progressBar = new ProgressBar(samRecords.size());
     samRecords.forEach(samRecord -> {
       String contig = samRecord.getContig();
       if (contig != null) {
@@ -83,25 +82,6 @@ public class Caller {
                     return potentialVariant;
                   }
                 });
-
-// Same code as above but avoiding compute
-//
-//                byte c = readBases[constReadInd];
-//                byte refChar = subsequenceBases[constRefInd];
-//                if (variantsByContig.get(start + refInd) == null) {
-//                  if (c != refChar) {
-//                    PotentialVariants potentialVariants = new PotentialVariants(refChar);
-//                    potentialVariants.addPotentialVariant(c);
-//                    variantsByContig.put(start + refInd ,potentialVariants);
-//                  }
-//                } else {
-//                  PotentialVariants potentialVariants = variantsByContig.get(start + refInd);
-//                  if (c != potentialVariants.getRefChar()) {
-//                    potentialVariants.addPotentialVariant(c);
-//                    variantsByContig.put(start + refInd, potentialVariants);
-//                  }
-//                }
-
                 refInd++;
                 readInd++;
               }
@@ -116,6 +96,7 @@ public class Caller {
           return variantsByContig;
         });
       }
+      progressBar.process();
     });
   }
 }
