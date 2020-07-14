@@ -28,7 +28,11 @@ public class CallerTest {
     };
 
     try {
-      File tempWarningOutput = File.createTempFile("test", ".tmp");
+      File tempWarningOutput = new File("temp");
+      var checkIfFileCreated = tempWarningOutput.createNewFile();
+      if (!checkIfFileCreated) {
+        throw new IOException("File was not created");
+      }
       System.setOut(new PrintStream(tempWarningOutput, Charset.defaultCharset()));
       ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
       IndexedFastaSequenceFile fastaSequenceFile =
