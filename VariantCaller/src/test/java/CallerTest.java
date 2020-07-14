@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static helpers.UnitTestHelper.*;
@@ -28,11 +29,7 @@ public class CallerTest {
     };
 
     try {
-      File tempWarningOutput = new File("temp");
-      var checkIfFileCreated = tempWarningOutput.createNewFile();
-      if (!checkIfFileCreated) {
-        throw new IOException("File was not created");
-      }
+      File tempWarningOutput = File.createTempFile("test", ".temp");
       System.setOut(new PrintStream(tempWarningOutput, Charset.defaultCharset()));
       ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
       IndexedFastaSequenceFile fastaSequenceFile =
@@ -42,7 +39,9 @@ public class CallerTest {
           .call()
           .forEach(variant -> System.out.println(variant.toString()));
       List<String> linesRef = Files.readAllLines(callerRefFilePath("short_sequence_variants.txt"));
-      List<String> linesProduced = Files.readAllLines(tempWarningOutput.toPath());
+      List<String> linesProduced = Files.readAllLines(
+              Paths.get(tempWarningOutput.getAbsolutePath()));
+      linesProduced.removeIf(s -> !s.startsWith("Variant"));
       assertEquals(
           linesRef,
           linesProduced
