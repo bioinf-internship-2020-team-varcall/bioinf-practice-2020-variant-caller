@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class VcfHandler {
-  private final String OUTPUT_FILE_NAME = "output.vcf";
+  private static final String OUTPUT_FILE_NAME = "output.vcf";
 
   public VcfHandler(Optional<Path> outputFilePath, List<Variant> variants) {
     VariantContextWriter writer = configureVcfWriter(outputFilePath);
