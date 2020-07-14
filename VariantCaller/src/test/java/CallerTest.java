@@ -17,6 +17,7 @@ import java.util.List;
 
 import static helpers.UnitTestHelper.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CallerTest {
   @Test
@@ -27,8 +28,7 @@ public class CallerTest {
     };
 
     try {
-      File tempWarningOutput = new File("temp");
-      tempWarningOutput.createNewFile();
+      File tempWarningOutput = File.createTempFile("test", ".tmp");
       System.setOut(new PrintStream(tempWarningOutput, Charset.defaultCharset()));
       ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
       IndexedFastaSequenceFile fastaSequenceFile =
@@ -44,8 +44,8 @@ public class CallerTest {
           linesProduced
       );
       tempWarningOutput.deleteOnExit();
-    } catch (IOException e) { // Handled by ParsedArguments
-      e.printStackTrace();
+    } catch (IOException e) {
+      fail(e.getMessage());
     }
   }
 
