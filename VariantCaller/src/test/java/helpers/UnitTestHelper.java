@@ -42,7 +42,7 @@ public final class UnitTestHelper {
    * Method returns a path to unit test reference resources
    */
   public static Path callerRefFilePath(String filename) {
-    return TEST_RESOURCES_ROOT.resolve("caller/ref").resolve(filename);
+    return TEST_RESOURCES_ROOT.resolve("caller").resolve("ref").resolve(filename);
   }
 
   /**
