@@ -26,7 +26,7 @@ public class Caller {
     ArrayList<Variant> variants = new ArrayList<>();
     this.variants.forEach((contigKey, contigValue) -> {
       contigValue.forEach((posKey, potentialVariant) -> {
-        if (potentialVariant.getVariants().isEmpty()) {
+        if (!potentialVariant.getVariants().isEmpty()) {
           variants.add(new Variant(contigKey, posKey, potentialVariant.getVariants(),
               potentialVariant.getRefAllele()));
         }
