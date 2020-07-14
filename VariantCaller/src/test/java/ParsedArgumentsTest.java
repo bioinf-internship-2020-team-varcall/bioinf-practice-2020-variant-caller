@@ -10,12 +10,11 @@ import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamInvalidExtensionEx
 import com.epam.bioinf.variantcaller.exceptions.parser.sam.SamPathNotExistsException;
 import org.junit.jupiter.api.Test;
 
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static helpers.UnitTestHelper.commonTestFilePath;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParsedArgumentsTest {
@@ -69,7 +68,7 @@ public class ParsedArgumentsTest {
   @Test
   public void parsedArgumentsMustFailIfLessThanOneSamPathProvided() {
     List<Path> correctFasta = List.of(
-        Paths.get(testFilePath("test1.fasta"))
+        Paths.get(commonTestFilePath("test1.fasta"))
     );
     List<Path> correctBed = getPaths("test1.bed", "test2.bed");
     List<Path> invalidSam = List.of();
@@ -94,7 +93,7 @@ public class ParsedArgumentsTest {
     List<Path> duplicatedBed = getPaths("test1.bed", "test1.bed", "test2.bed");
     List<Path> duplicatedSam = getPaths("test1.sam", "test1.sam", "test2.sam");
 
-    Path expectedFastaPath = Paths.get(testFilePath("test1.fasta"));
+    Path expectedFastaPath = Paths.get(commonTestFilePath("test1.fasta"));
     List<Path> expectedBedPaths = getPaths("test1.bed", "test2.bed");
     List<Path> expectedSamPaths = getPaths("test1.sam", "test2.sam");
 
@@ -185,7 +184,7 @@ public class ParsedArgumentsTest {
   private List<Path> getPaths(String... filenames) {
     List<Path> paths = new ArrayList<>();
     Arrays.asList(filenames).forEach(filename ->
-        paths.add(Paths.get(testFilePath(filename)))
+        paths.add(Paths.get(commonTestFilePath(filename)))
     );
     return paths;
   }

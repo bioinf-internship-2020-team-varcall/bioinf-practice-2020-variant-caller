@@ -1,0 +1,9 @@
+track name="test bed"
+#a comment
+chr1	1	556
+chr1	200	201
+chr3	1	301
+chr1	100000	100010
+chr1	100020	100040
+chr2	1	99
+chr2	20	100

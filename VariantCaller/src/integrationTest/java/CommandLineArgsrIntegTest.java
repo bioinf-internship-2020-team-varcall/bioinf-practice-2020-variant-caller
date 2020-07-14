@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.PATH_TO_BUILT_JAR;
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.integTestFilePath;
+import static helpers.IntegrationTestHelper.PATH_TO_BUILT_JAR;
+import static helpers.IntegrationTestHelper.intCommonTestFilePath;
 import static java.io.File.pathSeparatorChar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,9 +24,9 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustWorkWithCorrectArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
-        "--fasta", integTestFilePath("test1.fasta"),
-        "--bed", integTestFilePath("test1.bed"),
-        "--sam", integTestFilePath("test1.sam")
+        "--fasta", intCommonTestFilePath("inttest1.fasta"),
+        "--bed", intCommonTestFilePath("inttest1.bed"),
+        "--sam", intCommonTestFilePath("inttest1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
     assertTrue(processInfo.errorString.isEmpty(), processInfo.errorString);
@@ -36,10 +36,10 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustFailWithInvalidArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
-        "--fasta", integTestFilePath("test1.fasta") + pathSeparatorChar
-          + integTestFilePath("test2.fasta"),
-        "--bed", integTestFilePath("test1.bed"),
-        "--sam", integTestFilePath("test1.sam")
+        "--fasta", intCommonTestFilePath("inttest1.fasta") + pathSeparatorChar
+          + intCommonTestFilePath("inttest2.fasta"),
+        "--bed", intCommonTestFilePath("inttest1.bed"),
+        "--sam", intCommonTestFilePath("inttest1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
     assertEquals("Exception in thread \"main\" "

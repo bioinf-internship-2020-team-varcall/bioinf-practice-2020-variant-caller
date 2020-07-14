@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static com.epam.bioinf.variantcaller.helpers.TestHelper.testFilePath;
+import static helpers.UnitTestHelper.commonTestFilePath;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -65,9 +65,9 @@ public class FastaHandlerTest {
 
   private String[] getArgs(String fastaFileName) {
     return new String[]{
-        "--fasta", testFilePath(fastaFileName),
-        "--bed", testFilePath("test1.bed"),
-        "--sam", testFilePath("test1.sam")
+        "--fasta", commonTestFilePath(fastaFileName),
+        "--bed", commonTestFilePath("test1.bed"),
+        "--sam", commonTestFilePath("test1.sam")
     };
   }
 }
