@@ -36,7 +36,7 @@ public class CallerTest {
           new FastaHandler(parsedArguments).getFastaSequenceFile();
       List<SAMRecord> samRecords = new SamHandler(parsedArguments).getSamRecords();
       new Caller(fastaSequenceFile, samRecords)
-          .call()
+          .findVariants()
           .forEach(variant -> System.out.println(variant.toString()));
       List<String> linesRef = Files.readAllLines(callerRefFilePath("short_sequence_variants.txt"));
       List<String> linesProduced = Files.readAllLines(
@@ -62,7 +62,7 @@ public class CallerTest {
     IndexedFastaSequenceFile fastaSequenceFile =
         new FastaHandler(parsedArguments).getFastaSequenceFile();
     List<SAMRecord> samRecords = new SamHandler(parsedArguments).getSamRecords();
-    List<Variant> variants = new Caller(fastaSequenceFile, samRecords).call();
+    List<Variant> variants = new Caller(fastaSequenceFile, samRecords).findVariants();
     assertEquals(0, variants.size());
   }
 }
