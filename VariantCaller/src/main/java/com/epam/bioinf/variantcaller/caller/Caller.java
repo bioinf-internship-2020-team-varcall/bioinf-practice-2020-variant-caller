@@ -10,8 +10,8 @@ import htsjdk.samtools.reference.ReferenceSequence;
 import java.util.*;
 
 public class Caller {
-  private IndexedFastaSequenceFile fastaSequenceFile;
-  private List<SAMRecord> samRecords;
+  private final IndexedFastaSequenceFile fastaSequenceFile;
+  private final List<SAMRecord> samRecords;
   private final HashMap<String, HashMap<Integer, PotentialVariants>> variants;
 
   public Caller(IndexedFastaSequenceFile fastaSequenceFile,
@@ -23,16 +23,16 @@ public class Caller {
 
   public ArrayList<Variant> findVariants() {
     initVariants();
-    ArrayList<Variant> variants = new ArrayList<>();
+    ArrayList<Variant> validatedVariants = new ArrayList<>();
     this.variants.forEach((contigKey, contigValue) -> {
       contigValue.forEach((posKey, potentialVariant) -> {
         if (!potentialVariant.getVariants().isEmpty()) {
-          variants.add(new Variant(contigKey, posKey, potentialVariant.getVariants(),
+          validatedVariants.add(new Variant(contigKey, posKey, potentialVariant.getVariants(),
               potentialVariant.getRefAllele()));
         }
       });
     });
-    return variants;
+    return validatedVariants;
   }
 
   private void initVariants() {
