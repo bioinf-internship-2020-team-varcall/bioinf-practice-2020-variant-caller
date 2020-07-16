@@ -51,7 +51,7 @@ public class Caller {
         byte[] subsequenceBases = subsequenceAt.getBases();
         return processSingleRead(samRecord, variantsByContig, subsequenceBases);
       });
-      progressBar.process();
+      progressBar.incrementProgress();
     }
   }
 
