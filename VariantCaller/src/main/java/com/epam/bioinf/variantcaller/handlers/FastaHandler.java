@@ -22,27 +22,16 @@ public class FastaHandler {
   /**
    * Constructor creates indexed sequence file and stores it.
    * Throwable exception is handled by ParsedArguments
+   *
    * @param parsedArguments parsedArguments with validated path to fasta file
    * @see ParsedArguments
    */
   public FastaHandler(ParsedArguments parsedArguments) {
-    // Temporary redirection of AsciiLineReader warning
     try {
-      File tempWarningOutput = File.createTempFile("warn", ".tmp");
-      final PrintStream err = System.err;
-      try {
-        System.setErr(new PrintStream(tempWarningOutput, Charset.defaultCharset()));
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }
-
       FastaSequenceIndex fastaSequenceIndex = FastaSequenceIndexCreator
           .buildFromFasta(parsedArguments.getFastaPath());
-      fastaSequenceFile = new IndexedFastaSequenceFile(
-          parsedArguments.getFastaPath(), fastaSequenceIndex);
-
-      System.setErr(err);
-      tempWarningOutput.deleteOnExit();
+      fastaSequenceFile =
+          new IndexedFastaSequenceFile(parsedArguments.getFastaPath(), fastaSequenceIndex);
     } catch (IOException e) { // Handled by ParsedArguments
       e.printStackTrace();
     }
@@ -50,9 +39,10 @@ public class FastaHandler {
 
   /**
    * Return sequence at specified contig and range
+   *
    * @param contig reference chromosome
-   * @param start range start index
-   * @param stop range end index
+   * @param start  range start index
+   * @param stop   range end index
    * @return ReferenceSequence
    */
   public ReferenceSequence getSubsequence(String contig, long start, long stop) {

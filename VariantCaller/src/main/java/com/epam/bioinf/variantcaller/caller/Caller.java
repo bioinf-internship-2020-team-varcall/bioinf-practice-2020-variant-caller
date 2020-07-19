@@ -6,13 +6,16 @@ import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
+import htsjdk.variant.variantcontext.Allele;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Caller {
   private final IndexedFastaSequenceFile fastaSequenceFile;
   private final List<SAMRecord> samRecords;
-  private final HashMap<String, HashMap<Integer, PotentialVariants>> variants;
+  private final HashMap<String, HashMap<Integer, VariantContext>> variants;
 
   public Caller(IndexedFastaSequenceFile fastaSequenceFile,
                 List<SAMRecord> samRecords) {
@@ -22,12 +25,14 @@ public class Caller {
   }
 
   public ArrayList<Variant> findVariants() {
-    initVariants();
+    callVariants();
     ArrayList<Variant> validatedVariants = new ArrayList<>();
     this.variants.forEach((contigKey, contigValue) -> {
       contigValue.forEach((posKey, potentialVariant) -> {
         if (!potentialVariant.getVariants().isEmpty()) {
-          validatedVariants.add(new Variant(contigKey, posKey, potentialVariant.getVariants(),
+          validatedVariants.add(new Variant(contigKey,
+              posKey,
+              potentialVariant.getVariants(),
               potentialVariant.getRefAllele()));
         }
       });
@@ -35,7 +40,7 @@ public class Caller {
     return validatedVariants;
   }
 
-  private void initVariants() {
+  private void callVariants() {
     ProgressBar progressBar = new ProgressBar(samRecords.size());
     for (SAMRecord samRecord : samRecords) {
       String contig = samRecord.getContig();
@@ -44,7 +49,7 @@ public class Caller {
       }
       variants.compute(contig, (contigKey, variantsByContig) -> {
         if (variantsByContig == null) {
-          variantsByContig = new HashMap<Integer, PotentialVariants>();
+          variantsByContig = new HashMap<>();
         }
         ReferenceSequence subsequenceAt =
             fastaSequenceFile.getSubsequenceAt(contig, samRecord.getStart(), samRecord.getEnd());
@@ -55,8 +60,9 @@ public class Caller {
     }
   }
 
-  private HashMap<Integer, PotentialVariants> processSingleRead(SAMRecord samRecord,
-      HashMap<Integer, PotentialVariants> variantsByContig, byte[] subsequenceBases) {
+  private HashMap<Integer, VariantContext> processSingleRead(SAMRecord samRecord,
+                                                             HashMap<Integer, VariantContext> variantsByContig,
+                                                             byte[] subsequenceBases) {
     int start = samRecord.getStart();
     int refInd = 0;
     int readInd = 0;
@@ -66,28 +72,15 @@ public class Caller {
       int length = cigarElement.getLength();
       if (operator.isAlignment()) {
         for (int j = 0; j < length - 1; j++) {
-
           int constReadInd = readInd;
           int constRefInd = refInd;
           int trueInd = start + refInd;
-
-          variantsByContig.compute(trueInd, (posKey, potentialVariant) -> {
-            byte c = readBases[constReadInd];
-            if (potentialVariant == null) {
-              byte refChar = subsequenceBases[constRefInd];
-              if (refChar != c) {
-                potentialVariant = new PotentialVariants(refChar);
-                potentialVariant.addPotentialVariant(c);
-                return potentialVariant;
-              } else {
-                return null;
-              }
-            } else {
-              if (potentialVariant.getRefChar() != c) {
-                potentialVariant.addPotentialVariant(c);
-              }
-              return potentialVariant;
+          variantsByContig.compute(trueInd, (posKey, variantContext) -> {
+            if (variantContext == null) {
+              variantContext = new VariantContext(subsequenceBases[constRefInd]);
             }
+            variantContext.addPotentialVariant(readBases[constReadInd]);
+            return variantContext;
           });
           refInd++;
           readInd++;

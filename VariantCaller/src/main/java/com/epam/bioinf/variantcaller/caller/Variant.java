@@ -22,32 +22,16 @@ public class Variant {
     return contig;
   }
 
-  public void setContig(String contig) {
-    this.contig = contig;
-  }
-
   public int getPos() {
     return pos;
-  }
-
-  public void setPos(int pos) {
-    this.pos = pos;
   }
 
   public ArrayList<Allele> getVariants() {
     return variants;
   }
 
-  public void setVariants(ArrayList<Allele> variants) {
-    this.variants = variants;
-  }
-
   public Allele getRefAllele() {
     return refAllele;
-  }
-
-  public void setRefAllele(Allele refAllele) {
-    this.refAllele = refAllele;
   }
 
   @Override
