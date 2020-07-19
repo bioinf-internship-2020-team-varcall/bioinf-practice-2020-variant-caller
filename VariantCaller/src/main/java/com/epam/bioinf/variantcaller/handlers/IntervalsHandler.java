@@ -109,6 +109,7 @@ public class IntervalsHandler {
   /**
    * Method checks if provided intervals have overlaps and
    * if such are present constructs new one from them.
+   *
    * @param intervals with possible overlapping intervals
    * @return intervals with merged overlapping intervals
    */

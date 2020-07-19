@@ -30,7 +30,7 @@ public class CallerTest {
 
     try {
       File tempWarningOutput = File.createTempFile("test", ".temp");
-      PrintStream printStream =  new PrintStream(tempWarningOutput, Charset.defaultCharset());
+      PrintStream printStream = new PrintStream(tempWarningOutput, Charset.defaultCharset());
       ParsedArguments parsedArguments = CommandLineParser.parse(correctTestArgs);
       IndexedFastaSequenceFile fastaSequenceFile =
           new FastaHandler(parsedArguments).getFastaSequenceFile();
@@ -40,7 +40,7 @@ public class CallerTest {
           .forEach(variant -> printStream.println(variant.toString()));
       List<String> linesRef = Files.readAllLines(callerRefFilePath("short_sequence_variants.txt"));
       List<String> linesProduced = Files.readAllLines(
-              Paths.get(tempWarningOutput.getAbsolutePath()));
+          Paths.get(tempWarningOutput.getAbsolutePath()));
       linesProduced.removeIf(s -> !s.startsWith("Variant"));
       assertEquals(
           linesRef,

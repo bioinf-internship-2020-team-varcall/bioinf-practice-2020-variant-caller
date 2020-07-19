@@ -60,9 +60,10 @@ public class Caller {
     }
   }
 
-  private HashMap<Integer, VariantContext> processSingleRead(SAMRecord samRecord,
-                                                             HashMap<Integer, VariantContext> variantsByContig,
-                                                             byte[] subsequenceBases) {
+  private HashMap<Integer, VariantContext> processSingleRead(
+      SAMRecord samRecord,
+      HashMap<Integer, VariantContext> variantsByContig,
+      byte[] subsequenceBases) {
     int start = samRecord.getStart();
     int refInd = 0;
     int readInd = 0;
