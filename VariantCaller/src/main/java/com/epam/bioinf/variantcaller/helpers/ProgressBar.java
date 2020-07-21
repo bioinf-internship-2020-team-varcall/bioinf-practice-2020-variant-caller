@@ -2,6 +2,7 @@ package com.epam.bioinf.variantcaller.helpers;
 
 public class ProgressBar {
 
+  private static final int BAR_SIZE = 10;
   private final int total;
   private int done;
   private int percentage;
@@ -14,15 +15,15 @@ public class ProgressBar {
     chunks = 0;
   }
 
-  public void process() {
+  public void incrementProgress() {
     done++;
     int newPercentage = (int)((double)done / (double)total * 100);
     if (newPercentage != percentage) {
       percentage = newPercentage;
-      if (percentage / 10 > chunks) {
+      if (percentage / BAR_SIZE > chunks) {
         chunks++;
         output();
-        if (chunks == 10) {
+        if (chunks == BAR_SIZE) {
           System.out.println();
         }
       }
@@ -30,16 +31,11 @@ public class ProgressBar {
   }
 
   private void output() {
-    int barSize = 10;
     char defaultBarChar = '-';
     char doneBarChar = '=';
-    StringBuilder barBuilder = new StringBuilder();
-    for (int i = 0; i < chunks; i++) {
-      barBuilder.append(doneBarChar);
-    }
-    for (int i = 0; i < barSize - chunks; i++) {
-      barBuilder.append(defaultBarChar);
-    }
-    System.out.print("Processing reads: " + percentage + "% [" + barBuilder.toString() + "]\r");
+    String barBuilder = String.valueOf(doneBarChar).repeat(chunks) +
+        String.valueOf(defaultBarChar).repeat(BAR_SIZE - chunks);
+    System.out.print("Processing reads: " + percentage
+        + "% [" + barBuilder + "](" + done + "/" + total + ")\r");
   }
 }
