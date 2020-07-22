@@ -49,7 +49,7 @@ public class ProgressBarTest {
             "Processing reads: 72% [=======---](8/11)\r" +
             "Processing reads: 81% [========--](9/11)\r" +
             "Processing reads: 90% [=========-](10/11)\r" +
-            "Processing reads: 100% [==========](11/11)\r\n")
+            "Processing reads: 100% [==========](11/11)\r" + System.lineSeparator())
     );
   }
 }
