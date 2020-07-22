@@ -1,5 +1,7 @@
 package com.epam.bioinf.variantcaller.helpers;
 
+import java.io.PrintStream;
+
 public class ProgressBar {
 
   private static final int BAR_SIZE = 10;
@@ -7,9 +9,11 @@ public class ProgressBar {
   private int done;
   private int percentage;
   private int chunks;
+  private PrintStream outputStream;
 
-  public ProgressBar(int total) {
+  public ProgressBar(int total, PrintStream outputStream) {
     this.total = total;
+    this.outputStream = outputStream;
     done = 0;
     percentage = 0;
     chunks = 0;
@@ -17,6 +21,10 @@ public class ProgressBar {
 
   public void incrementProgress() {
     done++;
+    if (done > total) {
+      throw new IllegalStateException(
+          "ProgressBar can not be incremented more than set total value!");
+    }
     int newPercentage = (int)((double)done / (double)total * 100);
     if (newPercentage != percentage) {
       percentage = newPercentage;
@@ -24,7 +32,7 @@ public class ProgressBar {
         chunks++;
         output();
         if (chunks == BAR_SIZE) {
-          System.out.println();
+          outputStream.println();
         }
       }
     }
@@ -35,7 +43,7 @@ public class ProgressBar {
     char doneBarChar = '=';
     String barBuilder = String.valueOf(doneBarChar).repeat(chunks) +
         String.valueOf(defaultBarChar).repeat(BAR_SIZE - chunks);
-    System.out.print("Processing reads: " + percentage
+    outputStream.print("Processing reads: " + percentage
         + "% [" + barBuilder + "](" + done + "/" + total + ")\r");
   }
 }
