@@ -1,5 +1,3 @@
-import com.epam.bioinf.variantcaller.caller.Caller;
-import com.epam.bioinf.variantcaller.caller.Variant;
 import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.handlers.FastaHandler;

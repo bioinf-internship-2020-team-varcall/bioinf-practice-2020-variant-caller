@@ -3,9 +3,7 @@ package com.epam.bioinf.variantcaller.handlers;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.exceptions.handlers.sam.SamNoRelatedReadsException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import htsjdk.samtools.SAMRecord;
-import htsjdk.samtools.SamReader;
-import htsjdk.samtools.SamReaderFactory;
+import htsjdk.samtools.*;
 import htsjdk.samtools.util.RuntimeIOException;
 import htsjdk.tribble.bed.BEDFeature;
 
@@ -14,6 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +43,14 @@ public class SamHandler {
       try (SamReader reader = samFactory.open(path)) {
         for (SAMRecord record : reader) {
           if (hasEmptyIntervals) {
+            Optional<SAMReadGroupRecord> readGroup = reader
+                .getFileHeader()
+                .getReadGroups()
+                .stream().filter(gr -> gr.getId().equals(record.getAttribute(SAMTag.RG.name())))
+                .findFirst();
+            readGroup.ifPresent(samReadGroupRecord -> {
+              record.setAttribute(SAMTag.SM.name(), samReadGroupRecord.getSample());
+            });
             samRecords.add(record);
           } else if (isInsideAnyInterval(record, intervals)) {
             samRecords.add(record);
