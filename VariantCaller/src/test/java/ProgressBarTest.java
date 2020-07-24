@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,18 +20,19 @@ public class ProgressBarTest {
   @MethodSource("provideArgumentsForMustCorrectlyIncrementProgress")
   public void progressBarMustCorrectlyIncrementProgress(
       int total, int checkValue, String expectedOutput) throws UnsupportedEncodingException {
-    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    ProgressBar progressBar = new ProgressBar(total, new PrintStream(baos, true, "utf-8"));
+    final ByteArrayOutputStream progressBarOutputStream = new ByteArrayOutputStream();
+    ProgressBar progressBar = new ProgressBar(total, new PrintStream(progressBarOutputStream,
+        true, Charset.defaultCharset()));
     for (int i = 0; i < checkValue; i++) {
       progressBar.incrementProgress();
     }
-    assertEquals(expectedOutput, baos.toString("utf-8"));
+    assertEquals(expectedOutput, progressBarOutputStream.toString(Charset.defaultCharset()));
   }
 
   @Test
   public void progressBarMustFailIfTotalValueOverflown() throws UnsupportedEncodingException {
     ProgressBar progressBar = new ProgressBar(0, new PrintStream(OutputStream.nullOutputStream(),
-        true, "utf-8"));
+        true, Charset.defaultCharset()));
     assertThrows(IllegalStateException.class, () -> progressBar.incrementProgress());
   }
 

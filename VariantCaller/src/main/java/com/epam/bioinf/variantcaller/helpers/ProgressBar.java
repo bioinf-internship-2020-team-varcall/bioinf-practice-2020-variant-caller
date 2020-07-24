@@ -4,12 +4,14 @@ import java.io.PrintStream;
 
 public class ProgressBar {
 
+  private static final char DEFAULT_BAR_CHAR = '-';
+  private static final char DONE_BAR_CHAR = '=';
   private static final int BAR_SIZE = 10;
   private final int total;
   private int done;
   private int percentage;
   private int chunks;
-  private PrintStream outputStream;
+  private final PrintStream outputStream;
 
   public ProgressBar(int total, PrintStream outputStream) {
     this.total = total;
@@ -39,10 +41,8 @@ public class ProgressBar {
   }
 
   private void output() {
-    char defaultBarChar = '-';
-    char doneBarChar = '=';
-    String barBuilder = String.valueOf(doneBarChar).repeat(chunks) +
-        String.valueOf(defaultBarChar).repeat(BAR_SIZE - chunks);
+    String barBuilder = String.valueOf(DONE_BAR_CHAR).repeat(chunks) +
+        String.valueOf(DEFAULT_BAR_CHAR).repeat(BAR_SIZE - chunks);
     outputStream.print("Processing reads: " + percentage
         + "% [" + barBuilder + "](" + done + "/" + total + ")\r");
   }
