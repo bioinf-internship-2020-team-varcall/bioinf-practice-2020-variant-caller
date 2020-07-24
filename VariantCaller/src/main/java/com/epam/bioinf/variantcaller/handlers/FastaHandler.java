@@ -7,6 +7,7 @@ import htsjdk.samtools.reference.FastaSequenceIndex;
 import htsjdk.samtools.reference.FastaSequenceIndexCreator;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
+import htsjdk.samtools.util.Log;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,7 +23,6 @@ public class FastaHandler {
 
   /**
    * Constructor creates indexed sequence file and stores it.
-   * Unavoidable AsciiLineReader warning is redirected to nullOutputStream
    * Throwable exception is handled by ParsedArguments
    *
    * @param parsedArguments parsedArguments with validated path to fasta file
@@ -39,13 +39,15 @@ public class FastaHandler {
     }
   }
 
+  /**
+   * Method to get index fasta file without getting warning.
+   * Throwable exception is handled by ParsedArguments
+   */
   private FastaSequenceIndex getSequenceIndexFileWithoutWarning(Path fastaPath)
       throws IOException {
-    // Temporary redirection of AsciiLineReader warning
-    final PrintStream stdErr = System.err;
-    System.setErr(new PrintStream(OutputStream.nullOutputStream(), true, "utf-8"));
+    Log.setGlobalLogLevel(Log.LogLevel.ERROR);
     FastaSequenceIndex fastaSequenceIndex = FastaSequenceIndexCreator.buildFromFasta(fastaPath);
-    System.setErr(stdErr);
+    Log.setGlobalLogLevel(Log.LogLevel.INFO);
     return fastaSequenceIndex;
   }
 
