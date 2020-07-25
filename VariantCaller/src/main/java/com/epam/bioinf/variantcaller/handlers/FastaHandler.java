@@ -10,8 +10,6 @@ import htsjdk.samtools.reference.ReferenceSequence;
 import htsjdk.samtools.util.Log;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.nio.file.Path;
 
 /**
@@ -45,10 +43,12 @@ public class FastaHandler {
    */
   private FastaSequenceIndex getSequenceIndexFileWithoutWarning(Path fastaPath)
       throws IOException {
-    Log.setGlobalLogLevel(Log.LogLevel.ERROR);
-    FastaSequenceIndex fastaSequenceIndex = FastaSequenceIndexCreator.buildFromFasta(fastaPath);
-    Log.setGlobalLogLevel(Log.LogLevel.INFO);
-    return fastaSequenceIndex;
+    try {
+      Log.setGlobalLogLevel(Log.LogLevel.ERROR);
+      return FastaSequenceIndexCreator.buildFromFasta(fastaPath);
+    } finally {
+      Log.setGlobalLogLevel(Log.LogLevel.INFO);
+    }
   }
 
   /**
