@@ -4,8 +4,8 @@ import java.io.PrintStream;
 
 public class ProgressBar {
 
-  private static final char DEFAULT_BAR_CHAR = '-';
-  private static final char DONE_BAR_CHAR = '=';
+  private static final String DEFAULT_BAR_CHAR = "-";
+  private static final String DONE_BAR_CHAR = "=";
   private static final int BAR_SIZE = 10;
   private final int total;
   private int done;
@@ -27,7 +27,7 @@ public class ProgressBar {
       throw new IllegalStateException(
           "ProgressBar can not be incremented more than set total value!");
     }
-    int newPercentage = (int)((double)done / (double)total * 100);
+    int newPercentage = (int) ((double) done / (double) total * 100);
     if (newPercentage != percentage) {
       percentage = newPercentage;
       if (percentage / BAR_SIZE > chunks) {
@@ -41,9 +41,16 @@ public class ProgressBar {
   }
 
   private void output() {
-    String barBuilder = String.valueOf(DONE_BAR_CHAR).repeat(chunks) +
-        String.valueOf(DEFAULT_BAR_CHAR).repeat(BAR_SIZE - chunks);
-    outputStream.print("Processing reads: " + percentage
-        + "% [" + barBuilder + "](" + done + "/" + total + ")\r");
+    String barBuilder = DONE_BAR_CHAR.repeat(chunks) +
+        DEFAULT_BAR_CHAR.repeat(BAR_SIZE - chunks);
+    outputStream.print(
+        String.format(
+            "Processing reads: %d%% [%s](%d/%d)\r",
+            percentage,
+            barBuilder,
+            done,
+            total
+        )
+    );
   }
 }

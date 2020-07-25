@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.stream.Stream;
 
@@ -19,7 +18,7 @@ public class ProgressBarTest {
   @ParameterizedTest
   @MethodSource("provideArgumentsForMustCorrectlyIncrementProgress")
   public void progressBarMustCorrectlyIncrementProgress(
-      int total, int checkValue, String expectedOutput) throws UnsupportedEncodingException {
+      int total, int checkValue, String expectedOutput) {
     final ByteArrayOutputStream progressBarOutputStream = new ByteArrayOutputStream();
     ProgressBar progressBar = new ProgressBar(total, new PrintStream(progressBarOutputStream,
         true, Charset.defaultCharset()));
@@ -30,10 +29,10 @@ public class ProgressBarTest {
   }
 
   @Test
-  public void progressBarMustFailIfTotalValueOverflown() throws UnsupportedEncodingException {
+  public void progressBarMustFailIfTotalValueOverflown() {
     ProgressBar progressBar = new ProgressBar(0, new PrintStream(OutputStream.nullOutputStream(),
         true, Charset.defaultCharset()));
-    assertThrows(IllegalStateException.class, () -> progressBar.incrementProgress());
+    assertThrows(IllegalStateException.class, progressBar::incrementProgress);
   }
 
   private static Stream<Arguments> provideArgumentsForMustCorrectlyIncrementProgress() {
