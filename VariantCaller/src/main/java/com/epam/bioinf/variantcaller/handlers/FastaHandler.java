@@ -2,16 +2,14 @@ package com.epam.bioinf.variantcaller.handlers;
 
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.exceptions.handlers.fasta.FastaHandlerUnableToFindEntryException;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import htsjdk.samtools.SAMException;
 import htsjdk.samtools.reference.FastaSequenceIndex;
 import htsjdk.samtools.reference.FastaSequenceIndexCreator;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
+import htsjdk.samtools.util.Log;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.nio.file.Path;
 
 /**
@@ -23,7 +21,6 @@ public class FastaHandler {
 
   /**
    * Constructor creates indexed sequence file and stores it.
-   * Unavoidable AsciiLineReader warning is redirected to nullOutputStream
    * Throwable exception is handled by ParsedArguments
    *
    * @param parsedArguments parsedArguments with validated path to fasta file
@@ -40,15 +37,18 @@ public class FastaHandler {
     }
   }
 
-  @SuppressFBWarnings("DM_DEFAULT_ENCODING")
+  /**
+   * Method to get index fasta file without getting warning.
+   * Throwable exception is handled by ParsedArguments
+   */
   private FastaSequenceIndex getSequenceIndexFileWithoutWarning(Path fastaPath)
       throws IOException {
-    // Temporary redirection of AsciiLineReader warning
-    final PrintStream stdErr = System.err;
-    System.setErr(new PrintStream(OutputStream.nullOutputStream()));
-    FastaSequenceIndex fastaSequenceIndex = FastaSequenceIndexCreator.buildFromFasta(fastaPath);
-    System.setErr(stdErr);
-    return fastaSequenceIndex;
+    try {
+      Log.setGlobalLogLevel(Log.LogLevel.ERROR);
+      return FastaSequenceIndexCreator.buildFromFasta(fastaPath);
+    } finally {
+      Log.setGlobalLogLevel(Log.LogLevel.INFO);
+    }
   }
 
   /**
