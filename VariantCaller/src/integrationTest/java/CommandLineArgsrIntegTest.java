@@ -24,9 +24,9 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustWorkWithCorrectArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
-        "--fasta", intCommonTestFilePath("inttest1.fasta"),
-        "--bed", intCommonTestFilePath("inttest1.bed"),
-        "--sam", intCommonTestFilePath("inttest1.sam")
+        "--fasta", intCommonTestFilePath("simple1.fasta"),
+        "--bed", intCommonTestFilePath("simple1.bed"),
+        "--sam", intCommonTestFilePath("simple1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
     assertTrue(processInfo.errorString.isEmpty(), processInfo.errorString);
@@ -36,10 +36,10 @@ public class CommandLineArgsrIntegTest {
   @Test
   public void programMustFailWithInvalidArguments() throws IOException, InterruptedException {
     String[] invalidTestArgs = {
-        "--fasta", intCommonTestFilePath("inttest1.fasta") + pathSeparatorChar
-          + intCommonTestFilePath("inttest2.fasta"),
-        "--bed", intCommonTestFilePath("inttest1.bed"),
-        "--sam", intCommonTestFilePath("inttest1.sam")
+        "--fasta", intCommonTestFilePath("simple1.fasta") + pathSeparatorChar
+          + intCommonTestFilePath("simple2.fasta"),
+        "--bed", intCommonTestFilePath("simple1.bed"),
+        "--sam", intCommonTestFilePath("simple1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
     assertEquals("Exception in thread \"main\" "

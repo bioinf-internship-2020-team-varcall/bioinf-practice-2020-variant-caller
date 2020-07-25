@@ -20,6 +20,6 @@ public class IntegrationTestHelper {
   }
 
   public static boolean checkIfCommon(String filename) {
-    return Pattern.matches("inttest[0-9].*", filename);
+    return Pattern.matches("simple[0-9].*", filename);
   }
 }
