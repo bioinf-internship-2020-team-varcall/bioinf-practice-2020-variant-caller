@@ -41,7 +41,7 @@ public class Caller {
   }
 
   private void callVariants() {
-    ProgressBar progressBar = new ProgressBar(samRecords.size());
+    ProgressBar progressBar = new ProgressBar(samRecords.size(), System.out);
     for (SAMRecord samRecord : samRecords) {
       String contig = samRecord.getContig();
       if (contig == null) {
