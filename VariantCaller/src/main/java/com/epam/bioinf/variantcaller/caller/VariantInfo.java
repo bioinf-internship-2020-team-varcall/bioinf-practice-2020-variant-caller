@@ -3,6 +3,8 @@ package com.epam.bioinf.variantcaller.caller;
 import htsjdk.variant.variantcontext.*;
 import htsjdk.variant.vcf.VCFConstants;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,9 +64,9 @@ public class VariantInfo {
     if (indel) builder.attribute("INDEL", Boolean.TRUE);
     builder.genotypes(genotypes);
     builder.alleles(alleles);
-    int alleleNumber = genotypes.stream().mapToInt(genotype -> genotype.getAlleles().size()).sum();
-    builder.attribute(VCFConstants.ALLELE_NUMBER_KEY, alleleNumber);
     List<Integer> alleleCnt = getAlleleCntList(alleles, genotypes);
+    int alleleNumber = alleleCnt.stream().mapToInt(val -> val).sum();
+    builder.attribute(VCFConstants.ALLELE_NUMBER_KEY, alleleNumber);
     List<Double> alleleFrequencies = getAlleleFrequenciesList(alleleCnt, alleleNumber);
     if (!alleleCnt.isEmpty()) {
       builder.attribute(VCFConstants.ALLELE_COUNT_KEY, alleleCnt);
@@ -92,8 +94,13 @@ public class VariantInfo {
         if ((float) alleleCnt.get(allele) / (float) totalSampleDepth < MIN_FRACTION) {
           continue;
         }
-        sampleAlleles.add(allele);
-        sampleDepths.add(alleleCnt.get(allele));
+        if (allele.isReference()) {
+          sampleAlleles.add(0, allele);
+          sampleDepths.add(0, alleleCnt.get(allele));
+        } else {
+          sampleAlleles.add(allele);
+          sampleDepths.add(alleleCnt.get(allele));
+        }
       }
       if (!sampleAlleles.isEmpty()) {
         final GenotypeBuilder gb = new GenotypeBuilder(sampleName, sampleAlleles);
@@ -108,18 +115,27 @@ public class VariantInfo {
   public List<Integer> getAlleleCntList(Set<Allele> alleles, List<Genotype> genotypes) {
     List<Integer> alleleCnt = new ArrayList<>();
     for (final Allele alt : alleles) {
-      if (alt.isReference()) continue;
-      alleleCnt.add((int) genotypes.stream()
-          .flatMap(genotype -> genotype.getAlleles().stream())
-          .filter(a -> a.equals(alt))
-          .count());
+      alleleCnt.add(genotypes.stream()
+          .mapToInt(genotype -> {
+            List<Allele> al = genotype.getAlleles();
+            @SuppressWarnings("unchecked") //DPG is always able to be casted to a list of integer
+            List<Integer> dpg = (List<Integer>) genotype.getAnyAttribute("DPG");
+            for (int i = 0; i < genotype.getAlleles().size(); i++) {
+              if (al.get(i).equals(alt)) {
+                return dpg.get(i);
+              }
+            }
+            return 0;
+          })
+          .sum());
     }
     return alleleCnt;
   }
 
   public List<Double> getAlleleFrequenciesList(List<Integer> alleleCnt, int alleleNumber) {
     return alleleCnt.stream().
-        map(cnt -> cnt / (double) alleleNumber).
+        map(cnt -> new BigDecimal(cnt / (double) alleleNumber)
+            .setScale(3, RoundingMode.HALF_UP).doubleValue()).
         collect(Collectors.toList());
   }
 

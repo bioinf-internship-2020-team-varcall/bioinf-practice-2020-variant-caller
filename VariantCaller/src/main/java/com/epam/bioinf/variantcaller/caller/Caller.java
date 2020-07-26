@@ -7,9 +7,7 @@ import htsjdk.samtools.reference.ReferenceSequence;
 import htsjdk.variant.variantcontext.Allele;
 import htsjdk.variant.variantcontext.VariantContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Caller {
@@ -25,7 +23,13 @@ public class Caller {
 
   public List<VariantContext> findVariants() {
     callVariants();
-    return cs.stream().map(VariantInfo::makeContext).collect(Collectors.toList());
+    var result = cs.stream()
+        .map(VariantInfo::makeContext)
+        .filter(Objects::nonNull).collect(Collectors.toList());
+    result.forEach(el -> System.out.println(el.toString()));
+    return cs.stream()
+        .map(VariantInfo::makeContext)
+        .filter(Objects::nonNull).collect(Collectors.toList());
   }
 
   private void callVariants() {
@@ -47,50 +51,64 @@ public class Caller {
       SAMRecord samRecord,
       byte[] subsequenceBases) {
     String sampleName = samRecord.getAttribute(SAMTag.SM.name()).toString();
-    int start = samRecord.getStart();
     int refInd = 0;
     int readInd = 0;
     byte[] readBases = samRecord.getReadBases();
     for (CigarElement cigarElement : samRecord.getCigar().getCigarElements()) {
       CigarOperator operator = cigarElement.getOperator();
       int length = cigarElement.getLength();
-      if (operator.isAlignment()) {
-        for (int i = 0; i < length - 1; ++i) {
-          findContext(samRecord.getContig(), refInd + i, Allele.create(subsequenceBases[refInd], true))
-              .getSample(sampleName)
-              .getAllele(Allele.create(byteToString(readBases[readInd]), false))
-              .incrementStrandCount(samRecord.getReadNegativeStrandFlag());
-        }
-        readInd += length;
-        refInd += length;
-      } else if (operator.equals(CigarOperator.D)) {
-        if (refInd > 0) {
-          final StringBuilder sb = new StringBuilder(length);
-          sb.append(byteToString(subsequenceBases[refInd]));
-          for (int i = 0; i < length - 1; ++i) {
-            sb.append(byteToString(subsequenceBases[refInd + i]));
+      switch (operator) {
+        case H:
+        case P:
+          break;
+        case S:
+          readInd += length;
+          break;
+        case N:
+        case I: {
+          if (refInd > 0) {
+            final StringBuilder sb = new StringBuilder(length);
+            sb.append(byteToString(subsequenceBases[refInd]));
+            for (int i = 0; i < length - 1; ++i) {
+              sb.append(byteToString(readBases[readInd + i]));
+            }
+            findContext(samRecord.getContig(), samRecord.getStart() + refInd, Allele.create(byteToString(subsequenceBases[refInd]), true)).
+                getSample(sampleName).
+                getAllele(Allele.create(sb.toString(), false)).
+                incrementStrandCount(samRecord.getReadNegativeStrandFlag());
           }
-          findContext(samRecord.getContig(), refInd, Allele.create(sb.toString(), true)).
-              getSample(sampleName).
-              getAllele(Allele.create(byteToString(subsequenceBases[refInd]), false)).
-              incrementStrandCount(samRecord.getReadNegativeStrandFlag());
+          readInd += length;
+          break;
         }
-        readInd++;
-        refInd += length + 1;
-      } else if (operator.equals(CigarOperator.I)) {
-        if (refInd > 0) {
-          final StringBuilder sb = new StringBuilder(length);
-          sb.append(byteToString(subsequenceBases[refInd]));
-          for (int i = 0; i < length - 1; ++i) {
-            sb.append(byteToString(readBases[readInd + i]));
+        case D: {
+          if (refInd > 0) {
+            final StringBuilder sb = new StringBuilder(length);
+            sb.append(byteToString(subsequenceBases[refInd]));
+            for (int i = 0; i < length - 1; ++i) {
+              sb.append(byteToString(subsequenceBases[refInd + i]));
+            }
+            findContext(samRecord.getContig(), samRecord.getStart() + refInd, Allele.create(sb.toString(), true)).
+                getSample(sampleName).
+                getAllele(Allele.create(byteToString(subsequenceBases[refInd]), false)).
+                incrementStrandCount(samRecord.getReadNegativeStrandFlag());
           }
-          findContext(samRecord.getContig(), refInd, Allele.create(byteToString(subsequenceBases[refInd]), true)).
-              getSample(sampleName).
-              getAllele(Allele.create(sb.toString(), false)).
-              incrementStrandCount(samRecord.getReadNegativeStrandFlag());
+          readInd++;
+          refInd += length;
+          break;
         }
-        readInd += length + 1;
-        refInd++;
+        case M:
+        case X:
+        case EQ: {
+          for (int i = 0; i < length - 1; ++i) {
+            findContext(samRecord.getContig(), samRecord.getStart() + refInd + i, Allele.create(subsequenceBases[refInd + i], true))
+                .getSample(sampleName)
+                .getAllele(Allele.create(byteToString(readBases[readInd]), false))
+                .incrementStrandCount(samRecord.getReadNegativeStrandFlag());
+          }
+          readInd += length;
+          refInd += length;
+          break;
+        }
       }
     }
   }
