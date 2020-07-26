@@ -27,13 +27,11 @@ public class Caller {
         .map(VariantInfo::makeContext)
         .filter(Objects::nonNull).collect(Collectors.toList());
     result.forEach(el -> System.out.println(el.toString()));
-    return cs.stream()
-        .map(VariantInfo::makeContext)
-        .filter(Objects::nonNull).collect(Collectors.toList());
+    return result;
   }
 
   private void callVariants() {
-    ProgressBar progressBar = new ProgressBar(samRecords.size());
+    ProgressBar progressBar = new ProgressBar(samRecords.size(), System.out);
     for (SAMRecord samRecord : samRecords) {
       String contig = samRecord.getContig();
       if (contig == null) {
