@@ -70,9 +70,11 @@ public class Caller {
             for (int i = 0; i < length - 1; ++i) {
               sb.append(byteToString(readBases[readInd + i]));
             }
-            findContext(samRecord.getContig(), samRecord.getStart() + refInd, Allele.create(byteToString(subsequenceBases[refInd]), true)).
-                getSample(sampleName).
-                getAllele(Allele.create(sb.toString(), false)).
+            findContext(samRecord.getContig(),
+                samRecord.getStart() + refInd,
+                Allele.create(byteToString(subsequenceBases[refInd]), true))
+                .getSample(sampleName)
+                .getAllele(Allele.create(sb.toString(), false)).
                 incrementStrandCount(samRecord.getReadNegativeStrandFlag());
           }
           readInd += length;
@@ -85,9 +87,11 @@ public class Caller {
             for (int i = 0; i < length - 1; ++i) {
               sb.append(byteToString(subsequenceBases[refInd + i]));
             }
-            findContext(samRecord.getContig(), samRecord.getStart() + refInd, Allele.create(sb.toString(), true)).
-                getSample(sampleName).
-                getAllele(Allele.create(byteToString(subsequenceBases[refInd]), false)).
+            findContext(samRecord.getContig(),
+                samRecord.getStart() + refInd,
+                Allele.create(sb.toString(), true))
+                .getSample(sampleName)
+                .getAllele(Allele.create(byteToString(subsequenceBases[refInd]), false)).
                 incrementStrandCount(samRecord.getReadNegativeStrandFlag());
           }
           readInd++;
@@ -98,7 +102,9 @@ public class Caller {
         case X:
         case EQ: {
           for (int i = 0; i < length - 1; ++i) {
-            findContext(samRecord.getContig(), samRecord.getStart() + refInd + i, Allele.create(subsequenceBases[refInd + i], true))
+            findContext(samRecord.getContig(),
+                samRecord.getStart() + refInd + i,
+                Allele.create(subsequenceBases[refInd + i], true))
                 .getSample(sampleName)
                 .getAllele(Allele.create(byteToString(readBases[readInd]), false))
                 .incrementStrandCount(samRecord.getReadNegativeStrandFlag());
@@ -116,7 +122,9 @@ public class Caller {
   }
 
   private VariantInfo findContext(String contig, int pos, Allele ref) {
-    Optional<VariantInfo> context = cs.stream().filter(ctx -> ctx.getContig().equals(contig) && ctx.getPos() == pos).findFirst();
+    Optional<VariantInfo> context = cs.stream()
+        .filter(ctx -> ctx.getContig().equals(contig) && ctx.getPos() == pos)
+        .findFirst();
     if (context.isPresent()) {
       return context.get();
     } else {

@@ -51,9 +51,9 @@ public class VariantInfo {
     builder.chr(contig);
     List<Genotype> genotypes = new ArrayList<>();
     Set<Allele> alleles = new TreeSet<>();
-    for (String sampleName : sampleData.keySet()) {
-      indel = checkIfAnyAlleleIsIndel(sampleData.get(sampleName));
-      Genotype genotype = getGenotypeForSample(sampleName);
+    for (Map.Entry<String, SampleData> entry : sampleData.entrySet()) {
+      indel = checkIfAnyAlleleIsIndel(entry.getValue());
+      Genotype genotype = getGenotypeForSample(entry.getKey());
       if (genotype != null) {
         genotypes.add(genotype);
         alleles.addAll(genotype.getAlleles());
@@ -88,18 +88,21 @@ public class VariantInfo {
       alleleCnt.put(allele, ad.count());
     }
     ArrayList<Integer> sampleDepths = new ArrayList<>();
-    int totalSampleDepth = alleleCnt.keySet().stream().map(alleleCnt::get).mapToInt(Integer::intValue).sum();
+    int totalSampleDepth = alleleCnt.keySet()
+        .stream()
+        .map(alleleCnt::get)
+        .mapToInt(Integer::intValue).sum();
     if (totalSampleDepth > MIN_DEPTH) {
-      for (Allele allele : alleleCnt.keySet()) {
-        if ((float) alleleCnt.get(allele) / (float) totalSampleDepth < MIN_FRACTION) {
+      for (Map.Entry<Allele, Integer> entry : alleleCnt.entrySet()) {
+        if ((float) entry.getValue() / (float) totalSampleDepth < MIN_FRACTION) {
           continue;
         }
-        if (allele.isReference()) {
-          sampleAlleles.add(0, allele);
-          sampleDepths.add(0, alleleCnt.get(allele));
+        if (entry.getKey().isReference()) {
+          sampleAlleles.add(0, entry.getKey());
+          sampleDepths.add(0, entry.getValue());
         } else {
-          sampleAlleles.add(allele);
-          sampleDepths.add(alleleCnt.get(allele));
+          sampleAlleles.add(entry.getKey());
+          sampleDepths.add(entry.getValue());
         }
       }
       if (!sampleAlleles.isEmpty()) {
@@ -119,7 +122,7 @@ public class VariantInfo {
           .mapToInt(genotype -> {
             List<Allele> al = genotype.getAlleles();
             @SuppressWarnings("unchecked") //DPG is always able to be casted to a list of integer
-            List<Integer> dpg = (List<Integer>) genotype.getAnyAttribute("DPG");
+                List<Integer> dpg = (List<Integer>) genotype.getAnyAttribute("DPG");
             for (int i = 0; i < genotype.getAlleles().size(); i++) {
               if (al.get(i).equals(alt)) {
                 return dpg.get(i);
@@ -133,13 +136,15 @@ public class VariantInfo {
   }
 
   public List<Double> getAlleleFrequenciesList(List<Integer> alleleCnt, int alleleNumber) {
-    return alleleCnt.stream().
-        map(cnt -> new BigDecimal(cnt / (double) alleleNumber)
-            .setScale(3, RoundingMode.HALF_UP).doubleValue()).
-        collect(Collectors.toList());
+    return alleleCnt.stream()
+        .map(cnt -> new BigDecimal(cnt / (double) alleleNumber)
+            .setScale(3, RoundingMode.HALF_UP).doubleValue())
+        .collect(Collectors.toList());
   }
 
   public boolean checkIfAnyAlleleIsIndel(SampleData singleSample) {
-    return singleSample.alleleMap.keySet().stream().anyMatch(allele -> allele.getBaseString().length() != 1);
+    return singleSample.alleleMap.keySet()
+        .stream()
+        .anyMatch(allele -> allele.getBaseString().length() != 1);
   }
 }
