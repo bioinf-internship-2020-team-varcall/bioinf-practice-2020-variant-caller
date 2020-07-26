@@ -3,40 +3,41 @@ import org.junit.jupiter.api.Test;
 public class CallerTest {
   @Test
   public void variantContextReferenceAlleleMustMatchAccordingSequenceAllele() {
-    //TODO Проверить, что референс аллель
-    // в полученном коллером вариант контексте соответствует тому же референс аллелю
-    // на указанной в контексте позиции на референс последовательности
+    //TODO Check if a reference allele from a variant context
+    // is matching the same allele at the reference sequence
+    // (position or 'locus' of an allele at the reference sequence is defined
+    // in VariantContext object
   }
 
   @Test
   public void foundContextMustReturnCorrectAcAndAf() {
-    //TODO Проверить, что найденный контекст содержит корректный AC и AF
+    //TODO Check if the found context holds a correct AC and AF
   }
 
   @Test
   public void foundContextMustReturnCorrectAltAlleles() {
-    //TODO Проверить, что найденный контекст содержит корректные альтернативные аллели
+    //TODO Check if the found context holds a correct list of alternate alleles
   }
 
   @Test
   public void foundContextMustHoldCorrectTotalNumberOfAlleles() {
-    //TODO Проверить, что найденный контекст содержит корректное общее количество аллелей
+    //TODO Check if the found context holds a correct total number of alleles at the given locus
   }
 
   @Test
   public void foundContextMustHoldGenotypesWithCorrectSampleNames() {
-    //TODO Проверить, что найденный контекст содержит генотипы
-    // с корректными именами read group(SM или sample name в @RG)
+    //TODO Check if the found context holds genotypes
+    // with correct names of a read group(SM или sample name в @RG)
   }
 
   @Test
   public void foundContextMustHoldGenotypesWithCorrectListOfAllelesAndDpg() {
-    //TODO Проверить, что генотип в найденном контексте содержит
-    // корректный список аллелей для этой read group, а также соотвествующие DPG
+    //TODO Check if a genotype in a found context holds correct list of
+    // alleles and the given locus and genotype DPG is matching this list
   }
 
   @Test
   public void foundContextMustHoldGenotypesWithCorrectDp() {
-    //TODO Проверить, что генотип в найденном контексте содержит корректный DP
+    //TODO Check if a genotype in a found context holds correct DP
   }
 }
