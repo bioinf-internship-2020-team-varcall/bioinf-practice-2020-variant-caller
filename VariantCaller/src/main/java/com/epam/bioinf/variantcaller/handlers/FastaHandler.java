@@ -3,14 +3,16 @@ package com.epam.bioinf.variantcaller.handlers;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.exceptions.handlers.fasta.FastaHandlerUnableToFindEntryException;
 import htsjdk.samtools.SAMException;
-import htsjdk.samtools.reference.*;
+import htsjdk.samtools.reference.FastaSequenceIndex;
+import htsjdk.samtools.reference.FastaSequenceIndexCreator;
+import htsjdk.samtools.reference.IndexedFastaSequenceFile;
+import htsjdk.samtools.reference.ReferenceSequence;
+import htsjdk.samtools.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 /**
  * Class holds a reference file with sequences and performs work with it.
@@ -28,12 +30,26 @@ public class FastaHandler {
    */
   public FastaHandler(ParsedArguments parsedArguments) {
     try {
-      FastaSequenceIndex fastaSequenceIndex = FastaSequenceIndexCreator
-          .buildFromFasta(parsedArguments.getFastaPath());
+      FastaSequenceIndex fastaSequenceIndex =
+          getSequenceIndexFileWithoutWarning(parsedArguments.getFastaPath());
       fastaSequenceFile =
           new IndexedFastaSequenceFile(parsedArguments.getFastaPath(), fastaSequenceIndex);
     } catch (IOException e) { // Handled by ParsedArguments
       e.printStackTrace();
+    }
+  }
+
+  /**
+   * Method to get index fasta file without getting warning.
+   * Throwable exception is handled by ParsedArguments
+   */
+  private FastaSequenceIndex getSequenceIndexFileWithoutWarning(Path fastaPath)
+      throws IOException {
+    try {
+      Log.setGlobalLogLevel(Log.LogLevel.ERROR);
+      return FastaSequenceIndexCreator.buildFromFasta(fastaPath);
+    } finally {
+      Log.setGlobalLogLevel(Log.LogLevel.INFO);
     }
   }
 
