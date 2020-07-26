@@ -42,7 +42,7 @@ public class SamHandler {
     for (Path path : samPaths) {
       try (SamReader reader = samFactory.open(path)) {
         for (SAMRecord record : reader) {
-          if (hasEmptyIntervals) {
+          if (hasEmptyIntervals || isInsideAnyInterval(record, intervals)) {
             Optional<SAMReadGroupRecord> readGroup = reader
                 .getFileHeader()
                 .getReadGroups()
@@ -51,8 +51,6 @@ public class SamHandler {
             readGroup.ifPresent(samReadGroupRecord -> {
               record.setAttribute(SAMTag.SM.name(), samReadGroupRecord.getSample());
             });
-            samRecords.add(record);
-          } else if (isInsideAnyInterval(record, intervals)) {
             samRecords.add(record);
           }
         }
