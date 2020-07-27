@@ -15,7 +15,8 @@ public class VariantInfoTest {
   public void ifContextNotHoldsSampleDataByGivenSampleNameItWillCreateOne() {
     //Create an object which does not contain any sample data
     VariantInfo variantInfo = new VariantInfo("chr2", 1, Allele.create((byte) 'G', true));
-    //Check that when trying to get sample data by sample name variant info automatically creates one
+    //Check that when trying to get sample data by sample
+    // name variant info automatically creates one
     assertNotNull(variantInfo.getSample("Hi,Mom!"));
   }
 
@@ -23,7 +24,8 @@ public class VariantInfoTest {
   public void foundContextMustReturnCorrectAcAndAf() {
     VariantContext testedContext = getTestedVariantContextWithMultipleVariantsAndGenotypes();
     assertEquals(Arrays.asList(8, 4, 4, 7), testedContext.getAttributeAsIntList("AC", 0));
-    assertEquals(Arrays.asList(0.348, 0.174, 0.174, 0.304), testedContext.getAttributeAsDoubleList("AF", 0.0));
+    assertEquals(Arrays.asList(0.348, 0.174, 0.174, 0.304),
+        testedContext.getAttributeAsDoubleList("AF", 0.0));
   }
 
   @Test

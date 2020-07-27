@@ -25,30 +25,34 @@ public class ProgramIntegTest {
 
   @Test
   public void programMustWorkWithCorrectArguments() throws IOException, InterruptedException {
-    String[] invalidTestArgs = {
+    String[] correctTestArgs = {
         "--fasta", intCommonTestFilePath("simple1.fasta"),
         "--bed", intCommonTestFilePath("simple1.bed"),
         "--sam", intCommonTestFilePath("simple1.sam")
     };
-    ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
+    ProcessInfo processInfo = launchProcessWithArgs(correctTestArgs);
     assertTrue(Files.readAllLines(processInfo.errorPath).isEmpty());
+    assertEquals(
+        Files.readAllLines(intCommonRefTestFilePath("simple_expected_output.txt")).toString(),
+        Files.readAllLines(processInfo.outputPath).toString());
     assertEquals(0, processInfo.exitValue);
   }
 
   //TODO Why is this test running so long?
-//  @Test
-//  public void programMustReturnCorrectContextsForLongSequence() throws IOException, InterruptedException {
-//    String[] correctTestArgs = {
-//        "--fasta", intCommonTestFilePath("cv1.fasta"),
-//        "--sam", intCommonTestFilePath("cv1_grouped.sam")
-//    };
-//    ProcessInfo processInfo = launchProcessWithArgs(correctTestArgs);
-//    assertEquals(
-//        Files.readAllLines(intCommonRefTestFilePath("cv1.fasta")).toString(),
-//        Files.readAllLines(processInfo.outputPath).toString()
-//    );
-//    assertEquals(0, processInfo.exitValue);
-//  }
+  //  @Test
+  //  public void programMustReturnCorrectContextsForLongSequence()
+  //      throws IOException, InterruptedException {
+  //    String[] correctTestArgs = {
+  //        "--fasta", intCommonTestFilePath("cv1.fasta"),
+  //        "--sam", intCommonTestFilePath("cv1_grouped.sam")
+  //    };
+  //    ProcessInfo processInfo = launchProcessWithArgs(correctTestArgs);
+  //    assertEquals(
+  //        Files.readAllLines(intCommonRefTestFilePath("cv1.fasta")).toString(),
+  //        Files.readAllLines(processInfo.outputPath).toString()
+  //    );
+  //    assertEquals(0, processInfo.exitValue);
+  //  }
 
   @Test
   public void programMustFailWithInvalidArguments() throws IOException, InterruptedException {
@@ -59,7 +63,8 @@ public class ProgramIntegTest {
         "--sam", intCommonTestFilePath("simple1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
-    assertEquals(Files.readAllLines(intCommonRefTestFilePath("simple_expected_error.txt")).toString(),
+    assertEquals(
+        Files.readAllLines(intCommonRefTestFilePath("simple_expected_error.txt")).toString(),
         Files.readAllLines(processInfo.errorPath).toString());
     assertEquals(1, processInfo.exitValue);
   }
@@ -97,7 +102,8 @@ public class ProgramIntegTest {
     Path tempFile = Files.createTempFile(filename, ".temp");
     String iter = reader.readLine();
     while (iter != null) {
-      Files.write(tempFile, (iter + "\n").getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
+      Files.write(tempFile, (iter + "\n").getBytes(StandardCharsets.UTF_8),
+          StandardOpenOption.APPEND);
       iter = reader.readLine();
     }
     reader.close();
