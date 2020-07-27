@@ -5,7 +5,7 @@ import htsjdk.variant.variantcontext.Allele;
 import java.util.Arrays;
 
 public class AlleleData {
-  int[] countStrands;
+  public int[] countStrands;
 
   public AlleleData(Allele allele) {
     countStrands = new int[]{0, 0};
