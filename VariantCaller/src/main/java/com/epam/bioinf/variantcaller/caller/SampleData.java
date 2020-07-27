@@ -10,7 +10,7 @@ public class SampleData {
   @SuppressWarnings("unused")
   final Map<Allele, AlleleData> alleleMap;
 
-  SampleData(final VariantInfo owner) {
+  public SampleData(final VariantInfo owner) {
     this.owner = owner;
     this.alleleMap = new HashMap<>();
   }
