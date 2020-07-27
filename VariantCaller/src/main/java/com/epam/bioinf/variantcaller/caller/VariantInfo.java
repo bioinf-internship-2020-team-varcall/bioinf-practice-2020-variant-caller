@@ -16,7 +16,7 @@ public class VariantInfo {
   private static final double MIN_FRACTION = 1.0 / 1000.0;
   private final Map<String, SampleData> sampleData;
 
-  VariantInfo(String contig, int pos, Allele refAllele) {
+  public VariantInfo(String contig, int pos, Allele refAllele) {
     this.refAllele = refAllele;
     this.contig = contig;
     this.pos = pos;
@@ -78,7 +78,7 @@ public class VariantInfo {
     return context;
   }
 
-  public Genotype getGenotypeForSample(String sampleName) {
+  private Genotype getGenotypeForSample(String sampleName) {
     SampleData sd = sampleData.get(sampleName);
     HashMap<Allele, Integer> alleleCnt = new HashMap<>();
     ArrayList<Allele> sampleAlleles = new ArrayList<>();
@@ -115,7 +115,7 @@ public class VariantInfo {
     return null;
   }
 
-  public List<Integer> getAlleleCntList(Set<Allele> alleles, List<Genotype> genotypes) {
+  private List<Integer> getAlleleCntList(Set<Allele> alleles, List<Genotype> genotypes) {
     List<Integer> alleleCnt = new ArrayList<>();
     for (final Allele alt : alleles) {
       alleleCnt.add(genotypes.stream()
@@ -135,14 +135,14 @@ public class VariantInfo {
     return alleleCnt;
   }
 
-  public List<Double> getAlleleFrequenciesList(List<Integer> alleleCnt, int alleleNumber) {
+  private List<Double> getAlleleFrequenciesList(List<Integer> alleleCnt, int alleleNumber) {
     return alleleCnt.stream()
         .map(cnt -> new BigDecimal(cnt / (double) alleleNumber)
             .setScale(3, RoundingMode.HALF_UP).doubleValue())
         .collect(Collectors.toList());
   }
 
-  public boolean checkIfAnyAlleleIsIndel(SampleData singleSample) {
+  private boolean checkIfAnyAlleleIsIndel(SampleData singleSample) {
     return singleSample.alleleMap.keySet()
         .stream()
         .anyMatch(allele -> allele.getBaseString().length() != 1);
