@@ -1,43 +1,37 @@
+import com.epam.bioinf.variantcaller.caller.Caller;
+import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
+import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
+import com.epam.bioinf.variantcaller.handlers.FastaHandler;
+import com.epam.bioinf.variantcaller.handlers.SamHandler;
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.reference.IndexedFastaSequenceFile;
+import htsjdk.variant.variantcontext.VariantContext;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
+
+import static helpers.UnitTestHelper.callerRefFilePath;
+import static helpers.UnitTestHelper.callerTestFilePath;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class CallerTest {
-  @Test
-  public void variantContextReferenceAlleleMustMatchAccordingSequenceAllele() {
-    //TODO Check if a reference allele from a variant context
-    // is matching the same allele at the reference sequence
-    // (position or 'locus' of an allele at the reference sequence is defined
-    // in VariantContext object
-  }
 
   @Test
-  public void foundContextMustReturnCorrectAcAndAf() {
-    //TODO Check if the found context holds a correct AC and AF
+  public void callerMustReturnCorrectListOfContexts() throws IOException {
+    ParsedArguments parsedArguments = CommandLineParser.parse(getArgs());
+    IndexedFastaSequenceFile fastaSequenceFile =
+        new FastaHandler(parsedArguments).getFastaSequenceFile();
+    List<SAMRecord> samRecords = new SamHandler(parsedArguments).getSamRecords();
+    List<VariantContext> result = new Caller(fastaSequenceFile, samRecords).findVariants();
+    assertEquals(Files.readString(callerRefFilePath("short_sequence_variants.txt")), result.toString());
   }
 
-  @Test
-  public void foundContextMustReturnCorrectAltAlleles() {
-    //TODO Check if the found context holds a correct list of alternate alleles
-  }
-
-  @Test
-  public void foundContextMustHoldCorrectTotalNumberOfAlleles() {
-    //TODO Check if the found context holds a correct total number of alleles at the given locus
-  }
-
-  @Test
-  public void foundContextMustHoldGenotypesWithCorrectSampleNames() {
-    //TODO Check if the found context holds genotypes
-    // with correct names of a read group(SM или sample name в @RG)
-  }
-
-  @Test
-  public void foundContextMustHoldGenotypesWithCorrectListOfAllelesAndDpg() {
-    //TODO Check if a genotype in a found context holds correct list of
-    // alleles and the given locus and genotype DPG is matching this list
-  }
-
-  @Test
-  public void foundContextMustHoldGenotypesWithCorrectDp() {
-    //TODO Check if a genotype in a found context holds correct DP
+  private String[] getArgs() {
+    return new String[]{
+        "--fasta", callerTestFilePath("short_seq.fasta"),
+        "--sam", callerTestFilePath("short_seq.sam")
+    };
   }
 }
