@@ -102,9 +102,6 @@ public class Caller {
         case X:
         case EQ: {
           for (int i = 0; i < length - 1; ++i) {
-            if (samRecord.getStart() + refInd + i == 2) {
-              System.out.println(samRecord.getContig());
-            }
             findContext(samRecord.getContig(),
                 samRecord.getStart() + refInd + i,
                 Allele.create(subsequenceBases[refInd + i], true))
