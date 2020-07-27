@@ -13,10 +13,17 @@ public class IntegrationTestHelper {
       .toAbsolutePath();
 
   /**
-   * Method returns a path to a unit test resource with given filename
+   * Method returns a path to a int test resource with given filename
    */
   public static String intCommonTestFilePath(String filename) {
     return INTEGRATION_TEST_RESOURCES_ROOT.resolve("common").resolve(filename).toString();
+  }
+
+  /**
+   * Method returns a path to a int test ref resource with given filename
+   */
+  public static Path intCommonRefTestFilePath(String filename) {
+    return INTEGRATION_TEST_RESOURCES_ROOT.resolve("common").resolve("ref").resolve(filename);
   }
 
   public static boolean checkIfCommon(String filename) {
