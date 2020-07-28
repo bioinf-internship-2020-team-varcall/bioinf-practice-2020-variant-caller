@@ -1,13 +1,11 @@
 package com.epam.bioinf.variantcaller.caller;
 
-import htsjdk.variant.variantcontext.Allele;
-
 import java.util.Arrays;
 
-public class AlleleData {
+public class AlleleCounter {
   public int[] countStrands;
 
-  public AlleleData(Allele allele) {
+  public AlleleCounter() {
     countStrands = new int[]{0, 0};
   }
 

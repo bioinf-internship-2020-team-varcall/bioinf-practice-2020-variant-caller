@@ -8,20 +8,20 @@ import java.util.Map;
 public class SampleData {
   final VariantInfo owner;
   @SuppressWarnings("unused")
-  final Map<Allele, AlleleData> alleleMap;
+  final Map<Allele, AlleleCounter> alleleMap;
 
   public SampleData(final VariantInfo owner) {
     this.owner = owner;
     this.alleleMap = new HashMap<>();
   }
 
-  public AlleleData getAllele(Allele alt) {
+  public AlleleCounter getAllele(Allele alt) {
     if (owner.getRefAllele().equals(alt, true)) {
       alt = owner.getRefAllele();
     }
-    AlleleData ad = this.alleleMap.get(alt);
+    AlleleCounter ad = this.alleleMap.get(alt);
     if (ad == null) {
-      ad = new AlleleData(alt);
+      ad = new AlleleCounter();
       this.alleleMap.put(alt, ad);
     }
     return ad;

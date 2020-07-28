@@ -84,7 +84,7 @@ public class VariantInfo {
     ArrayList<Allele> sampleAlleles = new ArrayList<>();
     for (Allele allele : sd.alleleMap.keySet()) {
       if (allele.isNonReference() && allele.getDisplayString().equals("N")) continue;
-      AlleleData ad = sd.alleleMap.get(allele);
+      AlleleCounter ad = sd.alleleMap.get(allele);
       alleleCnt.put(allele, ad.count());
     }
     ArrayList<Integer> sampleDepths = new ArrayList<>();
