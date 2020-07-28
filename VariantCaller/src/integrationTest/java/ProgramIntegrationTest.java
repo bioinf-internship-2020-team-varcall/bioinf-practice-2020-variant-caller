@@ -5,6 +5,7 @@ import org.junit.rules.ExpectedException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +13,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static helpers.IntegrationTestHelper.*;
 import static java.io.File.pathSeparatorChar;
@@ -30,28 +32,28 @@ public class ProgramIntegrationTest {
         "--sam", intCommonTestFilePath("simple1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(correctTestArgs);
-    assertTrue(Files.readAllLines(processInfo.errorPath).isEmpty());
+    assertTrue(processInfo.error.isEmpty());
     assertEquals(
         Files.readAllLines(intCommonRefTestFilePath("simple_expected_output.txt")).toString(),
-        Files.readAllLines(processInfo.outputPath).toString());
+        processInfo.output.toString()
+    );
     assertEquals(0, processInfo.exitValue);
   }
 
-  //TODO Why is this test running so long?
-  //  @Test
-  //  public void programMustReturnCorrectContextsForLongSequence()
-  //      throws IOException, InterruptedException {
-  //    String[] correctTestArgs = {
-  //        "--fasta", intCommonTestFilePath("cv1.fasta"),
-  //        "--sam", intCommonTestFilePath("cv1_grouped.sam")
-  //    };
-  //    ProcessInfo processInfo = launchProcessWithArgs(correctTestArgs);
-  //    assertEquals(
-  //        Files.readAllLines(intCommonRefTestFilePath("cv1.fasta")).toString(),
-  //        Files.readAllLines(processInfo.outputPath).toString()
-  //    );
-  //    assertEquals(0, processInfo.exitValue);
-  //  }
+  @Test
+  public void programMustReturnCorrectContextsForLongSequence()
+      throws IOException, InterruptedException {
+    String[] correctTestArgs = {
+        "--fasta", intCommonTestFilePath("cv1.fasta"),
+        "--sam", intCommonTestFilePath("cv1_grouped.sam")
+    };
+    ProcessInfo processInfo = launchProcessWithArgs(correctTestArgs);
+    assertEquals(
+        Files.readAllLines(intCommonRefTestFilePath("cv1_expected_contexts.txt")).toString(),
+        processInfo.output.toString()
+    );
+    assertEquals(0, processInfo.exitValue);
+  }
 
   @Test
   public void programMustFailWithInvalidArguments() throws IOException, InterruptedException {
@@ -62,7 +64,7 @@ public class ProgramIntegrationTest {
         "--sam", intCommonTestFilePath("simple1.sam")
     };
     ProcessInfo processInfo = launchProcessWithArgs(invalidTestArgs);
-    assertFalse(Files.readAllLines(processInfo.outputPath).toString().isEmpty());
+    assertFalse(processInfo.error.toString().isEmpty());
     assertEquals(1, processInfo.exitValue);
   }
 
@@ -83,39 +85,37 @@ public class ProgramIntegrationTest {
     command.addAll(Arrays.asList(args));
     ProcessBuilder builder = new ProcessBuilder(command);
     Process p = builder.start();
-    BufferedReader error = new BufferedReader(
-        new InputStreamReader(p.getErrorStream(), StandardCharsets.UTF_8)
-    );
-    BufferedReader output = new BufferedReader(
-        new InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8)
-    );
-    p.waitFor();
-    Path errorPath = writeToTempFile(error, "error");
-    Path outputPath = writeToTempFile(output, "output");
-    return new ProcessInfo(p.exitValue(), errorPath, outputPath);
-  }
-
-  private Path writeToTempFile(BufferedReader reader, String filename) throws IOException {
-    Path tempFile = Files.createTempFile(filename, ".temp");
-    String iter = reader.readLine();
-    while (iter != null) {
-      Files.write(tempFile, (iter + "\n").getBytes(StandardCharsets.UTF_8),
-          StandardOpenOption.APPEND);
-      iter = reader.readLine();
+    try (
+        BufferedReader error = new BufferedReader(
+            new InputStreamReader(p.getErrorStream(), Charset.defaultCharset())
+        );
+        BufferedReader output = new BufferedReader(
+            new InputStreamReader(p.getInputStream(), Charset.defaultCharset())
+        );
+    ) {
+      List<String> outputBuffer = new ArrayList<>();
+      String line;
+      while ((line = output.readLine()) != null) {
+        outputBuffer.add(line);
+      }
+      p.waitFor();
+      return new ProcessInfo(
+          p.exitValue(),
+          error.lines().collect(Collectors.toList()),
+          outputBuffer
+      );
     }
-    reader.close();
-    return tempFile;
   }
 
   private static final class ProcessInfo {
     public int exitValue;
-    public Path errorPath;
-    public Path outputPath;
+    public List<String> error;
+    public List<String> output;
 
-    public ProcessInfo(int exitValue, Path errorPath, Path outputPath) {
+    public ProcessInfo(int exitValue, List<String> error, List<String> output) {
       this.exitValue = exitValue;
-      this.errorPath = errorPath;
-      this.outputPath = outputPath;
+      this.error = error;
+      this.output = output;
     }
   }
 }
