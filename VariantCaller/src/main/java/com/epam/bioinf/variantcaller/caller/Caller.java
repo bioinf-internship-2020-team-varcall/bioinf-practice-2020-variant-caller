@@ -13,17 +13,17 @@ import java.util.stream.Collectors;
 public class Caller {
   private final IndexedFastaSequenceFile fastaSequenceFile;
   private final List<SAMRecord> samRecords;
-  private final List<VariantInfo> cs;
+  private final List<VariantInfo> variantInfoList;
 
   public Caller(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
     this.fastaSequenceFile = fastaSequenceFile;
     this.samRecords = samRecords;
-    this.cs = new ArrayList<>();
+    this.variantInfoList = new ArrayList<>();
   }
 
   public List<VariantContext> findVariants() {
     callVariants();
-    var result = cs.stream()
+    var result = variantInfoList.stream()
         .map(VariantInfo::makeContext)
         .filter(Objects::nonNull).collect(Collectors.toList());
     result.forEach(el -> System.out.println(el.toString()));
@@ -122,14 +122,14 @@ public class Caller {
   }
 
   private VariantInfo findContext(String contig, int pos, Allele ref) {
-    Optional<VariantInfo> context = cs.stream()
+    Optional<VariantInfo> context = variantInfoList.stream()
         .filter(ctx -> ctx.getContig().equals(contig) && ctx.getPos() == pos)
         .findFirst();
     if (context.isPresent()) {
       return context.get();
     } else {
       VariantInfo variantInfo = new VariantInfo(contig, pos, ref);
-      cs.add(variantInfo);
+      variantInfoList.add(variantInfo);
       return variantInfo;
     }
   }
