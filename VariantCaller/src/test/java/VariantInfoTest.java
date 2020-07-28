@@ -93,7 +93,7 @@ public class VariantInfoTest {
     incrementStrandCountBySampleName(variantInfo, "Bye,Mom!", 'T', false, 5);
     incrementStrandCountBySampleName(variantInfo, "Bye,Mom!", 'A', false, 3);
     incrementStrandCountBySampleName(variantInfo, "Bye,Mom!", 'G', true, 8);
-    return variantInfo.makeContext();
+    return variantInfo.makeVariantContext();
   }
 
   private void incrementStrandCountBySampleName(VariantInfo variantInfo,

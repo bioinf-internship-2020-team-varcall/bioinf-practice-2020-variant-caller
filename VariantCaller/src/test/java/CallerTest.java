@@ -25,6 +25,7 @@ public class CallerTest {
         new FastaHandler(parsedArguments).getFastaSequenceFile();
     List<SAMRecord> samRecords = new SamHandler(parsedArguments).getSamRecords();
     List<VariantContext> result = new Caller(fastaSequenceFile, samRecords).findVariants();
+    System.out.println(result.toString());
     assertEquals(Files.readString(callerRefFilePath("short_sequence_variants.txt")),
         result.toString());
   }

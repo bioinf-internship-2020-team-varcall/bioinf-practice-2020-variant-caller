@@ -1,0 +1,151 @@
+package com.epam.bioinf.variantcaller.caller;
+
+import com.epam.bioinf.variantcaller.exceptions.caller.NoGenotypesException;
+import htsjdk.variant.variantcontext.*;
+import htsjdk.variant.vcf.VCFConstants;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class VariantContextBuilderWrapper {
+  private final VariantContextBuilder variantContextBuilder;
+  private final Allele refAllele;
+  private static final int MIN_DEPTH = 1;
+  private static final double MIN_FRACTION = 1.0 / 1000.0;
+
+  public VariantContextBuilderWrapper(Allele refAllele) {
+    variantContextBuilder = new VariantContextBuilder();
+    this.refAllele = refAllele;
+  }
+
+  public VariantContext make() {
+    return variantContextBuilder.make();
+  }
+
+  public VariantContextBuilderWrapper start(int pos) {
+    variantContextBuilder.start(pos);
+    return this;
+  }
+
+  public VariantContextBuilderWrapper stop(int pos) {
+    variantContextBuilder.stop(pos);
+    return this;
+  }
+
+  public VariantContextBuilderWrapper chr(String contig) {
+    variantContextBuilder.chr(contig);
+    return this;
+  }
+
+  public VariantContextBuilderWrapper countAndSetAlleleNumber() {
+    List<Integer> alleleCnt = getAlleleCntList(variantContextBuilder.getAlleles(),
+        variantContextBuilder.getGenotypes());
+    int alleleNumber = alleleCnt.stream().mapToInt(val -> val).sum();
+    variantContextBuilder.attribute(VCFConstants.ALLELE_NUMBER_KEY, alleleNumber);
+    return this;
+  }
+
+  public VariantContextBuilderWrapper countAndSetAlleleFrequencies() {
+    List<Integer> alleleCntList = getAlleleCntList(variantContextBuilder.getAlleles(),
+        variantContextBuilder.getGenotypes());
+    List<Double> alleleFrequencies = getAlleleFrequenciesList(alleleCntList,
+        (int) variantContextBuilder.getAttributes().get(VCFConstants.ALLELE_NUMBER_KEY));
+    if (!alleleCntList.isEmpty()) {
+      variantContextBuilder.attribute(VCFConstants.ALLELE_COUNT_KEY, alleleCntList);
+      variantContextBuilder.attribute(VCFConstants.ALLELE_FREQUENCY_KEY, alleleFrequencies);
+    }
+    return this;
+  }
+
+  public VariantContextBuilderWrapper genotypesAndAlleles(Map<String, SampleData> sampleDataMap) {
+    boolean indel = refAllele.getBaseString().length() != 1;
+    List<Genotype> genotypes = new ArrayList<>();
+    Set<Allele> alleles = new TreeSet<>();
+    for (Map.Entry<String, SampleData> entry : sampleDataMap.entrySet()) {
+      indel = checkIfAnyAlleleIsIndel(entry.getValue());
+      Genotype genotype = getGenotypeForSample(entry.getKey(), sampleDataMap);
+      if (genotype != null) {
+        genotypes.add(genotype);
+        alleles.addAll(genotype.getAlleles());
+      }
+    }
+    if (genotypes.isEmpty()) throw new NoGenotypesException("There are no genotypes");
+    alleles.add(refAllele);
+    if (indel) variantContextBuilder.attribute("INDEL", Boolean.TRUE);
+    variantContextBuilder.genotypes(genotypes);
+    variantContextBuilder.alleles(alleles);
+    return this;
+  }
+
+  private Genotype getGenotypeForSample(String sampleName, Map<String, SampleData> sampleDataMap) {
+    SampleData sd = sampleDataMap.get(sampleName);
+    HashMap<Allele, Integer> alleleCnt = new HashMap<>();
+    ArrayList<Allele> sampleAlleles = new ArrayList<>();
+    for (Allele allele : sd.getAlleleMap().keySet()) {
+      if (allele.isNonReference() && allele.getDisplayString().equals("N")) continue;
+      AlleleCounter ad = sd.getAlleleMap().get(allele);
+      alleleCnt.put(allele, ad.count());
+    }
+    ArrayList<Integer> sampleDepths = new ArrayList<>();
+    int totalSampleDepth = alleleCnt.keySet()
+        .stream()
+        .map(alleleCnt::get)
+        .mapToInt(Integer::intValue).sum();
+    if (totalSampleDepth > MIN_DEPTH) {
+      for (Map.Entry<Allele, Integer> entry : alleleCnt.entrySet()) {
+        if ((float) entry.getValue() / (float) totalSampleDepth < MIN_FRACTION) {
+          continue;
+        }
+        if (entry.getKey().isReference()) {
+          sampleAlleles.add(0, entry.getKey());
+          sampleDepths.add(0, entry.getValue());
+        } else {
+          sampleAlleles.add(entry.getKey());
+          sampleDepths.add(entry.getValue());
+        }
+      }
+      if (!sampleAlleles.isEmpty()) {
+        final GenotypeBuilder gb = new GenotypeBuilder(sampleName, sampleAlleles);
+        gb.DP(totalSampleDepth);
+        gb.attribute("DPG", sampleDepths);
+        return gb.make();
+      }
+    }
+    return null;
+  }
+
+  private List<Integer> getAlleleCntList(List<Allele> alleles, List<Genotype> genotypes) {
+    List<Integer> alleleCnt = new ArrayList<>();
+    for (final Allele alt : alleles) {
+      alleleCnt.add(genotypes.stream()
+          .mapToInt(genotype -> {
+            List<Allele> al = genotype.getAlleles();
+            @SuppressWarnings("unchecked") //DPG is always able to be casted to a list of integer
+                List<Integer> dpg = (List<Integer>) genotype.getAnyAttribute("DPG");
+            for (int i = 0; i < genotype.getAlleles().size(); i++) {
+              if (al.get(i).equals(alt)) {
+                return dpg.get(i);
+              }
+            }
+            return 0;
+          })
+          .sum());
+    }
+    return alleleCnt;
+  }
+
+  private List<Double> getAlleleFrequenciesList(List<Integer> alleleCnt, int alleleNumber) {
+    return alleleCnt.stream()
+        .map(cnt -> new BigDecimal(cnt / (double) alleleNumber)
+            .setScale(3, RoundingMode.HALF_UP).doubleValue())
+        .collect(Collectors.toList());
+  }
+
+  private boolean checkIfAnyAlleleIsIndel(SampleData singleSample) {
+    return singleSample.getAlleleMap().keySet()
+        .stream()
+        .anyMatch(allele -> allele.getBaseString().length() != 1);
+  }
+}

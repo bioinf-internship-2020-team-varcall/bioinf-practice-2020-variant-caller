@@ -25,7 +25,7 @@ public class Caller {
     callVariants();
     var result = variantInfoList
         .stream()
-        .map(VariantInfo::makeContext)
+        .map(VariantInfo::makeVariantContext)
         .filter(Objects::nonNull).collect(Collectors.toList());
     result.forEach(el -> System.out.println(el.toString()));
     return result;
