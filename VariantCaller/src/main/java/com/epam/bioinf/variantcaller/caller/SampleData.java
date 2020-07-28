@@ -19,12 +19,8 @@ public class SampleData {
     if (owner.getRefAllele().equals(alt, true)) {
       alt = owner.getRefAllele();
     }
-    AlleleCounter alleleCounter = this.alleleMap.get(alt);
-    if (alleleCounter == null) {
-      alleleCounter = new AlleleCounter();
-      this.alleleMap.put(alt, alleleCounter);
-    }
-    return alleleCounter;
+    alleleMap.putIfAbsent(alt, new AlleleCounter());
+    return alleleMap.get(alt);
   }
 
   public Map<Allele, AlleleCounter> getAlleleMap() {
