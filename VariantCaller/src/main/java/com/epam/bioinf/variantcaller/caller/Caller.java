@@ -23,7 +23,8 @@ public class Caller {
 
   public List<VariantContext> findVariants() {
     callVariants();
-    var result = variantInfoList.stream()
+    var result = variantInfoList
+        .stream()
         .map(VariantInfo::makeContext)
         .filter(Objects::nonNull).collect(Collectors.toList());
     result.forEach(el -> System.out.println(el.toString()));
