@@ -3,24 +3,39 @@ package com.epam.bioinf.variantcaller.caller;
 import java.util.Arrays;
 
 public class AlleleCounter {
-  public int[] countStrands;
+  private int forwardStrandCnt;
+  private int reversedStrandCnt;
 
   public AlleleCounter() {
-    countStrands = new int[]{0, 0};
+    forwardStrandCnt = 0;
+    reversedStrandCnt = 0;
   }
 
   public void incrementStrandCount(boolean isReversed) {
-    countStrands[isReversed ? 1 : 0]++;
+    if (isReversed) {
+      reversedStrandCnt++;
+    } else {
+      forwardStrandCnt++;
+    }
   }
 
   public int count() {
-    return countStrands[0] + countStrands[1];
+    return forwardStrandCnt + reversedStrandCnt;
+  }
+
+  public int getForwardStrandCnt() {
+    return forwardStrandCnt;
+  }
+
+  public int getReversedStrandCnt() {
+    return reversedStrandCnt;
   }
 
   @Override
   public String toString() {
-    return "AlleleData{" +
-        "countStrands=" + Arrays.toString(countStrands) +
+    return "AlleleCounter{" +
+        "forwardStrandCnt=" + forwardStrandCnt +
+        ", reversedStrandCnt=" + reversedStrandCnt +
         '}';
   }
 }
