@@ -82,9 +82,9 @@ public class VariantInfo {
     SampleData sd = sampleData.get(sampleName);
     HashMap<Allele, Integer> alleleCnt = new HashMap<>();
     ArrayList<Allele> sampleAlleles = new ArrayList<>();
-    for (Allele allele : sd.alleleMap.keySet()) {
+    for (Allele allele : sd.getAlleleMap().keySet()) {
       if (allele.isNonReference() && allele.getDisplayString().equals("N")) continue;
-      AlleleCounter ad = sd.alleleMap.get(allele);
+      AlleleCounter ad = sd.getAlleleMap().get(allele);
       alleleCnt.put(allele, ad.count());
     }
     ArrayList<Integer> sampleDepths = new ArrayList<>();
@@ -143,7 +143,7 @@ public class VariantInfo {
   }
 
   private boolean checkIfAnyAlleleIsIndel(SampleData singleSample) {
-    return singleSample.alleleMap.keySet()
+    return singleSample.getAlleleMap().keySet()
         .stream()
         .anyMatch(allele -> allele.getBaseString().length() != 1);
   }

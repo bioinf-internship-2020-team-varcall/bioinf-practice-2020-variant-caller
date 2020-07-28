@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SampleData {
-  final VariantInfo owner;
+  private final VariantInfo owner;
   @SuppressWarnings("unused")
-  final Map<Allele, AlleleCounter> alleleMap;
+  private final Map<Allele, AlleleCounter> alleleMap;
 
   public SampleData(final VariantInfo owner) {
     this.owner = owner;
@@ -27,6 +27,9 @@ public class SampleData {
     return ad;
   }
 
+  public Map<Allele, AlleleCounter> getAlleleMap() {
+    return alleleMap;
+  }
 
   @Override
   public String toString() {
