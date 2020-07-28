@@ -1,7 +1,5 @@
 package com.epam.bioinf.variantcaller.caller;
 
-import java.util.Arrays;
-
 public class AlleleCounter {
   private int forwardStrandCnt;
   private int reversedStrandCnt;
