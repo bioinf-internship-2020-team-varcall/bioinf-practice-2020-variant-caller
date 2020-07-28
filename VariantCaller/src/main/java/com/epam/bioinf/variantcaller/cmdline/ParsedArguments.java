@@ -33,7 +33,7 @@ public class ParsedArguments {
    * Constructor validates parsed arguments
    */
   public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths,
-      List<Path> samPaths, Optional<String> regionData) {
+                         List<Path> samPaths, Optional<String> regionData) {
     List<Path> processedFasta = withRemovedDuplicates(fastaPaths);
     List<Path> processedBed = withRemovedDuplicates(bedPaths);
     List<Path> processedSam = withRemovedDuplicates(samPaths);
@@ -47,7 +47,7 @@ public class ParsedArguments {
   }
 
   private void validate(List<Path> fastaValues, List<Path> bedValues,
-      List<Path> samValues, Optional<String> regionData) {
+                        List<Path> samValues, Optional<String> regionData) {
     if (fastaValues.size() != 1) {
       throw new FastaArgsSizeException();
     } else if (bedValues.isEmpty()) {
