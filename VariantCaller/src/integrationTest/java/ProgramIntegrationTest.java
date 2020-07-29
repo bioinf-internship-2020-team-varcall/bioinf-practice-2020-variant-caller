@@ -99,7 +99,6 @@ public class ProgramIntegrationTest {
         outputBuffer.add(line);
       }
       p.waitFor();
-      Files.write(intCommonRefTestFilePath("cv1_expected_contexts.txt"), outputBuffer);
       return new ProcessInfo(
           p.exitValue(),
           error.lines().collect(Collectors.toList()),
