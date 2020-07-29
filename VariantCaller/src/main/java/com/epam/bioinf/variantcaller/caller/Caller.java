@@ -67,9 +67,8 @@ public class Caller {
         case N:
         case I: {
           if (refInd > 0) {
-            Byte[] bytes = toObjects(Arrays.copyOfRange(readBases, readInd, readInd + length));
             String inserted = byteToString(subsequenceBases[refInd]) +
-                Arrays.stream(bytes).map(this::byteToString).collect(Collectors.joining());
+                new String(Arrays.copyOfRange(readBases, readInd, readInd + length));
             findContext(samRecord.getContig(),
                 samRecord.getStart() + refInd,
                 Allele.create(byteToString(subsequenceBases[refInd]), true))
@@ -82,9 +81,8 @@ public class Caller {
         }
         case D: {
           if (refInd > 0) {
-            Byte[] bytes = toObjects(Arrays.copyOfRange(subsequenceBases, refInd, refInd + length));
             String deleted = byteToString(subsequenceBases[refInd]) +
-                Arrays.stream(bytes).map(this::byteToString).collect(Collectors.joining());
+                new String(Arrays.copyOfRange(subsequenceBases, refInd, refInd + length));
             findContext(samRecord.getContig(),
                 samRecord.getStart() + refInd,
                 Allele.create(deleted, true))
@@ -113,12 +111,6 @@ public class Caller {
         }
       }
     }
-  }
-
-  Byte[] toObjects(byte[] bytesPrim) {
-    Byte[] bytes = new Byte[bytesPrim.length];
-    Arrays.setAll(bytes, n -> bytesPrim[n]);
-    return bytes;
   }
 
   private String byteToString(byte b) {
