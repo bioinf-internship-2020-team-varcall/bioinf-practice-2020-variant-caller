@@ -7,7 +7,6 @@ import java.util.Map;
 
 public class SampleData {
   private final VariantInfo owner;
-  @SuppressWarnings("unused")
   private final Map<Allele, AlleleCounter> alleleMap;
 
   public SampleData(final VariantInfo owner) {

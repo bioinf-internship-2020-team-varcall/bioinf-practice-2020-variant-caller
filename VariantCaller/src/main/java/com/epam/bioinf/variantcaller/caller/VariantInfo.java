@@ -52,8 +52,7 @@ public class VariantInfo {
           .countAndSetAlleleNumber()
           .countAndSetAlleleFrequencies()
           .make();
-      if (context.getAlternateAlleles().isEmpty()) return null;
-      return context;
+      return context.getAlternateAlleles().isEmpty() ? null : context;
     } catch (NoGenotypesException ex) {
       return null;
     }

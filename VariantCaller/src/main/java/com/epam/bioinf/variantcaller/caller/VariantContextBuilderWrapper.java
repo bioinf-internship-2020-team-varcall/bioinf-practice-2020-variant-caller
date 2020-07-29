@@ -80,22 +80,22 @@ public class VariantContextBuilderWrapper {
   }
 
   private Genotype getGenotypeForSample(String sampleName, Map<String, SampleData> sampleDataMap) {
-    SampleData sd = sampleDataMap.get(sampleName);
+    SampleData sampleData = sampleDataMap.get(sampleName);
     HashMap<Allele, Integer> alleleCnt = new HashMap<>();
     ArrayList<Allele> sampleAlleles = new ArrayList<>();
-    for (Allele allele : sd.getAlleleMap().keySet()) {
+    for (Allele allele : sampleData.getAlleleMap().keySet()) {
       if (allele.isNonReference() && allele.getDisplayString().equals("N")) continue;
-      AlleleCounter ad = sd.getAlleleMap().get(allele);
-      alleleCnt.put(allele, ad.count());
+      AlleleCounter alleleCounter = sampleData.getAlleleMap().get(allele);
+      alleleCnt.put(allele, alleleCounter.count());
     }
     ArrayList<Integer> sampleDepths = new ArrayList<>();
-    int totalSampleDepth = alleleCnt.keySet()
+    int dp = alleleCnt.keySet()
         .stream()
         .map(alleleCnt::get)
         .mapToInt(Integer::intValue).sum();
-    if (totalSampleDepth > MIN_DEPTH) {
+    if (dp > MIN_DEPTH) {
       for (Map.Entry<Allele, Integer> entry : alleleCnt.entrySet()) {
-        if ((float) entry.getValue() / (float) totalSampleDepth < MIN_FRACTION) {
+        if ((float) entry.getValue() / (float) dp < MIN_FRACTION) {
           continue;
         }
         if (entry.getKey().isReference()) {
@@ -107,10 +107,10 @@ public class VariantContextBuilderWrapper {
         }
       }
       if (!sampleAlleles.isEmpty()) {
-        final GenotypeBuilder gb = new GenotypeBuilder(sampleName, sampleAlleles);
-        gb.DP(totalSampleDepth);
-        gb.attribute("DPG", sampleDepths);
-        return gb.make();
+        return new GenotypeBuilder(sampleName, sampleAlleles)
+            .DP(dp)
+            .attribute("DPG", sampleDepths)
+            .make();
       }
     }
     return null;
@@ -121,11 +121,12 @@ public class VariantContextBuilderWrapper {
     for (final Allele alt : alleles) {
       alleleCnt.add(genotypes.stream()
           .mapToInt(genotype -> {
-            List<Allele> al = genotype.getAlleles();
-            @SuppressWarnings("unchecked") //DPG is always able to be casted to a list of integer
-                List<Integer> dpg = (List<Integer>) genotype.getAnyAttribute("DPG");
-            for (int i = 0; i < genotype.getAlleles().size(); i++) {
-              if (al.get(i).equals(alt)) {
+            List<Allele> genotypeAlleles = genotype.getAlleles();
+            //DPG is always able to be casted to a list of integer
+            @SuppressWarnings("unchecked")
+            List<Integer> dpg = (List<Integer>) genotype.getAnyAttribute("DPG");
+            for (int i = 0; i < genotypeAlleles.size(); i++) {
+              if (genotypeAlleles.get(i).equals(alt)) {
                 return dpg.get(i);
               }
             }

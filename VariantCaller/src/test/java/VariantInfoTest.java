@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class VariantInfoTest {
 
   @Test
-  public void ifContextNotHoldsSampleDataByGivenSampleNameItWillCreateOne() {
+  public void contextWithoutSampleDataByGivenSampleNameWillCreateOne() {
     //Create an object which does not contain any sample data
     VariantInfo variantInfo = new VariantInfo("chr2", 1, Allele.create((byte) 'G', true));
     //Check that when trying to get sample data by sample
@@ -39,9 +39,12 @@ public class VariantInfoTest {
   @Test
   public void foundContextMustReturnCorrectAltAlleles() {
     VariantContext testedContext = getTestedVariantContextWithMultipleVariantsAndGenotypes();
-    assertEquals(Arrays.asList(Allele.create((byte) 'A', false),
-        Allele.create((byte) 'C', false),
-        Allele.create((byte) 'T', false)),
+    assertEquals(
+        Arrays.asList(
+            Allele.create((byte) 'A', false),
+            Allele.create((byte) 'C', false),
+            Allele.create((byte) 'T', false)
+        ),
         testedContext.getAlternateAlleles());
   }
 
@@ -75,10 +78,11 @@ public class VariantInfoTest {
     VariantContext testedContext = getTestedVariantContextWithMultipleVariantsAndGenotypes();
     Genotype testedGenotype1 = testedContext.getGenotype("Hi,Mom!");
     Genotype testedGenotype2 = testedContext.getGenotype("Bye,Mom!");
-    @SuppressWarnings("unchecked") //DPG is always able to be casted to a list of integer
-        List<Integer> testedDpg1 = (List<Integer>) testedGenotype1.getAnyAttribute("DPG");
-    @SuppressWarnings("unchecked") //DPG is always able to be casted to a list of integer
-        List<Integer> testedDpg2 = (List<Integer>) testedGenotype2.getAnyAttribute("DPG");
+    //DPG is always able to be casted to a list of integer
+    @SuppressWarnings("unchecked")
+    List<Integer> testedDpg1 = (List<Integer>) testedGenotype1.getAnyAttribute("DPG");
+    @SuppressWarnings("unchecked")
+    List<Integer> testedDpg2 = (List<Integer>) testedGenotype2.getAnyAttribute("DPG");
     assertEquals(testedGenotype1.getDP(), testedDpg1.stream().mapToInt(Integer::intValue).sum());
     assertEquals(testedGenotype2.getDP(), testedDpg2.stream().mapToInt(Integer::intValue).sum());
   }
