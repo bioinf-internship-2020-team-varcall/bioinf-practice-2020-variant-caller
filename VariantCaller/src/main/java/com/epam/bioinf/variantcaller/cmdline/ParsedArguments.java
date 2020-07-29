@@ -27,29 +27,27 @@ public class ParsedArguments {
   private final List<Path> bedPaths;
   private final List<Path> samPaths;
   private final Optional<String> regionData;
-  private final Optional<Path> outputPath;
   private static final Pattern regionSplit = Pattern.compile(" ");
 
   /**
    * Constructor validates parsed arguments
    */
   public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths,
-      List<Path> samPaths, Optional<String> regionData, Optional<Path> outputPath) {
+                         List<Path> samPaths, Optional<String> regionData) {
     List<Path> processedFasta = withRemovedDuplicates(fastaPaths);
     List<Path> processedBed = withRemovedDuplicates(bedPaths);
     List<Path> processedSam = withRemovedDuplicates(samPaths);
 
-    validate(processedFasta, processedBed, processedSam, regionData, outputPath);
+    validate(processedFasta, processedBed, processedSam, regionData);
 
     this.fastaPath = processedFasta.get(0);
     this.bedPaths = processedBed;
     this.samPaths = processedSam;
     this.regionData = regionData;
-    this.outputPath = outputPath;
   }
 
   private void validate(List<Path> fastaValues, List<Path> bedValues,
-      List<Path> samValues, Optional<String> regionData, Optional<Path> outputValue) {
+                        List<Path> samValues, Optional<String> regionData) {
     if (fastaValues.size() != 1) {
       throw new FastaArgsSizeException();
     } else if (bedValues.isEmpty()) {
@@ -68,17 +66,7 @@ public class ParsedArguments {
       throw new RegionPathNotExistsException();
     } else if (checkIfSomePathDoesNotExist(samValues)) {
       throw new SamPathNotExistsException();
-    } else if (outputValue.isPresent()) {
-      if (checkIfSomePathDoesNotExist(List.of(outputValue.get()))) {
-        throw new RuntimeException("TODO EXCEPTION");
-      } else if (checkIfPathIsNotDirectory(outputValue.get())) {
-        throw new RuntimeException("TODO EXCEPTION");
-      }
     }
-  }
-
-  private boolean checkIfPathIsNotDirectory(Path path) {
-    return !Files.isDirectory(path);
   }
 
   private boolean checkIfSomePathDoesNotExist(List<Path> paths) {
@@ -115,10 +103,6 @@ public class ParsedArguments {
 
   public Path getFastaPath() {
     return fastaPath;
-  }
-
-  public Optional<Path> getOutputPath() {
-    return outputPath;
   }
 
   public List<Path> getBedPaths() {

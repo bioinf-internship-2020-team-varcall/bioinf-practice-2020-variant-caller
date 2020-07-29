@@ -96,12 +96,12 @@ public class CommandLineParserTest {
   }
 
   private String[] getMultipleArgs() {
-    return new String[] {
+    return new String[]{
         "--fasta", commonTestFilePath("test1.fasta"),
         "--bed", commonTestFilePath("test1.bed") + pathSeparatorChar
-          + commonTestFilePath("test2.bed"),
+        + commonTestFilePath("test2.bed"),
         "--sam", commonTestFilePath("test1.sam") + pathSeparatorChar
-          + commonTestFilePath("test2.sam")
+        + commonTestFilePath("test2.sam")
     };
   }
 
@@ -116,16 +116,16 @@ public class CommandLineParserTest {
 
   private String evaluateKey(String key) {
     switch (key) {
-        case ("--fasta"):
-          return commonTestFilePath("test1.fasta");
-        case ("--sam"):
-          return commonTestFilePath("test1.sam");
-        case ("--bed"):
-          return commonTestFilePath("test1.bed");
-        case ("--region"):
-          return "chr1 10 20";
-        default:
-          return null;
+      case ("--fasta"):
+        return commonTestFilePath("test1.fasta");
+      case ("--sam"):
+        return commonTestFilePath("test1.sam");
+      case ("--bed"):
+        return commonTestFilePath("test1.bed");
+      case ("--region"):
+        return "chr1 10 20";
+      default:
+        return null;
     }
   }
 }
