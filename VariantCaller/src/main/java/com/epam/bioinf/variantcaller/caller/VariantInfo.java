@@ -11,13 +11,13 @@ public class VariantInfo {
   private final Allele refAllele;
   private final String contig;
   private final int pos;
-  private final Map<String, SampleData> sampleData;
+  private final Map<String, SampleData> sampleDataMap;
 
   public VariantInfo(String contig, int pos, Allele refAllele) {
     this.refAllele = refAllele;
     this.contig = contig;
     this.pos = pos;
-    sampleData = new HashMap<>();
+    sampleDataMap = new HashMap<>();
   }
 
   public int getPos() {
@@ -33,12 +33,12 @@ public class VariantInfo {
   }
 
   public SampleData getSample(String sampleName) {
-    SampleData sd = sampleData.get(sampleName);
-    if (sd == null) {
-      sd = new SampleData(this);
-      this.sampleData.put(sampleName, sd);
+    SampleData sampleData = sampleDataMap.get(sampleName);
+    if (sampleData == null) {
+      sampleData = new SampleData(this);
+      sampleDataMap.put(sampleName, sampleData);
     }
-    return sd;
+    return sampleData;
   }
 
   public VariantContext makeVariantContext() {
@@ -48,7 +48,7 @@ public class VariantInfo {
           .start(pos)
           .stop(pos + refAllele.getBaseString().length() - 1)
           .chr(contig)
-          .genotypesAndAlleles(sampleData)
+          .genotypesAndAlleles(sampleDataMap)
           .countAndSetAlleleNumber()
           .countAndSetAlleleFrequencies()
           .make();
