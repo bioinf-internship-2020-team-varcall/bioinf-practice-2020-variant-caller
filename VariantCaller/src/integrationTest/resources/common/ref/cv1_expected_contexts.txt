@@ -139,8 +139,10 @@ Processing reads: 100% [======----](6/6)
 [VC null @ NC_004718.3:14583 Q. of type=SNP alleles=[G*, T] attr={AC=[5, 1], AF=[0.833, 0.167], AN=6} GT=[[cv1 G*/T DP 6 {DPG=[5, 1]}]] filters=
 [VC null @ NC_004718.3:14585 Q. of type=SNP alleles=[T*, G] attr={AC=[5, 1], AF=[0.833, 0.167], AN=6} GT=[[cv1 T*/G DP 6 {DPG=[5, 1]}]] filters=
 [VC null @ NC_004718.3:14586 Q. of type=SNP alleles=[G*, C] attr={AC=[5, 1], AF=[0.833, 0.167], AN=6} GT=[[cv1 G*/C DP 6 {DPG=[5, 1]}]] filters=
-[VC null @ NC_004718.3:14587 Q. of type=SNP alleles=[C*, T] attr={AC=[4, 1], AF=[0.8, 0.2], AN=5} GT=[[cv1 C*/T DP 5 {DPG=[4, 1]}]] filters=
+[VC null @ NC_004718.3:14587 Q. of type=SNP alleles=[C*, T] attr={AC=[5, 1], AF=[0.833, 0.167], AN=6} GT=[[cv1 C*/T DP 6 {DPG=[5, 1]}]] filters=
 [VC null @ NC_004718.3:14591 Q. of type=SNP alleles=[T*, C] attr={AC=[4, 2], AF=[0.667, 0.333], AN=6} GT=[[cv1 T*/C DP 6 {DPG=[4, 2]}]] filters=
+[VC null @ NC_004718.3:14592 Q. of type=SNP alleles=[C*, A] attr={AC=[4, 2], AF=[0.667, 0.333], AN=6} GT=[[cv1 C*/A DP 6 {DPG=[4, 2]}]] filters=
+[VC null @ NC_004718.3:14593 Q. of type=INDEL alleles=[A*, AA] attr={AC=[6, 1], AF=[0.857, 0.143], AN=7, INDEL=true} GT=[[cv1 A*/AA DP 7 {DPG=[6, 1]}]] filters=
 [VC null @ NC_004718.3:14595 Q. of type=SNP alleles=[A*, C] attr={AC=[4, 2], AF=[0.667, 0.333], AN=6} GT=[[cv1 A*/C DP 6 {DPG=[4, 2]}]] filters=
 [VC null @ NC_004718.3:14596 Q. of type=SNP alleles=[C*, T] attr={AC=[4, 2], AF=[0.667, 0.333], AN=6} GT=[[cv1 C*/T DP 6 {DPG=[4, 2]}]] filters=
 [VC null @ NC_004718.3:14597 Q. of type=SNP alleles=[T*, G] attr={AC=[4, 2], AF=[0.667, 0.333], AN=6} GT=[[cv1 T*/G DP 6 {DPG=[4, 2]}]] filters=
@@ -164,7 +166,7 @@ Processing reads: 100% [======----](6/6)
 [VC null @ NC_004718.3:14630 Q. of type=SNP alleles=[T*, G] attr={AC=[4, 2], AF=[0.667, 0.333], AN=6} GT=[[cv1 T*/G DP 6 {DPG=[4, 2]}]] filters=
 [VC null @ NC_004718.3:14631 Q. of type=SNP alleles=[G*, A] attr={AC=[4, 2], AF=[0.667, 0.333], AN=6} GT=[[cv1 G*/A DP 6 {DPG=[4, 2]}]] filters=
 [VC null @ NC_004718.3:14632 Q. of type=SNP alleles=[A*, C] attr={AC=[4, 2], AF=[0.667, 0.333], AN=6} GT=[[cv1 A*/C DP 6 {DPG=[4, 2]}]] filters=
-[VC null @ NC_004718.3:14633 Q. of type=SNP alleles=[C*, T] attr={AC=[3, 2], AF=[0.6, 0.4], AN=5} GT=[[cv1 C*/T DP 5 {DPG=[3, 2]}]] filters=
+[VC null @ NC_004718.3:14633 Q. of type=SNP alleles=[C*, T] attr={AC=[4, 2], AF=[0.667, 0.333], AN=6} GT=[[cv1 C*/T DP 6 {DPG=[4, 2]}]] filters=
 [VC null @ NC_004718.3:14636 Q. of type=SNP alleles=[T*, G] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 T*/G DP 6 {DPG=[3, 3]}]] filters=
 [VC null @ NC_004718.3:14637 Q. of type=SNP alleles=[G*, C] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 G*/C DP 6 {DPG=[3, 3]}]] filters=
 [VC null @ NC_004718.3:14638 Q. of type=SNP alleles=[C*, T] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 C*/T DP 6 {DPG=[3, 3]}]] filters=
@@ -306,6 +308,8 @@ Processing reads: 100% [======----](6/6)
 [VC null @ NC_004718.3:14819 Q. of type=SNP alleles=[C*, G] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 C*/G DP 6 {DPG=[3, 3]}]] filters=
 [VC null @ NC_004718.3:14820 Q. of type=SNP alleles=[G*, A] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 G*/A DP 6 {DPG=[3, 3]}]] filters=
 [VC null @ NC_004718.3:14821 Q. of type=SNP alleles=[A*, T] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 A*/T DP 6 {DPG=[3, 3]}]] filters=
+[VC null @ NC_004718.3:14822 Q. of type=SNP alleles=[T*, G] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 T*/G DP 6 {DPG=[3, 3]}]] filters=
+[VC null @ NC_004718.3:14823 Q. of type=INDEL alleles=[G*, GG] attr={AC=[6, 1], AF=[0.857, 0.143], AN=7, INDEL=true} GT=[[cv1 G*/GG DP 7 {DPG=[6, 1]}]] filters=
 [VC null @ NC_004718.3:14824 Q. of type=SNP alleles=[G*, T] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 G*/T DP 6 {DPG=[3, 3]}]] filters=
 [VC null @ NC_004718.3:14825 Q. of type=SNP alleles=[T*, G] attr={AC=[2, 4], AF=[0.333, 0.667], AN=6} GT=[[cv1 T*/G DP 6 {DPG=[2, 4]}]] filters=
 [VC null @ NC_004718.3:14827 Q. of type=SNP alleles=[G*, C] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 G*/C DP 6 {DPG=[3, 3]}]] filters=
@@ -450,6 +454,8 @@ Processing reads: 100% [======----](6/6)
 [VC null @ NC_004718.3:15016 Q. of type=SNP alleles=[G*, T] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 G*/T DP 6 {DPG=[3, 3]}]] filters=
 [VC null @ NC_004718.3:15017 Q. of type=SNP alleles=[T*, G] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 T*/G DP 6 {DPG=[3, 3]}]] filters=
 [VC null @ NC_004718.3:15018 Q. of type=SNP alleles=[G*, C] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 G*/C DP 6 {DPG=[3, 3]}]] filters=
+[VC null @ NC_004718.3:15019 Q. of type=SNP alleles=[C*, A] attr={AC=[4, 2], AF=[0.667, 0.333], AN=6} GT=[[cv1 C*/A DP 6 {DPG=[4, 2]}]] filters=
+[VC null @ NC_004718.3:15020 Q. of type=INDEL alleles=[A*, AA] attr={AC=[6, 1], AF=[0.857, 0.143], AN=7, INDEL=true} GT=[[cv1 A*/AA DP 7 {DPG=[6, 1]}]] filters=
 [VC null @ NC_004718.3:15022 Q. of type=SNP alleles=[A*, G] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 A*/G DP 6 {DPG=[3, 3]}]] filters=
 [VC null @ NC_004718.3:15023 Q. of type=SNP alleles=[G*, A] attr={AC=[2, 4], AF=[0.333, 0.667], AN=6} GT=[[cv1 G*/A DP 6 {DPG=[2, 4]}]] filters=
 [VC null @ NC_004718.3:15025 Q. of type=SNP alleles=[A*, T] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 A*/T DP 6 {DPG=[3, 3]}]] filters=
@@ -486,10 +492,7 @@ Processing reads: 100% [======----](6/6)
 [VC null @ NC_004718.3:15057 Q. of type=SNP alleles=[T*, G] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 T*/G DP 6 {DPG=[3, 3]}]] filters=
 [VC null @ NC_004718.3:15058 Q. of type=SNP alleles=[G*, T] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 G*/T DP 6 {DPG=[3, 3]}]] filters=
 [VC null @ NC_004718.3:15059 Q. of type=SNP alleles=[T*, A] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 T*/A DP 6 {DPG=[3, 3]}]] filters=
-[VC null @ NC_004718.3:14592 Q. of type=SNP alleles=[C*, A] attr={AC=[3, 2], AF=[0.6, 0.4], AN=5} GT=[[cv1 C*/A DP 5 {DPG=[3, 2]}]] filters=
-[VC null @ NC_004718.3:14822 Q. of type=SNP alleles=[T*, G] attr={AC=[2, 3], AF=[0.4, 0.6], AN=5} GT=[[cv1 T*/G DP 5 {DPG=[2, 3]}]] filters=
-[VC null @ NC_004718.3:15019 Q. of type=SNP alleles=[C*, A] attr={AC=[3, 2], AF=[0.6, 0.4], AN=5} GT=[[cv1 C*/A DP 5 {DPG=[3, 2]}]] filters=
-[VC null @ NC_004718.3:15060 Q. of type=SNP alleles=[A*, G] attr={AC=[2, 3], AF=[0.4, 0.6], AN=5} GT=[[cv1 A*/G DP 5 {DPG=[2, 3]}]] filters=
+[VC null @ NC_004718.3:15060 Q. of type=SNP alleles=[A*, G] attr={AC=[3, 3], AF=[0.5, 0.5], AN=6} GT=[[cv1 A*/G DP 6 {DPG=[3, 3]}]] filters=
 [VC null @ NC_004718.3:15061 Q. of type=SNP alleles=[G*, T] attr={AC=[2, 3], AF=[0.4, 0.6], AN=5} GT=[[cv1 G*/T DP 5 {DPG=[2, 3]}]] filters=
 [VC null @ NC_004718.3:15062 Q. of type=SNP alleles=[T*, A] attr={AC=[2, 3], AF=[0.4, 0.6], AN=5} GT=[[cv1 T*/A DP 5 {DPG=[2, 3]}]] filters=
 [VC null @ NC_004718.3:15063 Q. of type=SNP alleles=[A*, C] attr={AC=[2, 3], AF=[0.4, 0.6], AN=5} GT=[[cv1 A*/C DP 5 {DPG=[2, 3]}]] filters=
@@ -500,9 +503,11 @@ Processing reads: 100% [======----](6/6)
 [VC null @ NC_004718.3:15068 Q. of type=SNP alleles=[G*, A] attr={AC=[2, 3], AF=[0.4, 0.6], AN=5} GT=[[cv1 G*/A DP 5 {DPG=[2, 3]}]] filters=
 [VC null @ NC_004718.3:15069 Q. of type=SNP alleles=[A*, C] attr={AC=[2, 3], AF=[0.4, 0.6], AN=5} GT=[[cv1 A*/C DP 5 {DPG=[2, 3]}]] filters=
 [VC null @ NC_004718.3:15070 Q. of type=SNP alleles=[C*, A] attr={AC=[2, 3], AF=[0.4, 0.6], AN=5} GT=[[cv1 C*/A DP 5 {DPG=[2, 3]}]] filters=
+[VC null @ NC_004718.3:15071 Q. of type=SNP alleles=[A*, G] attr={AC=[4, 1], AF=[0.8, 0.2], AN=5} GT=[[cv1 A*/G DP 5 {DPG=[4, 1]}]] filters=
+[VC null @ NC_004718.3:15072 Q. of type=INDEL alleles=[A*, AA] attr={AC=[5, 1], AF=[0.833, 0.167], AN=6, INDEL=true} GT=[[cv1 A*/AA DP 6 {DPG=[5, 1]}]] filters=
 [VC null @ NC_004718.3:15073 Q. of type=SNP alleles=[A*, T] attr={AC=[2, 3], AF=[0.4, 0.6], AN=5} GT=[[cv1 A*/T DP 5 {DPG=[2, 3]}]] filters=
 [VC null @ NC_004718.3:15074 Q. of type=SNP alleles=[T*, A] attr={AC=[2, 3], AF=[0.4, 0.6], AN=5} GT=[[cv1 T*/A DP 5 {DPG=[2, 3]}]] filters=
-[VC null @ NC_004718.3:15075 Q. of type=SNP alleles=[A*, G] attr={AC=[1, 3], AF=[0.25, 0.75], AN=4} GT=[[cv1 A*/G DP 4 {DPG=[1, 3]}]] filters=
+[VC null @ NC_004718.3:15075 Q. of type=SNP alleles=[A*, G] attr={AC=[2, 3], AF=[0.4, 0.6], AN=5} GT=[[cv1 A*/G DP 5 {DPG=[2, 3]}]] filters=
 [VC null @ NC_004718.3:15076 Q. of type=SNP alleles=[G*, A] attr={AC=[1, 3], AF=[0.25, 0.75], AN=4} GT=[[cv1 G*/A DP 4 {DPG=[1, 3]}]] filters=
 [VC null @ NC_004718.3:15077 Q. of type=SNP alleles=[A*, C] attr={AC=[1, 3], AF=[0.25, 0.75], AN=4} GT=[[cv1 A*/C DP 4 {DPG=[1, 3]}]] filters=
 [VC null @ NC_004718.3:15078 Q. of type=SNP alleles=[C*, A] attr={AC=[2, 2], AF=[0.5, 0.5], AN=4} GT=[[cv1 C*/A DP 4 {DPG=[2, 2]}]] filters=
@@ -548,7 +553,7 @@ Processing reads: 100% [======----](6/6)
 [VC null @ NC_004718.3:15129 Q. of type=SNP alleles=[G*, T] attr={AC=[1, 3], AF=[0.25, 0.75], AN=4} GT=[[cv1 G*/T DP 4 {DPG=[1, 3]}]] filters=
 [VC null @ NC_004718.3:15130 Q. of type=SNP alleles=[T*, G] attr={AC=[1, 3], AF=[0.25, 0.75], AN=4} GT=[[cv1 T*/G DP 4 {DPG=[1, 3]}]] filters=
 [VC null @ NC_004718.3:15132 Q. of type=SNP alleles=[G*, T] attr={AC=[1, 3], AF=[0.25, 0.75], AN=4} GT=[[cv1 G*/T DP 4 {DPG=[1, 3]}]] filters=
-[VC null @ NC_004718.3:15133 Q. of type=SNP alleles=[T*, A] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 T*/A DP 3 {DPG=[1, 2]}]] filters=
+[VC null @ NC_004718.3:15133 Q. of type=SNP alleles=[T*, A] attr={AC=[2, 2], AF=[0.5, 0.5], AN=4} GT=[[cv1 T*/A DP 4 {DPG=[2, 2]}]] filters=
 [VC null @ NC_004718.3:15135 Q. of type=SNP alleles=[A*, T] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 A*/T DP 3 {DPG=[1, 2]}]] filters=
 [VC null @ NC_004718.3:15137 Q. of type=SNP alleles=[T*, G] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 T*/G DP 3 {DPG=[1, 2]}]] filters=
 [VC null @ NC_004718.3:15139 Q. of type=SNP alleles=[G*, A] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 G*/A DP 3 {DPG=[1, 2]}]] filters=
@@ -561,7 +566,8 @@ Processing reads: 100% [======----](6/6)
 [VC null @ NC_004718.3:15149 Q. of type=SNP alleles=[G*, T] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 G*/T DP 3 {DPG=[1, 2]}]] filters=
 [VC null @ NC_004718.3:15153 Q. of type=SNP alleles=[T*, A] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 T*/A DP 3 {DPG=[1, 2]}]] filters=
 [VC null @ NC_004718.3:15154 Q. of type=SNP alleles=[A*, C] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 A*/C DP 3 {DPG=[1, 2]}]] filters=
-[VC null @ NC_004718.3:15156 Q. of type=SNP alleles=[G*, C] attr={AC=[2, 1], AF=[0.667, 0.333], AN=3} GT=[[cv1 G*/C DP 3 {DPG=[2, 1]}]] filters=
+[VC null @ NC_004718.3:15155 Q. of type=SNP alleles=[C*, A, G] attr={AC=[1, 1, 1], AF=[0.333, 0.333, 0.333], AN=3} GT=[[cv1 C*/A/G DP 3 {DPG=[1, 1, 1]}]] filters=
+[VC null @ NC_004718.3:15156-15157 Q. of type=INDEL alleles=[GG*, C, G] attr={AC=[0, 1, 2], AF=[0.0, 0.333, 0.667], AN=3} GT=[[cv1 C/G DP 3 {DPG=[1, 2]}]] filters=
 [VC null @ NC_004718.3:15157 Q. of type=SNP alleles=[G*, T] attr={AC=[2, 1], AF=[0.667, 0.333], AN=3} GT=[[cv1 G*/T DP 3 {DPG=[2, 1]}]] filters=
 [VC null @ NC_004718.3:15158 Q. of type=SNP alleles=[T*, G] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 T*/G DP 3 {DPG=[1, 2]}]] filters=
 [VC null @ NC_004718.3:15159 Q. of type=SNP alleles=[G*, C] attr={AC=[2, 1], AF=[0.667, 0.333], AN=3} GT=[[cv1 G*/C DP 3 {DPG=[2, 1]}]] filters=
@@ -580,7 +586,7 @@ Processing reads: 100% [======----](6/6)
 [VC null @ NC_004718.3:15172 Q. of type=SNP alleles=[T*, G] attr={AC=[2, 1], AF=[0.667, 0.333], AN=3} GT=[[cv1 T*/G DP 3 {DPG=[2, 1]}]] filters=
 [VC null @ NC_004718.3:15173 Q. of type=SNP alleles=[G*, T] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 G*/T DP 3 {DPG=[1, 2]}]] filters=
 [VC null @ NC_004718.3:15174 Q. of type=SNP alleles=[T*, A] attr={AC=[2, 1], AF=[0.667, 0.333], AN=3} GT=[[cv1 T*/A DP 3 {DPG=[2, 1]}]] filters=
-[VC null @ NC_004718.3:15175 Q. of type=SNP alleles=[T*, A] attr={AC=[1, 1], AF=[0.5, 0.5], AN=2} GT=[[cv1 T*/A DP 2 {DPG=[1, 1]}]] filters=
+[VC null @ NC_004718.3:15175 Q. of type=SNP alleles=[T*, A] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 T*/A DP 3 {DPG=[1, 2]}]] filters=
 [VC null @ NC_004718.3:15179 Q. of type=SNP alleles=[A*, C] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 A*/C DP 3 {DPG=[1, 2]}]] filters=
 [VC null @ NC_004718.3:15180 Q. of type=SNP alleles=[A*, T] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 A*/T DP 3 {DPG=[1, 2]}]] filters=
 [VC null @ NC_004718.3:15181 Q. of type=SNP alleles=[C*, G] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 C*/G DP 3 {DPG=[1, 2]}]] filters=
@@ -596,8 +602,8 @@ Processing reads: 100% [======----](6/6)
 [VC null @ NC_004718.3:15196 Q. of type=SNP alleles=[T*, G] attr={AC=[1, 2], AF=[0.333, 0.667], AN=3} GT=[[cv1 T*/G DP 3 {DPG=[1, 2]}]] filters=
 [VC null @ NC_004718.3:15198 Q. of type=SNP alleles=[G*, A, C] attr={AC=[0, 2, 1], AF=[0.0, 0.667, 0.333], AN=3} GT=[[cv1 A/C DP 3 {DPG=[2, 1]}]] filters=
 [VC null @ NC_004718.3:15199 Q. of type=SNP alleles=[A*, C] attr={AC=[2, 1], AF=[0.667, 0.333], AN=3} GT=[[cv1 A*/C DP 3 {DPG=[2, 1]}]] filters=
-[VC null @ NC_004718.3:15200 Q. of type=SNP alleles=[A*, C] attr={AC=[1, 1], AF=[0.5, 0.5], AN=2} GT=[[cv1 A*/C DP 2 {DPG=[1, 1]}]] filters=
+[VC null @ NC_004718.3:15200 Q. of type=SNP alleles=[A*, C, T] attr={AC=[1, 1, 1], AF=[0.333, 0.333, 0.333], AN=3} GT=[[cv1 A*/C/T DP 3 {DPG=[1, 1, 1]}]] filters=
 [VC null @ NC_004718.3:15201 Q. of type=SNP alleles=[A*, T] attr={AC=[1, 1], AF=[0.5, 0.5], AN=2} GT=[[cv1 A*/T DP 2 {DPG=[1, 1]}]] filters=
 [VC null @ NC_004718.3:15203 Q. of type=SNP alleles=[T*, C] attr={AC=[1, 1], AF=[0.5, 0.5], AN=2} GT=[[cv1 T*/C DP 2 {DPG=[1, 1]}]] filters=
-[VC null @ NC_004718.3:15155 Q. of type=SNP alleles=[C*, A] attr={AC=[1, 1], AF=[0.5, 0.5], AN=2} GT=[[cv1 C*/A DP 2 {DPG=[1, 1]}]] filters=
+[VC null @ NC_004718.3:15204 Q. of type=SNP alleles=[C*, G] attr={AC=[1, 1], AF=[0.5, 0.5], AN=2} GT=[[cv1 C*/G DP 2 {DPG=[1, 1]}]] filters=
 Success
