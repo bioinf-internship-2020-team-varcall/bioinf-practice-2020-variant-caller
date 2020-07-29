@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.List;
 
 import static helpers.UnitTestHelper.callerRefFilePath;
@@ -25,7 +26,6 @@ public class CallerTest {
         new FastaHandler(parsedArguments).getFastaSequenceFile();
     List<SAMRecord> samRecords = new SamHandler(parsedArguments).getSamRecords();
     List<VariantContext> result = new Caller(fastaSequenceFile, samRecords).findVariants();
-    System.out.println(result.toString());
     assertEquals(Files.readString(callerRefFilePath("short_sequence_variants.txt")),
         result.toString());
   }
