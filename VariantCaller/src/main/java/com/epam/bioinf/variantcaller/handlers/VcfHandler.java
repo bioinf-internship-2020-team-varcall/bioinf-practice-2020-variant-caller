@@ -1,6 +1,5 @@
 package com.epam.bioinf.variantcaller.handlers;
 
-import com.epam.bioinf.variantcaller.caller.Variant;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.variantcontext.VariantContextBuilder;
 import htsjdk.variant.variantcontext.writer.VariantContextWriter;
@@ -19,7 +18,7 @@ import java.util.Optional;
 public class VcfHandler {
   private static final String OUTPUT_FILE_NAME = "output.vcf";
 
-  public VcfHandler(Optional<Path> outputFilePath, List<Variant> variants) {
+  public VcfHandler(Optional<Path> outputFilePath, List<VariantContext> variants) {
     VariantContextWriter writer = configureVcfWriter(outputFilePath);
     VCFHeader header = getHeader();
     writer.writeHeader(header);
@@ -28,17 +27,15 @@ public class VcfHandler {
     writer.close();
   }
 
-  private List<VariantContext> getVariantContexts(List<Variant> variants) {
+  private List<VariantContext> getVariantContexts(List<VariantContext> variants) {
     List<VariantContext> variantContexts = new ArrayList<>();
     variants.forEach(variant -> {
       var builder = new VariantContextBuilder();
       var contig = variant.getContig();
-      var refChar = variant.getRefAllele();
-      var alleles = variant.getVariants();
-      var pos = variant.getPos();
-      var stop = pos + refChar.toString().length() - 2;
-      alleles.add(refChar);
-      builder.alleles(alleles).start(pos).stop(stop).chr(contig);
+      var alleles = variant.getAlleles();
+      var pos = variant.getStart();
+      var end = variant.getEnd();
+      builder.alleles(alleles).start(pos).stop(end).chr(contig).unfiltered().noID();
       variantContexts.add(builder.make());
     });
 
