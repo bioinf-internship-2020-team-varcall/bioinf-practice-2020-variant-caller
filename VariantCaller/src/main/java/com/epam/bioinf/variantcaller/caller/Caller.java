@@ -56,7 +56,7 @@ public class Caller {
     int readInd = 0;
     byte[] readBases = samRecord.getReadBases();
     for (CigarElement cigarElement : samRecord.getCigar().getCigarElements()) {
-      //Information about CIGAR operators http://https://drive5.com/usearch/manual/cigar.html
+      //<a href="http://https://drive5.com/usearch/manual/cigar.html">Information about CIGAR operators</a>
       CigarOperator operator = cigarElement.getOperator();
       int length = cigarElement.getLength();
       byte refByte = subsequenceBases[refInd];
