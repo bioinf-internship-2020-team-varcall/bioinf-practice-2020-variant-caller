@@ -64,7 +64,11 @@ public class VariantContextBuilderWrapper {
     List<Genotype> genotypes = new ArrayList<>();
     Set<Allele> alleles = new TreeSet<>();
     for (Map.Entry<String, SampleData> entry : sampleDataMap.entrySet()) {
-      indel = checkIfAnyAlleleIsIndel(entry.getValue());
+      if (!indel) {
+        if (checkIfAnyAlleleIsIndel(entry.getValue())) {
+          indel = true;
+        }
+      }
       Genotype genotype = getGenotypeForSample(entry.getKey(), sampleDataMap);
       if (genotype != null) {
         genotypes.add(genotype);
