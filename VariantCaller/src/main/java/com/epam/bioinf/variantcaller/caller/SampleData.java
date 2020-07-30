@@ -18,8 +18,7 @@ public class SampleData {
     if (owner.getRefAllele().equals(alt, true)) {
       alt = owner.getRefAllele();
     }
-    return alleleMap.computeIfAbsent(alt,
-        k -> new AlleleCounter());
+    return alleleMap.computeIfAbsent(alt, k -> new AlleleCounter());
   }
 
   public Map<Allele, AlleleCounter> getAlleleMap() {

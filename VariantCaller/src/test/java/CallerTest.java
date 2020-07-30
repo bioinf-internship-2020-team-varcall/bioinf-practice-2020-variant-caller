@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static helpers.UnitTestHelper.callerRefFilePath;
 import static helpers.UnitTestHelper.callerTestFilePath;

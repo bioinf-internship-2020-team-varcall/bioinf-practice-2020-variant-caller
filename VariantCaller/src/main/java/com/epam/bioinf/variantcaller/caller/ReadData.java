@@ -1,28 +1,35 @@
 package com.epam.bioinf.variantcaller.caller;
 
 public class ReadData {
-  private final byte[] subsequenceBases;
-  private final byte[] readBases;
+  private final String subsequenceBaseString;
+  private final String readBaseString;
   private final String sampleName;
   private final String contig;
   private final int start;
   private final boolean strandFlag;
 
-  public ReadData(byte[] subsequenceBases, byte[] readBases, String sampleName, String contig, int start, boolean strandFlag) {
-    this.subsequenceBases = subsequenceBases;
-    this.readBases = readBases;
+  public ReadData(
+      String subsequenceBaseString,
+      String readBaseString,
+      String sampleName,
+      String contig,
+      int start,
+      boolean strandFlag
+  ) {
+    this.subsequenceBaseString = subsequenceBaseString;
+    this.readBaseString = readBaseString;
     this.sampleName = sampleName;
     this.contig = contig;
     this.start = start;
     this.strandFlag = strandFlag;
   }
 
-  public byte[] getSubsequenceBases() {
-    return subsequenceBases;
+  public final String getSubsequenceBaseString() {
+    return subsequenceBaseString;
   }
 
-  public byte[] getReadBases() {
-    return readBases;
+  public final String getReadBaseString() {
+    return readBaseString;
   }
 
   public String getSampleName() {
