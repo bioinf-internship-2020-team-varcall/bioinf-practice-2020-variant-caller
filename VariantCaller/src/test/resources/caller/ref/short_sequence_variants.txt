@@ -6,6 +6,7 @@
 [VC null @ chr2:7 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 2], AF=[0.0, 1.0], AN=2} GT=[[Hi,Mom! A DP 2 {DPG=[2]}]] filters=
 [VC null @ chr2:8 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 2], AF=[0.0, 1.0], AN=2} GT=[[Hi,Mom! A DP 2 {DPG=[2]}]] filters=
 [VC null @ chr2:9 Q. of type=SNP alleles=[C*, G] attr={AC=[0, 2], AF=[0.0, 1.0], AN=2} GT=[[Hi,Mom! G DP 2 {DPG=[2]}]] filters=
+[VC null @ chr1:1 Q. of type=SNP alleles=[G*, C] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! C DP 1 {DPG=[1]}]] filters=
 [VC null @ chr1:2 Q. of type=SNP alleles=[G*, A, C] attr={AC=[0, 1, 1], AF=[0.0, 0.5, 0.5], AN=2} GT=[[Hi,Mom! A/C DP 2 {DPG=[1, 1]}]] filters=
 [VC null @ chr1:3 Q. of type=SNP alleles=[C*, A] attr={AC=[0, 2], AF=[0.0, 1.0], AN=2} GT=[[Hi,Mom! A DP 2 {DPG=[2]}]] filters=
 [VC null @ chr1:4 Q. of type=SNP alleles=[A*, C] attr={AC=[1, 1], AF=[0.5, 0.5], AN=2} GT=[[Hi,Mom! A*/C DP 2 {DPG=[1, 1]}]] filters=
@@ -15,3 +16,33 @@
 [VC null @ chr1:8 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 2], AF=[0.0, 1.0], AN=2} GT=[[Hi,Mom! A DP 2 {DPG=[2]}]] filters=
 [VC null @ chr1:9 Q. of type=SNP alleles=[C*, A, G] attr={AC=[0, 1, 1], AF=[0.0, 0.5, 0.5], AN=2} GT=[[Hi,Mom! A/G DP 2 {DPG=[1, 1]}]] filters=
 [VC null @ chr1:10 Q. of type=SNP alleles=[C*, G] attr={AC=[1, 1], AF=[0.5, 0.5], AN=2} GT=[[Hi,Mom! C*/G DP 2 {DPG=[1, 1]}]] filters=
+[VC null @ chr1:28 Q. of type=SNP alleles=[C*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr1:31 Q. of type=SNP alleles=[T*, G] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! G DP 1 {DPG=[1]}]] filters=
+[VC null @ chr1:32 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr1:33 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr1:34 Q. of type=SNP alleles=[T*, G] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! G DP 1 {DPG=[1]}]] filters=
+[VC null @ chr2:28 Q. of type=SNP alleles=[C*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr2:31 Q. of type=SNP alleles=[T*, G] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! G DP 1 {DPG=[1]}]] filters=
+[VC null @ chr2:32 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr2:33 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr2:34 Q. of type=SNP alleles=[T*, G] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! G DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:1 Q. of type=SNP alleles=[G*, C] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! C DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:2 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:3 Q. of type=SNP alleles=[C*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:4 Q. of type=SNP alleles=[A*, C] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! C DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:5 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:7 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:8 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:9 Q. of type=SNP alleles=[C*, G] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! G DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:28 Q. of type=SNP alleles=[C*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:31 Q. of type=SNP alleles=[T*, G] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! G DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:32 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:33 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr3:34 Q. of type=SNP alleles=[T*, G] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! G DP 1 {DPG=[1]}]] filters=
+[VC null @ chr1:15 Q. of type=SNP alleles=[A*, C] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! C DP 1 {DPG=[1]}]] filters=
+[VC null @ chr1:16 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr1:19 Q. of type=SNP alleles=[C*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr1:20 Q. of type=SNP alleles=[C*, G] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! G DP 1 {DPG=[1]}]] filters=
+[VC null @ chr1:21 Q. of type=SNP alleles=[G*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr1:22 Q. of type=SNP alleles=[C*, A] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! A DP 1 {DPG=[1]}]] filters=
+[VC null @ chr1:23 Q. of type=SNP alleles=[C*, G] attr={AC=[0, 1], AF=[0.0, 1.0], AN=1} GT=[[Hi,Mom! G DP 1 {DPG=[1]}]] filters=

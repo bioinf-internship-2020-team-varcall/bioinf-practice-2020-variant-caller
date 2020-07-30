@@ -97,7 +97,7 @@ public class VariantContextBuilderWrapper {
         .stream()
         .map(alleleCnt::get)
         .mapToInt(Integer::intValue).sum();
-    if (dp > MIN_DEPTH) {
+    if (dp >= MIN_DEPTH) {
       for (Map.Entry<Allele, Integer> entry : alleleCnt.entrySet()) {
         if ((float) entry.getValue() / (float) dp < MIN_FRACTION) {
           continue;
