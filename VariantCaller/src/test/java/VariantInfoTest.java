@@ -17,7 +17,7 @@ public class VariantInfoTest {
     VariantInfo variantInfo = new VariantInfo("chr2", 1, Allele.create((byte) 'G', true));
     //Check that when trying to get sample data by sample
     // name variant info automatically creates one
-    assertNotNull(variantInfo.getSample("Hi,Mom!"));
+    assertNotNull(variantInfo.computeSample("Hi,Mom!"));
   }
 
   @Test
@@ -106,8 +106,8 @@ public class VariantInfoTest {
                                                 boolean isStrandReversed,
                                                 int times) {
     for (int i = 0; i < times; i++) {
-      variantInfo.getSample(sampleName)
-          .getAllele(Allele.create((byte) altAllele, false))
+      variantInfo.computeSample(sampleName)
+          .computeAllele(Allele.create((byte) altAllele, false))
           .incrementStrandCount(isStrandReversed);
     }
   }

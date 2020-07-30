@@ -14,7 +14,7 @@ public class SampleData {
     this.alleleMap = new HashMap<>();
   }
 
-  public AlleleCounter getAllele(Allele alt) {
+  public AlleleCounter computeAllele(Allele alt) {
     if (owner.getRefAllele().equals(alt, true)) {
       alt = owner.getRefAllele();
     }

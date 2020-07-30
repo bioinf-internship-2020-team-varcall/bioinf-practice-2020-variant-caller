@@ -11,6 +11,6 @@ public class SampleDataTest {
   public void sampleDataAlleleCounterMustBeCreatedEvenIfAlleleNotExistsInInternalMap() {
     VariantInfo variantInfo = new VariantInfo("chr2", 1, Allele.create((byte) 'G', true));
     SampleData sampleData = new SampleData(variantInfo);
-    assertNotNull(sampleData.getAllele(Allele.create((byte) 'C', false)));
+    assertNotNull(sampleData.computeAllele(Allele.create((byte) 'C', false)));
   }
 }

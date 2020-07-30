@@ -32,7 +32,7 @@ public class VariantInfo {
     return refAllele;
   }
 
-  public SampleData getSample(String sampleName) {
+  public SampleData computeSample(String sampleName) {
     SampleData sampleData = sampleDataMap.get(sampleName);
     if (sampleData == null) {
       sampleData = new SampleData(this);

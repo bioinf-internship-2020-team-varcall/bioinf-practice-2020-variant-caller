@@ -122,9 +122,11 @@ public class Caller {
         indexCounter
     );
     if (refAllele != null && altAllele != null) {
-      findContext(readData.getContig(), readData.getStart() + indexCounter.getRefIndex(), refAllele)
-          .getSample(readData.getSampleName())
-          .getAllele(altAllele).
+      computeContext(readData.getContig(),
+          readData.getStart() + indexCounter.getRefIndex(),
+          refAllele)
+          .computeSample(readData.getSampleName())
+          .computeAllele(altAllele).
           incrementStrandCount(readData.getReadNegativeStrandFlag());
     }
   }
@@ -135,10 +137,11 @@ public class Caller {
       IndexCounter indexCounter
   ) {
     for (int i = 0; i < cigarElement.getLength(); ++i) {
-      findContext(readData.getContig(), readData.getStart() + indexCounter.getMovedRefIndex(i),
+      computeContext(readData.getContig(),
+          readData.getStart() + indexCounter.getMovedRefIndex(i),
           getRefAlleleForAlignment(readData, indexCounter, i))
-          .getSample(readData.getSampleName())
-          .getAllele(getAltAlleleForAlignment(readData, indexCounter, i))
+          .computeSample(readData.getSampleName())
+          .computeAllele(getAltAlleleForAlignment(readData, indexCounter, i))
           .incrementStrandCount(readData.getReadNegativeStrandFlag());
     }
   }
@@ -197,7 +200,7 @@ public class Caller {
     return null;
   }
 
-  private VariantInfo findContext(String contig, int pos, Allele ref) {
+  private VariantInfo computeContext(String contig, int pos, Allele ref) {
     Optional<VariantInfo> context = variantInfoList
         .stream()
         .filter(
