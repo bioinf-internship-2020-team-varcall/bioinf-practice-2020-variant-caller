@@ -6,6 +6,7 @@ import com.epam.bioinf.variantcaller.handlers.SamHandler;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
+import htsjdk.variant.variantcontext.VariantContext;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class CallerTest {
 
   @Test
   public void smallDataSpeedTest() throws IOException {
-    callerAlgorithmSpeedTest(1000, "short_seq.fasta", "short_seq.sam");
+    callerAlgorithmSpeedTest(100, "short_seq.fasta", "short_seq.sam");
   }
 
   @Test
@@ -41,9 +42,7 @@ public class CallerTest {
       timeMeasurements.add(Duration.between(start, finish).toMillis());
     }
     testReport.timeMeasurements = timeMeasurements;
-    System.out.println(testReport.getAverageTime());
-    System.out.println(testReport.referenceLength);
-    System.out.println(testReport.totalReadsLength);
+    System.out.println(testReport);
   }
 
   private static Caller getCaller(String fasta, String sam) {
@@ -66,7 +65,6 @@ public class CallerTest {
     public long totalReadsLength;
     public long referenceLength;
     public List<Long> timeMeasurements;
-    public List<Long> memoryMeasurements;
 
     public TestReport(String fasta, String sam) {
       String[] arguments  = getArgs(fasta, sam);
@@ -85,6 +83,16 @@ public class CallerTest {
 
     public double getAverageTime() {
       return timeMeasurements.stream().collect(Collectors.averagingLong(Long::longValue));
+    }
+
+    @Override
+    public String toString() {
+      return String.format(
+          "test report:\ntotal reads length: %d\nreference length: %d\navg time: %f\n",
+          totalReadsLength,
+          referenceLength,
+          getAverageTime()
+      );
     }
   }
 }
