@@ -9,30 +9,36 @@ import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.variant.variantcontext.Allele;
 import htsjdk.variant.variantcontext.VariantContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class Caller {
   private final IndexedFastaSequenceFile fastaSequenceFile;
   private final List<SAMRecord> samRecords;
-  private final List<VariantInfo> variantInfoList;
+  private final Map<String, Map<Integer, Map<Allele, VariantInfo>>> variantInfoMap;
 
   public Caller(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
     this.fastaSequenceFile = fastaSequenceFile;
     this.samRecords = samRecords;
-    this.variantInfoList = new ArrayList<>();
+    this.variantInfoMap = new HashMap<>();
   }
 
   public List<VariantContext> findVariants() {
     callVariants();
-    var result = variantInfoList
-        .stream()
-        .map(VariantInfo::makeVariantContext)
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+    var result = new ArrayList<VariantContext>();
+    variantInfoMap.keySet().forEach(contig -> {
+      variantInfoMap.get(contig).keySet().forEach(pos -> {
+        variantInfoMap.get(contig).get(pos).keySet().forEach(allele -> {
+          VariantInfo variantInfo = variantInfoMap.get(contig).get(pos).get(allele);
+          if (variantInfo != null) {
+            VariantContext variantContext = variantInfo.makeVariantContext();
+            if (variantContext != null) {
+              result.add(variantContext);
+            }
+          }
+        });
+      });
+    });
+    result.sort(Comparator.comparing(VariantContext::getContig).thenComparing(VariantContext::getStart));
     result.forEach(el -> System.out.println(el.toString()));
     return result;
   }
@@ -189,19 +195,17 @@ public class Caller {
   }
 
   private VariantInfo computeContext(String contig, int pos, Allele ref) {
-    Optional<VariantInfo> context = variantInfoList
-        .stream()
-        .filter(
-            ctx -> ctx.getContig().equals(contig)
-                && ctx.getPos() == pos
-                && ctx.getRefAllele().compareTo(ref) == 0
-        )
-        .findFirst();
-    if (context.isPresent()) {
-      return context.get();
-    } else {
+    try {
+      VariantInfo variantInfo = variantInfoMap.get(contig).get(pos).get(ref);
+      if (variantInfo == null) {
+        throw new NullPointerException();
+      }
+      return variantInfo;
+    } catch (NullPointerException ex) {
       VariantInfo variantInfo = new VariantInfo(contig, pos, ref);
-      variantInfoList.add(variantInfo);
+      variantInfoMap.putIfAbsent(contig, new HashMap<>());
+      variantInfoMap.get(contig).putIfAbsent(pos, new HashMap<>());
+      variantInfoMap.get(contig).get(pos).putIfAbsent(ref, variantInfo);
       return variantInfo;
     }
   }
