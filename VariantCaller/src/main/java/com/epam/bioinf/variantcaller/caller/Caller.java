@@ -122,9 +122,12 @@ public class Caller {
         indexCounter
     );
     if (refAllele != null && altAllele != null) {
-      computeContext(readData.getContig(),
-          readData.getStart() + indexCounter.getRefIndex(),
-          refAllele)
+      computeContext
+          (
+              readData.getContig(),
+              readData.getStart() + indexCounter.getRefIndex(),
+              refAllele
+          )
           .computeSample(readData.getSampleName())
           .computeAllele(altAllele).
           incrementStrandCount(readData.getReadNegativeStrandFlag());
@@ -137,9 +140,12 @@ public class Caller {
       IndexCounter indexCounter
   ) {
     for (int i = 0; i < cigarElement.getLength(); ++i) {
-      computeContext(readData.getContig(),
-          readData.getStart() + indexCounter.getMovedRefIndex(i),
-          getRefAlleleForAlignment(readData, indexCounter, i))
+      computeContext
+          (
+              readData.getContig(),
+              readData.getStart() + indexCounter.getMovedRefIndex(i),
+              getRefAlleleForAlignment(readData, indexCounter, i)
+          )
           .computeSample(readData.getSampleName())
           .computeAllele(getAltAlleleForAlignment(readData, indexCounter, i))
           .incrementStrandCount(readData.getReadNegativeStrandFlag());
