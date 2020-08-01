@@ -70,8 +70,8 @@ public class Caller {
 
   private void processSingleCigarElement(CigarElement cigarElement, ReadData readData) {
     IndexCounter indexCounter = new IndexCounter(0, 0);
-    //Information about CIGAR operators
-    //https://javadoc.io/doc/com.github.samtools/htsjdk/2.13.1/htsjdk/samtools/CigarOperator.html
+    // Information about CIGAR operators
+    // https://javadoc.io/doc/com.github.samtools/htsjdk/2.13.1/htsjdk/samtools/CigarOperator.html
     CigarOperator operator = cigarElement.getOperator();
     int cigarElementLength = cigarElement.getLength();
     switch (operator) {
