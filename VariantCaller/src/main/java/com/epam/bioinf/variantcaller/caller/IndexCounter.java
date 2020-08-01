@@ -17,19 +17,11 @@ public class IndexCounter {
     refIndex += n;
   }
 
-  public int getMovedRefIndex(int n) {
-    return refIndex + n;
-  }
-
   public int getReadIndex() {
     return readIndex;
   }
 
   public void moveReadIndex(int n) {
     readIndex += n;
-  }
-
-  public int getMovedReadIndex(int n) {
-    return readIndex + n;
   }
 }

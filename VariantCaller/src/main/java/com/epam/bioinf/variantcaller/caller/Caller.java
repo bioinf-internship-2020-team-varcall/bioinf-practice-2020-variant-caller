@@ -143,7 +143,7 @@ public class Caller {
       computeContext
           (
               readData.getContig(),
-              readData.getStart() + indexCounter.getMovedRefIndex(i),
+              readData.getStart() + indexCounter.getRefIndex() + i,
               getRefAlleleForAlignment(readData, indexCounter, i)
           )
           .computeSample(readData.getSampleName())
@@ -155,7 +155,7 @@ public class Caller {
   private Allele getRefAlleleForAlignment(ReadData readData, IndexCounter indexCounter, int shift) {
     return Allele.create(
         String.valueOf(
-            readData.getSubsequenceBaseString().charAt(indexCounter.getMovedRefIndex(shift))
+            readData.getSubsequenceBaseString().charAt(indexCounter.getRefIndex() + shift)
         ),
         true
     );
@@ -164,7 +164,7 @@ public class Caller {
   private Allele getAltAlleleForAlignment(ReadData readData, IndexCounter indexCounter, int shift) {
     return Allele.create(
         String.valueOf(
-            readData.getReadBaseString().charAt(indexCounter.getMovedReadIndex(shift))
+            readData.getReadBaseString().charAt(indexCounter.getReadIndex() + shift)
         ),
         false
     );
@@ -181,7 +181,7 @@ public class Caller {
     } else if (cigarElement.getOperator() == D) {
       String alleleString = refChar + subsequenceBaseString.substring(
           indexCounter.getRefIndex(),
-          indexCounter.getMovedRefIndex(cigarElement.getLength())
+          indexCounter.getRefIndex() + cigarElement.getLength()
       );
       return Allele.create(alleleString, true);
     }
@@ -197,7 +197,7 @@ public class Caller {
     if (cigarElement.getOperator() == I) {
       String alleleString = refChar + readBaseString.substring(
           indexCounter.getReadIndex(),
-          indexCounter.getMovedReadIndex(cigarElement.getLength())
+          indexCounter.getReadIndex() + cigarElement.getLength()
       );
       return Allele.create(alleleString, false);
     } else if (cigarElement.getOperator() == D) {
