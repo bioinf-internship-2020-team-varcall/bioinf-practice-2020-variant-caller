@@ -15,9 +15,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static htsjdk.samtools.CigarOperator.D;
-import static htsjdk.samtools.CigarOperator.I;
-
 public class Caller {
   private final IndexedFastaSequenceFile fastaSequenceFile;
   private final List<SAMRecord> samRecords;
