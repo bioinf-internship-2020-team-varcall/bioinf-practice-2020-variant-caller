@@ -84,19 +84,24 @@ public class Caller {
         break;
       case N:
       case I: {
-        performInsertionOperation(cigarElement, readData, indexCounter);
+        var alleles = performInsertionOperation(cigarElement.getLength(), readData, indexCounter);
+        saveAlleles(alleles, readData, indexCounter.getRefIndex());
         indexCounter.moveReadIndex(cigarElementLength);
         break;
       }
       case D: {
-        performDeletionOperation(cigarElement, readData, indexCounter);
+        var alleles = performDeletionOperation(cigarElement.getLength(), readData, indexCounter);
+        saveAlleles(alleles, readData, indexCounter.getRefIndex());
         indexCounter.moveRefIndex(cigarElementLength);
         break;
       }
       case M:
       case X:
       case EQ: {
-        performAlignmentCigarOperation(cigarElement, readData, indexCounter);
+        for (int i = 0; i < cigarElement.getLength(); ++i) {
+          var alleles = performAlignmentCigarOperation(readData, indexCounter, i);
+          saveAlleles(alleles, readData, indexCounter.getRefIndex() + i);
+        }
         indexCounter.moveReadIndex(cigarElementLength);
         indexCounter.moveRefIndex(cigarElementLength);
         break;
@@ -104,15 +109,15 @@ public class Caller {
     }
   }
 
-  private void performDeletionOperation(
-      CigarElement cigarElement,
+  private Alleles performDeletionOperation(
+      int cigarElementLength,
       ReadData readData,
       IndexCounter indexCounter
   ) {
     char refChar = readData.getSubsequenceBaseString().charAt(indexCounter.getRefIndex());
     Allele refAllele = Allele.create(
         getIndelAlleleString(
-            cigarElement.getLength(),
+            cigarElementLength,
             refChar,
             readData.getReadBaseString(),
             indexCounter.getReadIndex()
@@ -120,49 +125,43 @@ public class Caller {
         true
     );
     Allele altAllele = Allele.create(String.valueOf(refChar), false);
-    if (refAllele != null && altAllele != null) {
-      saveAlleles(refAllele, altAllele, readData, indexCounter.getRefIndex());
-    }
+    return new Alleles(refAllele, altAllele);
   }
 
-  private void performInsertionOperation(
-      CigarElement cigarElement,
+  private Alleles performInsertionOperation(
+      int cigarElementLength,
       ReadData readData,
       IndexCounter indexCounter
   ) {
     char refChar = readData.getSubsequenceBaseString().charAt(indexCounter.getRefIndex());
     Allele refAllele = Allele.create(String.valueOf(refChar), true);
     Allele altAllele = Allele.create(getIndelAlleleString(
-        cigarElement.getLength(),
+        cigarElementLength,
         refChar,
         readData.getReadBaseString(),
         indexCounter.getReadIndex()
     ), false);
-    if (refAllele != null && altAllele != null) {
-      saveAlleles(refAllele, altAllele, readData, indexCounter.getRefIndex());
-    }
+    return new Alleles(refAllele, altAllele);
   }
 
-  private void performAlignmentCigarOperation(
-      CigarElement cigarElement,
+  private Alleles performAlignmentCigarOperation(
       ReadData readData,
-      IndexCounter indexCounter
+      IndexCounter indexCounter,
+      int shift
   ) {
-    for (int i = 0; i < cigarElement.getLength(); ++i) {
-      Allele refAllele = Allele.create(
-          String.valueOf(
-              readData.getSubsequenceBaseString().charAt(indexCounter.getRefIndex() + i)
-          ),
-          true
-      );
-      Allele altAllele = Allele.create(
-          String.valueOf(
-              readData.getReadBaseString().charAt(indexCounter.getReadIndex() + i)
-          ),
-          false
-      );
-      saveAlleles(refAllele, altAllele, readData, indexCounter.getRefIndex() + i);
-    }
+    Allele refAllele = Allele.create(
+        String.valueOf(
+            readData.getSubsequenceBaseString().charAt(indexCounter.getRefIndex() + shift)
+        ),
+        true
+    );
+    Allele altAllele = Allele.create(
+        String.valueOf(
+            readData.getReadBaseString().charAt(indexCounter.getReadIndex() + shift)
+        ),
+        false
+    );
+    return new Alleles(refAllele, altAllele);
   }
 
   private String getIndelAlleleString(int cigarElementLength,
@@ -176,15 +175,15 @@ public class Caller {
     );
   }
 
-  private void saveAlleles(Allele refAllele, Allele altAllele, ReadData readData, int shift) {
+  private void saveAlleles(Alleles alleles, ReadData readData, int shift) {
     computeContext
         (
             readData.getContig(),
             readData.getStart() + shift,
-            refAllele
+            alleles.getRefAllele()
         )
         .computeSample(readData.getSampleName())
-        .computeAllele(altAllele)
+        .computeAllele(alleles.getAltAllele())
         .incrementStrandCount(readData.getReadNegativeStrandFlag());
   }
 
