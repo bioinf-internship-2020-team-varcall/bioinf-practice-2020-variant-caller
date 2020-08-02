@@ -38,7 +38,8 @@ public class Caller {
         });
       });
     });
-    result.sort(Comparator.comparing(VariantContext::getContig).thenComparing(VariantContext::getStart));
+    result.sort(Comparator.comparing(VariantContext::getContig)
+        .thenComparing(VariantContext::getStart));
     result.forEach(el -> System.out.println(el.toString()));
     return result;
   }
@@ -199,11 +200,11 @@ public class Caller {
         .map(x -> x.get(pos))
         .map(x -> x.get(ref))
         .orElseGet(() -> {
-            VariantInfo variantInfo = new VariantInfo(contig, pos, ref);
-            variantInfoMap.putIfAbsent(contig, new HashMap<>());
-            variantInfoMap.get(contig).putIfAbsent(pos, new HashMap<>());
-            variantInfoMap.get(contig).get(pos).putIfAbsent(ref, variantInfo);
-            return variantInfo;
+          VariantInfo variantInfo = new VariantInfo(contig, pos, ref);
+          variantInfoMap.putIfAbsent(contig, new HashMap<>());
+          variantInfoMap.get(contig).putIfAbsent(pos, new HashMap<>());
+          variantInfoMap.get(contig).get(pos).putIfAbsent(ref, variantInfo);
+          return variantInfo;
         });
   }
 }
