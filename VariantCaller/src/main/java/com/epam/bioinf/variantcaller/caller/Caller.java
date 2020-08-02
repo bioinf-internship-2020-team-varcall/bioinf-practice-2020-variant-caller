@@ -202,6 +202,6 @@ public class Caller {
         .orElseGet(() -> variantInfoMap
             .computeIfAbsent(contig, key -> new HashMap<>())
             .computeIfAbsent(pos, key -> new HashMap<>())
-            .computeIfAbsent(ref, key ->  new VariantInfo(contig, pos, ref)));
+            .computeIfAbsent(ref, key -> new VariantInfo(contig, pos, ref)));
   }
 }
