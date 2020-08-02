@@ -195,18 +195,15 @@ public class Caller {
   }
 
   private VariantInfo computeContext(String contig, int pos, Allele ref) {
-    try {
-      VariantInfo variantInfo = variantInfoMap.get(contig).get(pos).get(ref);
-      if (variantInfo == null) {
-        throw new NullPointerException();
-      }
-      return variantInfo;
-    } catch (NullPointerException ex) {
-      VariantInfo variantInfo = new VariantInfo(contig, pos, ref);
-      variantInfoMap.putIfAbsent(contig, new HashMap<>());
-      variantInfoMap.get(contig).putIfAbsent(pos, new HashMap<>());
-      variantInfoMap.get(contig).get(pos).putIfAbsent(ref, variantInfo);
-      return variantInfo;
-    }
+    return Optional.ofNullable(variantInfoMap.get(contig))
+        .map(x -> x.get(pos))
+        .map(x -> x.get(ref))
+        .orElseGet(() -> {
+            VariantInfo variantInfo = new VariantInfo(contig, pos, ref);
+            variantInfoMap.putIfAbsent(contig, new HashMap<>());
+            variantInfoMap.get(contig).putIfAbsent(pos, new HashMap<>());
+            variantInfoMap.get(contig).get(pos).putIfAbsent(ref, variantInfo);
+            return variantInfo;
+        });
   }
 }
