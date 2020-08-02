@@ -25,18 +25,15 @@ public class Caller {
   public List<VariantContext> findVariants() {
     callVariants();
     var result = new ArrayList<VariantContext>();
-    for (var contigMap : variantInfoMap.values()) {
-      for (var positionMap : contigMap.values()) {
-        for (var variantInfo : positionMap.values()) {
-          if (variantInfo != null) {
-            VariantContext variantContext = variantInfo.makeVariantContext();
-            if (variantContext != null) {
-              result.add(variantContext);
-            }
+    variantInfoMap.values().stream()
+        .flatMap(contigMap -> contigMap.values().stream())
+        .flatMap(positionMap -> positionMap.values().stream())
+        .forEach(variantInfo -> {
+          VariantContext variantContext = variantInfo.makeVariantContext();
+          if (variantContext != null) {
+            result.add(variantContext);
           }
-        }
-      }
-    }
+        });
     result.sort(Comparator.comparing(VariantContext::getContig)
         .thenComparing(VariantContext::getStart));
     result.forEach(el -> System.out.println(el.toString()));
