@@ -1,5 +1,8 @@
 package com.epam.bioinf.variantcaller.caller;
 
+/**
+ * Class contains all the read and subsequence information related to one record.
+ */
 public class ReadData {
   private final String subsequenceBaseString;
   private final String readBaseString;

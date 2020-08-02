@@ -11,17 +11,33 @@ import htsjdk.variant.variantcontext.VariantContext;
 
 import java.util.*;
 
+/**
+ * Class finds and holds variants.
+ */
 public class Caller {
   private final IndexedFastaSequenceFile fastaSequenceFile;
   private final List<SAMRecord> samRecords;
   private final Map<String, Map<Integer, Map<Allele, VariantInfo>>> variantInfoMap;
 
+  /**
+   * Constructor gets an indexed fasta sequence file
+   * and a list of sam records matching the given intervals.
+   */
   public Caller(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
     this.fastaSequenceFile = fastaSequenceFile;
     this.samRecords = samRecords;
     this.variantInfoMap = new HashMap<>();
   }
 
+  /**
+   * Method calls variants and transforms a resulting map of objects
+   * with variants information - variantInfoMap(which is the class field being filled
+   * by the side-effect function - computeContext) to a list of variant contexts
+   *
+   * @return list of variant contexts which entries hold data about found variants
+   * @see #computeContext
+   * @see #variantInfoMap
+   */
   public List<VariantContext> findVariants() {
     callVariants();
     var result = new ArrayList<VariantContext>();
@@ -178,6 +194,23 @@ public class Caller {
     );
   }
 
+  /**
+   * Method gets a VariantInfo then a SampleData and finally an Allele
+   * related to a given variation and increments its count
+   * according to a strand flag(so that an allele could be on a forward
+   * or a reversed strand)
+   *
+   * @param alleles  - ref and alt alleles to save
+   * @param readData - contains all the read and subsequence information related to one record
+   * @param shift    - represents a shift from the start of an aligned read base string
+   *                 (used to get a coordinate of a current position at a subsequence)
+   * @see Alleles
+   * @see ReadData
+   * @see #computeContext
+   * @see VariantInfo
+   * @see SampleData
+   * @see Allele
+   */
   private void saveAlleles(Alleles alleles, ReadData readData, int shift) {
     computeContext
         (
@@ -190,6 +223,17 @@ public class Caller {
         .incrementStrandCount(readData.getReadNegativeStrandFlag());
   }
 
+  /**
+   * Method tries to find a context by provided coordinates-parameters
+   * and if fails then creates one and puts it into the variantInfoMap
+   *
+   * @param contig - contig name of a computed allele
+   * @param pos    - position at a given contig of a computed allele
+   * @param ref    - computed reference allele
+   * @return found or created VariantInfo
+   * @see VariantInfo
+   * @see #variantInfoMap
+   */
   private VariantInfo computeContext(String contig, int pos, Allele ref) {
     return Optional.ofNullable(variantInfoMap.get(contig))
         .map(x -> x.get(pos))

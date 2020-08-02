@@ -5,6 +5,10 @@ import htsjdk.variant.variantcontext.Allele;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class holds an allele map where we count how many different alleles
+ * we saw at the position provided by an owner variant info
+ */
 public class SampleData {
   private final VariantInfo owner;
   private final Map<Allele, AlleleCounter> alleleMap;
@@ -14,6 +18,13 @@ public class SampleData {
     this.alleleMap = new HashMap<>();
   }
 
+  /**
+   * Method tries to get a counter by a given allele and if there is none then
+   * puts one to the map
+   *
+   * @param alt - allele that we have seen at the position provided by an owner variant info
+   * @return - counter by a given allele
+   */
   public AlleleCounter computeAllele(Allele alt) {
     if (owner.getRefAllele().equals(alt, true)) {
       alt = owner.getRefAllele();

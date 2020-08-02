@@ -7,6 +7,9 @@ import htsjdk.variant.variantcontext.VariantContext;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class holds all the information about a particular genome base and its variants
+ */
 public class VariantInfo {
   private final Allele refAllele;
   private final String contig;
@@ -32,6 +35,13 @@ public class VariantInfo {
     return refAllele;
   }
 
+  /**
+   * Method tries to get a sample by a given sample name and if there is none then
+   * puts one to the map
+   *
+   * @param sampleName - name of a computed sample
+   * @return - sample data by a given sample name
+   */
   public SampleData computeSample(String sampleName) {
     SampleData sampleData = sampleDataMap.get(sampleName);
     if (sampleData == null) {
@@ -41,6 +51,13 @@ public class VariantInfo {
     return sampleData;
   }
 
+  /**
+   * Method transforms VariantInfo to VariantContext using VariantContextBuilderWrapper
+   *
+   * @return - resulting VariantContext
+   * @see VariantContext
+   * @see VariantContextBuilderWrapper
+   */
   public VariantContext makeVariantContext() {
     VariantContextBuilderWrapper builder = new VariantContextBuilderWrapper(refAllele);
     try {

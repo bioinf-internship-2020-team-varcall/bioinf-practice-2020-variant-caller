@@ -9,6 +9,11 @@ import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Class represents a wrapper for VariantContextBuilder
+ *
+ * @see VariantContextBuilder
+ */
 public class VariantContextBuilderWrapper {
   private final VariantContextBuilder variantContextBuilder;
   private final Allele refAllele;
@@ -20,25 +25,41 @@ public class VariantContextBuilderWrapper {
     this.refAllele = refAllele;
   }
 
+  /**
+   * @see VariantContextBuilder
+   */
   public VariantContext make() {
     return variantContextBuilder.make();
   }
 
+  /**
+   * @see VariantContextBuilder
+   */
   public VariantContextBuilderWrapper start(int pos) {
     variantContextBuilder.start(pos);
     return this;
   }
 
+  /**
+   * @see VariantContextBuilder
+   */
   public VariantContextBuilderWrapper stop(int pos) {
     variantContextBuilder.stop(pos);
     return this;
   }
 
+  /**
+   * @see VariantContextBuilder
+   */
   public VariantContextBuilderWrapper chr(String contig) {
     variantContextBuilder.chr(contig);
     return this;
   }
 
+  /**
+   * Method counts all the alleles in all the genotypes and sets its total count
+   * as an attribute
+   */
   public VariantContextBuilderWrapper countAndSetAlleleNumber() {
     List<Integer> alleleCnt = getAlleleCntList(variantContextBuilder.getAlleles(),
         variantContextBuilder.getGenotypes());
@@ -47,6 +68,11 @@ public class VariantContextBuilderWrapper {
     return this;
   }
 
+  /**
+   * Method counts all the matching alleles in the different genotypes and sets its counts
+   * and frequencies(which are basically counts of matching alleles divided by total number of alleles)
+   * as attributes
+   */
   public VariantContextBuilderWrapper countAndSetAlleleFrequencies() {
     List<Integer> alleleCntList = getAlleleCntList(variantContextBuilder.getAlleles(),
         variantContextBuilder.getGenotypes());
@@ -59,6 +85,13 @@ public class VariantContextBuilderWrapper {
     return this;
   }
 
+  /**
+   * Method gets map with sample data and creates genotypes out of its values.
+   * Then it sets all the genotypes and genotype's alleles as builder attributes.
+   * <p>
+   * Also there is a check whether any allele is indel. If that is true then
+   * computed variant context is considered to be INDEL or MIXED
+   */
   public VariantContextBuilderWrapper genotypesAndAlleles(Map<String, SampleData> sampleDataMap) {
     boolean indel = refAllele.getBaseString().length() != 1;
     List<Genotype> genotypes = new ArrayList<>();
