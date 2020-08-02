@@ -199,12 +199,9 @@ public class Caller {
     return Optional.ofNullable(variantInfoMap.get(contig))
         .map(x -> x.get(pos))
         .map(x -> x.get(ref))
-        .orElseGet(() -> {
-          VariantInfo variantInfo = new VariantInfo(contig, pos, ref);
-          variantInfoMap.putIfAbsent(contig, new HashMap<>());
-          variantInfoMap.get(contig).putIfAbsent(pos, new HashMap<>());
-          variantInfoMap.get(contig).get(pos).putIfAbsent(ref, variantInfo);
-          return variantInfo;
-        });
+        .orElseGet(() -> variantInfoMap
+            .computeIfAbsent(contig, key -> new HashMap<>())
+            .computeIfAbsent(pos, key -> new HashMap<>())
+            .computeIfAbsent(ref, key ->  new VariantInfo(contig, pos, ref)));
   }
 }
