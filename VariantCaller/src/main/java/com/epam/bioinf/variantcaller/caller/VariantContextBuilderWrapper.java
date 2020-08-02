@@ -70,8 +70,8 @@ public class VariantContextBuilderWrapper {
 
   /**
    * Method counts all the matching alleles in the different genotypes and sets its counts
-   * and frequencies(which are basically counts of matching alleles divided by total number of alleles)
-   * as attributes
+   * and frequencies(which are basically counts of matching alleles
+   * divided by total number of alleles) as attributes
    */
   public VariantContextBuilderWrapper countAndSetAlleleFrequencies() {
     List<Integer> alleleCntList = getAlleleCntList(variantContextBuilder.getAlleles(),
