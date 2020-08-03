@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Class holds an allele map where we count how many different alleles
+ * Holds an allele map where we count how many different alleles
  * we saw at the position provided by an owner variant info
  */
 public class SampleData {
@@ -19,7 +19,7 @@ public class SampleData {
   }
 
   /**
-   * Method tries to get a counter by a given allele and if there is none then
+   * Tries to get a counter by a given allele and if there is none then
    * puts one to the map
    *
    * @param alt - allele that we have seen at the position provided by an owner variant info

@@ -3,7 +3,7 @@ package com.epam.bioinf.variantcaller.caller;
 import htsjdk.variant.variantcontext.Allele;
 
 /**
- * Class holds ref and alt alleles.
+ * Holds ref and alt alleles.
  */
 public class Alleles {
   private final Allele refAllele;

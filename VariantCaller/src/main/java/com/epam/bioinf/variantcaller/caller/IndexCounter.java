@@ -1,7 +1,7 @@
 package com.epam.bioinf.variantcaller.caller;
 
 /**
- * Class holds a subsequence and a read indices.
+ * Holds a subsequence and a read indices.
  */
 public class IndexCounter {
   private int refIndex;
@@ -17,7 +17,7 @@ public class IndexCounter {
   }
 
   /**
-   * Method moves a subsequence index by n
+   * Moves a subsequence index by n
    *
    * @param n - represents a shift of an index
    */
@@ -30,7 +30,7 @@ public class IndexCounter {
   }
 
   /**
-   * Method moves a read index by n
+   * Moves a read index by n
    *
    * @param n - represents a shift of an index
    */

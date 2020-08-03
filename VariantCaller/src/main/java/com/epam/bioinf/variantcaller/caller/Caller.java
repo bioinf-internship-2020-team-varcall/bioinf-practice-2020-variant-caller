@@ -12,7 +12,7 @@ import htsjdk.variant.variantcontext.VariantContext;
 import java.util.*;
 
 /**
- * Class finds and holds variants.
+ * Finds and holds variants.
  */
 public class Caller {
   private final IndexedFastaSequenceFile fastaSequenceFile;
@@ -20,7 +20,7 @@ public class Caller {
   private final Map<String, Map<Integer, Map<Allele, VariantInfo>>> variantInfoMap;
 
   /**
-   * Constructor gets an indexed fasta sequence file
+   * Gets an indexed fasta sequence file
    * and a list of sam records matching the given intervals.
    */
   public Caller(IndexedFastaSequenceFile fastaSequenceFile, List<SAMRecord> samRecords) {
@@ -30,9 +30,7 @@ public class Caller {
   }
 
   /**
-   * Method calls variants and transforms a resulting map of objects
-   * with variants information - variantInfoMap(which is the class field being filled
-   * by the side-effect function - computeContext) to a list of variant contexts
+   * Iterates over the list of {@link samRecords} and returns variants found.
    *
    * @return list of variant contexts which entries hold data about found variants
    * @see #computeContext
@@ -195,10 +193,7 @@ public class Caller {
   }
 
   /**
-   * Method gets a VariantInfo then a SampleData and finally an Allele
-   * related to a given variation and increments its count
-   * according to a strand flag(so that an allele could be on a forward
-   * or a reversed strand)
+   * Increments alleles count.
    *
    * @param alleles  - ref and alt alleles to save
    * @param readData - contains all the read and subsequence information related to one record
@@ -207,9 +202,6 @@ public class Caller {
    * @see Alleles
    * @see ReadData
    * @see #computeContext
-   * @see VariantInfo
-   * @see SampleData
-   * @see Allele
    */
   private void saveAlleles(Alleles alleles, ReadData readData, int shift) {
     computeContext
@@ -224,15 +216,13 @@ public class Caller {
   }
 
   /**
-   * Method tries to find a context by provided coordinates-parameters
-   * and if fails then creates one and puts it into the variantInfoMap
+   * Finds a {@link VariantInfo} by provided coordinates-parameters,
+   * if it is not found, creates one and puts it.
    *
    * @param contig - contig name of a computed allele
    * @param pos    - position at a given contig of a computed allele
    * @param ref    - computed reference allele
    * @return found or created VariantInfo
-   * @see VariantInfo
-   * @see #variantInfoMap
    */
   private VariantInfo computeContext(String contig, int pos, Allele ref) {
     return Optional.ofNullable(variantInfoMap.get(contig))

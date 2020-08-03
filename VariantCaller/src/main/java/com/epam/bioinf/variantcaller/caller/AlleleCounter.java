@@ -1,7 +1,7 @@
 package com.epam.bioinf.variantcaller.caller;
 
 /**
- * Class holds counts of alleles on forward and reversed strands
+ * Holds counts of alleles on forward and reversed strands
  */
 public class AlleleCounter {
   private int forwardStrandCnt;
@@ -13,7 +13,7 @@ public class AlleleCounter {
   }
 
   /**
-   * Method increments forward or reversed strand allele counts based on flag
+   * Increments forward or reversed strand allele counts based on flag
    *
    * @param isReversed - flag which represents a condition whether a strand reversed
    */

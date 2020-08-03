@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Class represents a wrapper for VariantContextBuilder
+ * Represents a wrapper for VariantContextBuilder
  *
  * @see VariantContextBuilder
  */
@@ -57,7 +57,7 @@ public class VariantContextBuilderWrapper {
   }
 
   /**
-   * Method counts all the alleles in all the genotypes and sets its total count
+   * Counts all the alleles in all the genotypes and sets its total count
    * as an attribute
    */
   public VariantContextBuilderWrapper countAndSetAlleleNumber() {
@@ -69,7 +69,7 @@ public class VariantContextBuilderWrapper {
   }
 
   /**
-   * Method counts all the matching alleles in the different genotypes and sets its counts
+   * Counts all the matching alleles in the different genotypes and sets its counts
    * and frequencies(which are basically counts of matching alleles
    * divided by total number of alleles) as attributes
    */
@@ -86,7 +86,7 @@ public class VariantContextBuilderWrapper {
   }
 
   /**
-   * Method gets map with sample data and creates genotypes out of its values.
+   * Gets map with sample data and creates genotypes out of its values.
    * Then it sets all the genotypes and genotype's alleles as builder attributes.
    * <p>
    * Also there is a check whether any allele is indel. If that is true then
