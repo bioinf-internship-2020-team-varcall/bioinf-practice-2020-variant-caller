@@ -23,14 +23,6 @@ public class VariantInfo {
     sampleDataMap = new HashMap<>();
   }
 
-  public int getPos() {
-    return pos;
-  }
-
-  public String getContig() {
-    return contig;
-  }
-
   public Allele getRefAllele() {
     return refAllele;
   }
