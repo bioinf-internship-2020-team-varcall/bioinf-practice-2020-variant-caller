@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Holds all the information about a particular genome base and its variants
+ * Holds all the information about a particular genome base and its variants.
  */
 public class VariantInfo {
   private final Allele refAllele;
@@ -36,8 +36,8 @@ public class VariantInfo {
   }
 
   /**
-   * Tries to get a sample by a given sample name and if there is none then
-   * puts one to the map
+   * Gets a sample by a given sample name and if it is not found, creates one
+   * and puts it to the map.
    *
    * @param sampleName - name of a computed sample
    * @return - sample data by a given sample name
@@ -52,7 +52,7 @@ public class VariantInfo {
   }
 
   /**
-   * Transforms VariantInfo to VariantContext using VariantContextBuilderWrapper
+   * Transforms VariantInfo to VariantContext using VariantContextBuilderWrapper.
    *
    * @return - resulting VariantContext
    * @see VariantContext

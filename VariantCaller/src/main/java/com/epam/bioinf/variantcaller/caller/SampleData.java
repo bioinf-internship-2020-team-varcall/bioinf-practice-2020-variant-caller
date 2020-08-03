@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * Holds an allele map where we count how many different alleles
- * we saw at the position provided by an owner variant info
+ * we saw at the position provided by an owner variant info.
  */
 public class SampleData {
   private final VariantInfo owner;
@@ -19,8 +19,8 @@ public class SampleData {
   }
 
   /**
-   * Tries to get a counter by a given allele and if there is none then
-   * puts one to the map
+   * Tries to get a counter by a given allele and if it is not found,
+   * creates one and puts it to the map.
    *
    * @param alt - allele that we have seen at the position provided by an owner variant info
    * @return - counter by a given allele

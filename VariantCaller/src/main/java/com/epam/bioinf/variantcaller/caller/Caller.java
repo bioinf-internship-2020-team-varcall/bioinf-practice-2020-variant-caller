@@ -33,8 +33,6 @@ public class Caller {
    * Iterates over the list of {@link samRecords} and returns variants found.
    *
    * @return list of variant contexts which entries hold data about found variants
-   * @see #computeVariantInfo
-   * @see #variantInfoMap
    */
   public List<VariantContext> findVariants() {
     callVariants();
@@ -201,7 +199,6 @@ public class Caller {
    *                 (used to get a coordinate of a current position at a subsequence)
    * @see Alleles
    * @see ReadData
-   * @see #computeVariantInfo
    */
   private void saveAlleles(Alleles alleles, ReadData readData, int shift) {
     computeVariantInfo

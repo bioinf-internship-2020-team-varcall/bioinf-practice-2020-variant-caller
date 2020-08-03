@@ -17,7 +17,7 @@ public class IndexCounter {
   }
 
   /**
-   * Moves a subsequence index by n
+   * Moves a subsequence index by n.
    *
    * @param n - represents a shift of an index
    */
@@ -30,7 +30,7 @@ public class IndexCounter {
   }
 
   /**
-   * Moves a read index by n
+   * Moves a read index by n.
    *
    * @param n - represents a shift of an index
    */

@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Represents a wrapper for VariantContextBuilder
+ * Represents a wrapper for VariantContextBuilder.
  *
  * @see VariantContextBuilder
  */
@@ -58,7 +58,7 @@ public class VariantContextBuilderWrapper {
 
   /**
    * Counts all the alleles in all the genotypes and sets its total count
-   * as an attribute
+   * as an attribute.
    */
   public VariantContextBuilderWrapper countAndSetAlleleNumber() {
     List<Integer> alleleCnt = getAlleleCntList(variantContextBuilder.getAlleles(),
@@ -71,7 +71,7 @@ public class VariantContextBuilderWrapper {
   /**
    * Counts all the matching alleles in the different genotypes and sets its counts
    * and frequencies(which are basically counts of matching alleles
-   * divided by total number of alleles) as attributes
+   * divided by total number of alleles) as attributes.
    */
   public VariantContextBuilderWrapper countAndSetAlleleFrequencies() {
     List<Integer> alleleCntList = getAlleleCntList(variantContextBuilder.getAlleles(),
@@ -90,7 +90,7 @@ public class VariantContextBuilderWrapper {
    * Then it sets all the genotypes and genotype's alleles as builder attributes.
    * <p>
    * Also there is a check whether any allele is indel. If that is true then
-   * computed variant context is considered to be INDEL or MIXED
+   * computed variant context is considered to be INDEL or MIXED.
    */
   public VariantContextBuilderWrapper genotypesAndAlleles(Map<String, SampleData> sampleDataMap) {
     boolean indel = refAllele.getBaseString().length() != 1;
