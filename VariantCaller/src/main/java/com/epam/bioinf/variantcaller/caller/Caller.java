@@ -33,7 +33,7 @@ public class Caller {
    * Iterates over the list of {@link samRecords} and returns variants found.
    *
    * @return list of variant contexts which entries hold data about found variants
-   * @see #computeContext
+   * @see #computeVariantInfo
    * @see #variantInfoMap
    */
   public List<VariantContext> findVariants() {
@@ -201,10 +201,10 @@ public class Caller {
    *                 (used to get a coordinate of a current position at a subsequence)
    * @see Alleles
    * @see ReadData
-   * @see #computeContext
+   * @see #computeVariantInfo
    */
   private void saveAlleles(Alleles alleles, ReadData readData, int shift) {
-    computeContext
+    computeVariantInfo
         (
             readData.getContig(),
             readData.getStart() + shift,
@@ -224,7 +224,7 @@ public class Caller {
    * @param ref    - computed reference allele
    * @return found or created VariantInfo
    */
-  private VariantInfo computeContext(String contig, int pos, Allele ref) {
+  private VariantInfo computeVariantInfo(String contig, int pos, Allele ref) {
     return Optional.ofNullable(variantInfoMap.get(contig))
         .map(x -> x.get(pos))
         .map(x -> x.get(ref))
