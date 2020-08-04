@@ -75,16 +75,16 @@ public class Caller {
         samRecord.getStart(),
         samRecord.getReadNegativeStrandFlag()
     );
-    IndexCounter indexCounter = new IndexCounter(0, 0);
+    PositionTracker positionTracker = new PositionTracker(0, 0);
     for (CigarElement cigarElement : samRecord.getCigar().getCigarElements()) {
-      processSingleCigarElement(cigarElement, readData, indexCounter);
+      processSingleCigarElement(cigarElement, readData, positionTracker);
     }
   }
 
   private void processSingleCigarElement(
       CigarElement cigarElement,
       ReadData readData,
-      IndexCounter indexCounter
+      PositionTracker positionTracker
   ) {
     // Information about CIGAR operators
     // https://javadoc.io/doc/com.github.samtools/htsjdk/2.13.1/htsjdk/samtools/CigarOperator.html
@@ -95,29 +95,37 @@ public class Caller {
       case P:
         break;
       case S:
-        indexCounter.moveIndices(0, cigarElementLength);
+        positionTracker.moveIndices(0, cigarElementLength);
         break;
       case N:
       case I: {
-        var alleles = performInsertionOperation(cigarElement.getLength(), readData, indexCounter);
-        saveAlleles(alleles, readData, indexCounter.getRefIndex());
-        indexCounter.moveIndices(0, cigarElementLength);
+        var alleles = performInsertionOperation(
+            cigarElement.getLength(),
+            readData,
+            positionTracker
+        );
+        saveAlleles(alleles, readData, positionTracker.getRefIndex());
+        positionTracker.moveIndices(0, cigarElementLength);
         break;
       }
       case D: {
-        var alleles = performDeletionOperation(cigarElement.getLength(), readData, indexCounter);
-        saveAlleles(alleles, readData, indexCounter.getRefIndex());
-        indexCounter.moveIndices(cigarElementLength, 0);
+        var alleles = performDeletionOperation(
+            cigarElement.getLength(),
+            readData,
+            positionTracker
+        );
+        saveAlleles(alleles, readData, positionTracker.getRefIndex());
+        positionTracker.moveIndices(cigarElementLength, 0);
         break;
       }
       case M:
       case X:
       case EQ: {
         for (int i = 0; i < cigarElement.getLength(); ++i) {
-          var alleles = performAlignmentCigarOperation(readData, indexCounter, i);
-          saveAlleles(alleles, readData, indexCounter.getRefIndex() + i);
+          var alleles = performAlignmentCigarOperation(readData, positionTracker, i);
+          saveAlleles(alleles, readData, positionTracker.getRefIndex() + i);
         }
-        indexCounter.moveIndices(cigarElementLength, cigarElementLength);
+        positionTracker.moveIndices(cigarElementLength, cigarElementLength);
         break;
       }
     }
@@ -126,15 +134,15 @@ public class Caller {
   private Alleles performDeletionOperation(
       int cigarElementLength,
       ReadData readData,
-      IndexCounter indexCounter
+      PositionTracker positionTracker
   ) {
-    char refChar = readData.getSubsequenceBaseString().charAt(indexCounter.getRefIndex());
+    char refChar = readData.getSubsequenceBaseString().charAt(positionTracker.getRefIndex());
     Allele refAllele = Allele.create(
         getIndelAlleleString(
             cigarElementLength,
             refChar,
             readData.getReadBaseString(),
-            indexCounter.getReadIndex()
+            positionTracker.getReadIndex()
         ),
         true
     );
@@ -145,33 +153,33 @@ public class Caller {
   private Alleles performInsertionOperation(
       int cigarElementLength,
       ReadData readData,
-      IndexCounter indexCounter
+      PositionTracker positionTracker
   ) {
-    char refChar = readData.getSubsequenceBaseString().charAt(indexCounter.getRefIndex());
+    char refChar = readData.getSubsequenceBaseString().charAt(positionTracker.getRefIndex());
     Allele refAllele = Allele.create(String.valueOf(refChar), true);
     Allele altAllele = Allele.create(getIndelAlleleString(
         cigarElementLength,
         refChar,
         readData.getReadBaseString(),
-        indexCounter.getReadIndex()
+        positionTracker.getReadIndex()
     ), false);
     return new Alleles(refAllele, altAllele);
   }
 
   private Alleles performAlignmentCigarOperation(
       ReadData readData,
-      IndexCounter indexCounter,
+      PositionTracker positionTracker,
       int shift
   ) {
     Allele refAllele = Allele.create(
         String.valueOf(
-            readData.getSubsequenceBaseString().charAt(indexCounter.getRefIndex() + shift)
+            readData.getSubsequenceBaseString().charAt(positionTracker.getRefIndex() + shift)
         ),
         true
     );
     Allele altAllele = Allele.create(
         String.valueOf(
-            readData.getReadBaseString().charAt(indexCounter.getReadIndex() + shift)
+            readData.getReadBaseString().charAt(positionTracker.getReadIndex() + shift)
         ),
         false
     );

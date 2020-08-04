@@ -10,11 +10,11 @@ import htsjdk.samtools.CigarElement;
  *
  * @see Caller#processSingleCigarElement
  */
-public class IndexCounter {
+public class PositionTracker {
   private int refIndex;
   private int readIndex;
 
-  public IndexCounter(int refIndex, int readIndex) {
+  public PositionTracker(int refIndex, int readIndex) {
     this.refIndex = refIndex;
     this.readIndex = readIndex;
   }
