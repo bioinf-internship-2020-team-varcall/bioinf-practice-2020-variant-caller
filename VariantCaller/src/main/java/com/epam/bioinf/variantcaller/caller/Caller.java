@@ -95,19 +95,19 @@ public class Caller {
       case P:
         break;
       case S:
-        indexCounter.moveReadIndex(cigarElementLength);
+        indexCounter.moveIndices(0, cigarElementLength);
         break;
       case N:
       case I: {
         var alleles = performInsertionOperation(cigarElement.getLength(), readData, indexCounter);
         saveAlleles(alleles, readData, indexCounter.getRefIndex());
-        indexCounter.moveReadIndex(cigarElementLength);
+        indexCounter.moveIndices(0, cigarElementLength);
         break;
       }
       case D: {
         var alleles = performDeletionOperation(cigarElement.getLength(), readData, indexCounter);
         saveAlleles(alleles, readData, indexCounter.getRefIndex());
-        indexCounter.moveRefIndex(cigarElementLength);
+        indexCounter.moveIndices(cigarElementLength, 0);
         break;
       }
       case M:
@@ -117,8 +117,7 @@ public class Caller {
           var alleles = performAlignmentCigarOperation(readData, indexCounter, i);
           saveAlleles(alleles, readData, indexCounter.getRefIndex() + i);
         }
-        indexCounter.moveReadIndex(cigarElementLength);
-        indexCounter.moveRefIndex(cigarElementLength);
+        indexCounter.moveIndices(cigarElementLength, cigarElementLength);
         break;
       }
     }

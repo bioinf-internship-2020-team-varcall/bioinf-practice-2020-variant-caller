@@ -24,24 +24,17 @@ public class IndexCounter {
   }
 
   /**
-   * Moves a subsequence index by n.
+   * Moves a subsequence and a read indices.
    *
-   * @param n - represents a shift of an index
+   * @param refIndexShift  - represents a shift of a reference index
+   * @param readIndexShift - represents a shift of a read index
    */
-  public void moveRefIndex(int n) {
-    refIndex += n;
+  public void moveIndices(int refIndexShift, int readIndexShift) {
+    refIndex += refIndexShift;
+    readIndex += readIndexShift;
   }
 
   public int getReadIndex() {
     return readIndex;
-  }
-
-  /**
-   * Moves a read index by n.
-   *
-   * @param n - represents a shift of an index
-   */
-  public void moveReadIndex(int n) {
-    readIndex += n;
   }
 }
