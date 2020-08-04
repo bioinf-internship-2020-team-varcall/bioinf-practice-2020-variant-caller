@@ -1,7 +1,14 @@
 package com.epam.bioinf.variantcaller.caller;
 
+import htsjdk.samtools.CigarElement;
+
 /**
  * Holds a subsequence and a read indices.
+ * Difference between indices might appear
+ * when CIGAR contains indel operations as
+ * well as alignment ones
+ *
+ * @see Caller#processSingleCigarElement
  */
 public class IndexCounter {
   private int refIndex;
