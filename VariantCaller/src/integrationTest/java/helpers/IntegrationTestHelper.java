@@ -13,14 +13,14 @@ public class IntegrationTestHelper {
       .toAbsolutePath();
 
   /**
-   * @return a path to a integration test resource with given filename.
+   * Returns a path to a integration test resource with given filename.
    */
   public static String intCommonTestFilePath(String filename) {
     return INTEGRATION_TEST_RESOURCES_ROOT.resolve("common").resolve(filename).toString();
   }
 
   /**
-   * @return a path to a integration test ref resource with given filename.
+   * Returns a path to a integration test ref resource with given filename.
    */
   public static Path intCommonRefTestFilePath(String filename) {
     return INTEGRATION_TEST_RESOURCES_ROOT.resolve("common").resolve("ref").resolve(filename);

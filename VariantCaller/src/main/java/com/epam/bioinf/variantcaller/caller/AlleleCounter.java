@@ -26,7 +26,7 @@ public class AlleleCounter {
   }
 
   /**
-   * @return - sum of alleles on each strand
+   * Returns sum of alleles on each strand
    */
   public int count() {
     return forwardStrandCnt + reversedStrandCnt;
