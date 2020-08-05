@@ -38,6 +38,21 @@ public final class UnitTestHelper {
     return TEST_RESOURCES_ROOT.resolve("sam").resolve(filename).toString();
   }
 
+  /**
+   * Method returns a path to unit test reference resources
+   */
+  public static Path callerRefFilePath(String filename) {
+    return TEST_RESOURCES_ROOT.resolve("caller").resolve("ref").resolve(filename);
+  }
+
+  /**
+   * Method returns a path to unit test resources
+   * with given filename related to special caller test cases
+   */
+  public static String callerTestFilePath(String filename) {
+    return TEST_RESOURCES_ROOT.resolve("caller").resolve(filename).toString();
+  }
+
   public static boolean checkIfCommon(String filename) {
     return Pattern.matches("test[0-9].*", filename);
   }
