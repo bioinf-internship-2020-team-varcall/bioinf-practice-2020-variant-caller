@@ -32,11 +32,11 @@ public class AlleleCounter {
     return forwardStrandCnt + reversedStrandCnt;
   }
 
-  public int getForwardStrandCnt() {
+  public int getForwardStrandCount() {
     return forwardStrandCnt;
   }
 
-  public int getReversedStrandCnt() {
+  public int getReversedStrandCount() {
     return reversedStrandCnt;
   }
 

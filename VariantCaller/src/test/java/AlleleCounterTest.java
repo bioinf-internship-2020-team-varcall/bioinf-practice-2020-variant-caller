@@ -8,11 +8,11 @@ public class AlleleCounterTest {
   public void alleleDataMustCorrectlyIncrementStrandCounts() {
     AlleleCounter alleleCounter = new AlleleCounter();
     alleleCounter.incrementStrandCount(false);
-    assertEquals(1, alleleCounter.getForwardStrandCnt());
-    assertEquals(0, alleleCounter.getReversedStrandCnt());
+    assertEquals(1, alleleCounter.getForwardStrandCount());
+    assertEquals(0, alleleCounter.getReversedStrandCount());
     alleleCounter.incrementStrandCount(true);
-    assertEquals(1, alleleCounter.getForwardStrandCnt());
-    assertEquals(1, alleleCounter.getReversedStrandCnt());
+    assertEquals(1, alleleCounter.getForwardStrandCount());
+    assertEquals(1, alleleCounter.getReversedStrandCount());
   }
 
   @Test
