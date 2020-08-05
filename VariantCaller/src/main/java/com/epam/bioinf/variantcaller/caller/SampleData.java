@@ -22,7 +22,7 @@ public class SampleData {
    * Tries to get a counter by a given allele and if it is not found,
    * creates one and puts it to the map.
    *
-   * @param alt - allele that we have seen at the position provided by an owner variant info
+   * @param alt - allele that we have seen at the position provided by {@link owner}
    * @return - counter by a given allele
    */
   public AlleleCounter computeAllele(Allele alt) {
