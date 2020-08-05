@@ -1,7 +1,7 @@
 package com.epam.bioinf.variantcaller.caller;
 
 /**
- * Contains all the read and subsequence information related to one record.
+ * Contains all the read and subsequence information related to one sam record.
  */
 public class ReadData {
   private final String subsequenceBaseString;
