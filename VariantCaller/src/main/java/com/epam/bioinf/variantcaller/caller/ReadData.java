@@ -1,30 +1,21 @@
 package com.epam.bioinf.variantcaller.caller;
 
+import htsjdk.samtools.SAMRecord;
+import htsjdk.samtools.SAMTag;
+
 /**
  * Contains all the read and subsequence information related to one sam record.
  */
 public class ReadData {
   private final String subsequenceBaseString;
-  private final String readBaseString;
-  private final String sampleName;
-  private final String contig;
-  private final int start;
-  private final boolean strandFlag;
+  private final SAMRecord samRecord;
 
   public ReadData(
       String subsequenceBaseString,
-      String readBaseString,
-      String sampleName,
-      String contig,
-      int start,
-      boolean strandFlag
+      SAMRecord samRecord
   ) {
     this.subsequenceBaseString = subsequenceBaseString;
-    this.readBaseString = readBaseString;
-    this.sampleName = sampleName;
-    this.contig = contig;
-    this.start = start;
-    this.strandFlag = strandFlag;
+    this.samRecord = samRecord;
   }
 
   public final String getSubsequenceBaseString() {
@@ -32,22 +23,30 @@ public class ReadData {
   }
 
   public final String getReadBaseString() {
-    return readBaseString;
+    return samRecord.getReadString();
   }
 
   public String getSampleName() {
-    return sampleName;
+    return samRecord.getAttribute(SAMTag.SM.name()).toString();
+  }
+
+  public byte getBaseQualityAtPosition(int i) {
+    return samRecord.getBaseQualities()[i];
   }
 
   public String getContig() {
-    return contig;
+    return samRecord.getContig();
   }
 
   public int getStart() {
-    return start;
+    return samRecord.getStart();
+  }
+
+  public int getMappingQuality() {
+    return samRecord.getMappingQuality();
   }
 
   public boolean getReadNegativeStrandFlag() {
-    return strandFlag;
+    return samRecord.getReadNegativeStrandFlag();
   }
 }

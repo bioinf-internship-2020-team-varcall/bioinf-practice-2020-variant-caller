@@ -65,15 +65,9 @@ public class Caller {
     String subsequenceBaseString = fastaSequenceFile
         .getSubsequenceAt(samRecord.getContig(), samRecord.getStart(), samRecord.getEnd())
         .getBaseString();
-    String readBaseString = samRecord.getReadString();
-    String sampleName = samRecord.getAttribute(SAMTag.SM.name()).toString();
     ReadData readData = new ReadData(
         subsequenceBaseString,
-        readBaseString,
-        sampleName,
-        samRecord.getContig(),
-        samRecord.getStart(),
-        samRecord.getReadNegativeStrandFlag()
+        samRecord
     );
     PositionTracker positionTracker = new PositionTracker(0, 0);
     for (CigarElement cigarElement : samRecord.getCigar().getCigarElements()) {
@@ -216,7 +210,9 @@ public class Caller {
         )
         .computeSample(readData.getSampleName())
         .computeAllele(alleles.getAltAllele())
-        .incrementStrandCount(readData.getReadNegativeStrandFlag());
+        .incrementStrandCount(readData.getReadNegativeStrandFlag())
+        .addMapQ(readData.getMappingQuality())
+        .addBaseQ(readData.getBaseQualityAtPosition(shift));
   }
 
   /**

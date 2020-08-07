@@ -3,11 +3,13 @@ package com.epam.bioinf.variantcaller.caller;
 import com.epam.bioinf.variantcaller.exceptions.caller.NoGenotypesException;
 import htsjdk.variant.variantcontext.*;
 import htsjdk.variant.vcf.VCFConstants;
+import org.apache.commons.math3.distribution.TDistribution;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Represents a wrapper for VariantContextBuilder.
@@ -120,9 +122,25 @@ public class VariantContextBuilderWrapper {
     SampleData sampleData = sampleDataMap.get(sampleName);
     HashMap<Allele, Integer> alleleCnt = new HashMap<>();
     ArrayList<Allele> sampleAlleles = new ArrayList<>();
+    Integer[] dp4 = new Integer[]{0, 0, 0, 0};
+    List<Integer> refBaseQs = new ArrayList<>();
+    List<Integer> altBaseQs = new ArrayList<>();
+    List<Integer> refMapQs = new ArrayList<>();
+    List<Integer> altMapQs = new ArrayList<>();
     for (Allele allele : sampleData.getAlleleMap().keySet()) {
       if (allele.isNonReference() && allele.getDisplayString().equals("N")) continue;
       AlleleCounter alleleCounter = sampleData.getAlleleMap().get(allele);
+      if (allele.isReference()) {
+        dp4[0] += alleleCounter.getForwardStrandCount();
+        dp4[1] += alleleCounter.getReversedStrandCount();
+        refBaseQs.addAll(alleleCounter.getBaseQs());
+        refMapQs.addAll(alleleCounter.getMapQs());
+      } else {
+        dp4[2] += alleleCounter.getForwardStrandCount();
+        dp4[3] += alleleCounter.getReversedStrandCount();
+        altBaseQs.addAll(alleleCounter.getBaseQs());
+        altMapQs.addAll(alleleCounter.getMapQs());
+      }
       alleleCnt.put(allele, alleleCounter.count());
     }
     ArrayList<Integer> sampleDepths = new ArrayList<>();
@@ -147,10 +165,88 @@ public class VariantContextBuilderWrapper {
         return new GenotypeBuilder(sampleName, sampleAlleles)
             .DP(dp)
             .attribute("DPG", sampleDepths)
+            .attribute("DP4", Arrays.asList(dp4))
+            .attribute("AVG-MAPQ", getAverageValue(
+                Stream.concat(refMapQs.stream(), altMapQs.stream())
+                    .collect(Collectors.toList())
+                )
+            )
+            .attribute("PV-FISCHER", getPValueFischer(dp4))
+            .attribute("PV-TTEST-BASEQ", getPValueTTest(refBaseQs, altBaseQs))
+            .attribute("PV-TTEST-MAPQ", getPValueTTest(refMapQs, altMapQs))
             .make();
       }
     }
     return null;
+  }
+
+  public double getPValueTTest(List<Integer> refQs, List<Integer> altQs) {
+    if (refQs.size() == 0 || altQs.size() == 0) {
+      return 0.0;
+    }
+    double refAverage = getAverageValue(refQs);
+    double altAverage = getAverageValue(altQs);
+    double mRef = getSd(refQs, refAverage) / Math.sqrt(refQs.size());
+    double mAlt = getSd(altQs, altAverage) / Math.sqrt(altQs.size());
+    double tValue = (refAverage - altAverage) / Math.sqrt(Math.pow(mRef, 2)
+        + Math.pow(mAlt, 2));
+    int df = refQs.size() + altQs.size() - 1;
+    TDistribution tDistribution = new TDistribution(df);
+    try {
+      return BigDecimal
+          .valueOf(tDistribution.cumulativeProbability(tValue))
+          .setScale(3, RoundingMode.HALF_UP)
+          .doubleValue();
+    } catch (NumberFormatException ex) {
+      return 0.0;
+    }
+  }
+
+  public int getAverageValue(List<Integer> list) {
+    return list.stream().mapToInt(Integer::intValue).sum() / list.size();
+  }
+
+  public double getSd(List<Integer> list, double average) {
+    double sqrDevSum = list.stream().map(val -> Math.pow(val - average, 2)).mapToDouble(Double::doubleValue).sum();
+    return Math.sqrt(sqrDevSum / list.size());
+  }
+
+  public double getPValueFischer(Integer[] dp4) {
+    List<List<Integer>> list = new ArrayList<>();
+    int r1 = dp4[0] + dp4[1];
+    int r2 = dp4[2] + dp4[3];
+    int c1 = dp4[0] + dp4[2];
+    int c2 = dp4[1] + dp4[3];
+    for (int a = 0, b = r1; b >= 0 && a <= r1; a++, b--) {
+      for (int c = 0, d = r2; d >= 0 && c <= r2; c++, d--) {
+        if (a + b == r1 && c + d == r2 && a + c == c1 && b + d == c2) {
+          list.add(new ArrayList<>(Arrays.asList(a, b, c, d)));
+        }
+      }
+    }
+    double originalPv = getPv(Arrays.asList(dp4[0], dp4[1], dp4[2], dp4[3]));
+    return BigDecimal.valueOf(list.stream()
+        .filter(arr -> getPv(arr) <= originalPv)
+        .mapToDouble(VariantContextBuilderWrapper::getPv)
+        .sum())
+        .setScale(3, RoundingMode.HALF_UP).doubleValue();
+  }
+
+  public static double getPv(List<Integer> vals) {
+    int r1 = vals.get(0) + vals.get(1);
+    int r2 = vals.get(2) + vals.get(3);
+    int c1 = vals.get(0) + vals.get(2);
+    int c2 = vals.get(1) + vals.get(3);
+    return (fact(r1) * fact(r2) * fact(c1) * fact(c2)) / (fact(r1 + r2)
+        * fact(vals.get(0)) * fact(vals.get(1)) * fact(vals.get(2)) * fact(vals.get(3)));
+  }
+
+  public static double fact(int number) {
+    long result = 1;
+    for (int factor = 2; factor <= number; factor++) {
+      result *= factor;
+    }
+    return result;
   }
 
   private List<Integer> getAlleleCntList(List<Allele> alleles, List<Genotype> genotypes) {
