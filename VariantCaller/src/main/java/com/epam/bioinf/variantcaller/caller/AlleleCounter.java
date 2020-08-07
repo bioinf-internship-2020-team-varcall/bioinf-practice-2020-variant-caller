@@ -1,15 +1,22 @@
 package com.epam.bioinf.variantcaller.caller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Holds counts of alleles on forward and reversed strands.
  */
 public class AlleleCounter {
   private int forwardStrandCnt;
   private int reversedStrandCnt;
+  private final List<Integer> baseQs;
+  private final List<Integer> mapQs;
 
   public AlleleCounter() {
     forwardStrandCnt = 0;
     reversedStrandCnt = 0;
+    baseQs = new ArrayList<>();
+    mapQs = new ArrayList<>();
   }
 
   /**
@@ -17,12 +24,13 @@ public class AlleleCounter {
    *
    * @param isReversed - flag which represents a condition whether a strand reversed
    */
-  public void incrementStrandCount(boolean isReversed) {
+  public AlleleCounter incrementStrandCount(boolean isReversed) {
     if (isReversed) {
       reversedStrandCnt++;
     } else {
       forwardStrandCnt++;
     }
+    return this;
   }
 
   /**
@@ -38,6 +46,24 @@ public class AlleleCounter {
 
   public int getReversedStrandCount() {
     return reversedStrandCnt;
+  }
+
+  public AlleleCounter addMapQ(int mapQ) {
+    mapQs.add(mapQ);
+    return this;
+  }
+
+  public AlleleCounter addBaseQ(int refBaseMapQ) {
+    baseQs.add(refBaseMapQ);
+    return this;
+  }
+
+  public List<Integer> getBaseQs() {
+    return baseQs;
+  }
+
+  public List<Integer> getMapQs() {
+    return mapQs;
   }
 
   @Override
