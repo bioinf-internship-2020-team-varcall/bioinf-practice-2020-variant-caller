@@ -171,18 +171,18 @@ public class VariantContextBuilderWrapper {
                     .collect(Collectors.toList())
                 )
             )
-            .attribute("PV-FISCHER", getPValueFischer(dp4))
-            .attribute("PV-TTEST-BASEQ", getPValueTTest(refBaseQs, altBaseQs))
-            .attribute("PV-TTEST-MAPQ", getPValueTTest(refMapQs, altMapQs))
+            .attribute("PV-FISCHER", getFischerExactTestP(dp4))
+            .attribute("PV-TTEST-BASEQ", getTtestP(refBaseQs, altBaseQs))
+            .attribute("PV-TTEST-MAPQ", getTtestP(refMapQs, altMapQs))
             .make();
       }
     }
     return null;
   }
 
-  public double getPValueTTest(List<Integer> refQs, List<Integer> altQs) {
+  public double getTtestP(List<Integer> refQs, List<Integer> altQs) {
     if (refQs.size() == 0 || altQs.size() == 0) {
-      return 0.0;
+      return -1;
     }
     double refAverage = getAverageValue(refQs);
     double altAverage = getAverageValue(altQs);
@@ -198,20 +198,26 @@ public class VariantContextBuilderWrapper {
           .setScale(3, RoundingMode.HALF_UP)
           .doubleValue();
     } catch (NumberFormatException ex) {
-      return 0.0;
+      return -1;
     }
   }
 
   public int getAverageValue(List<Integer> list) {
+    if (list.size() == 0) {
+      return -1;
+    }
     return list.stream().mapToInt(Integer::intValue).sum() / list.size();
   }
 
   public double getSd(List<Integer> list, double average) {
-    double sqrDevSum = list.stream().map(val -> Math.pow(val - average, 2)).mapToDouble(Double::doubleValue).sum();
+    double sqrDevSum = list
+        .stream()
+        .map(val -> Math.pow(val - average, 2))
+        .mapToDouble(Double::doubleValue).sum();
     return Math.sqrt(sqrDevSum / list.size());
   }
 
-  public double getPValueFischer(Integer[] dp4) {
+  public double getFischerExactTestP(Integer[] dp4) {
     List<List<Integer>> list = new ArrayList<>();
     int r1 = dp4[0] + dp4[1];
     int r2 = dp4[2] + dp4[3];
