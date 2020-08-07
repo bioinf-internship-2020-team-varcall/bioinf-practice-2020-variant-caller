@@ -30,6 +30,9 @@ testSets {
   integrationTest {
     dirName = 'integrationTest'
   }
+  benchmarkTest {
+    dirName = 'benchmarkTest'
+  }
 }
 
 dependencies {
@@ -43,6 +46,10 @@ dependencies {
   //integration tests libs
   integrationTestCompile('junit:junit:4.12')
   integrationTestImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
+
+  //benchmark tests libs
+  benchmarkTestCompile('junit:junit:4.12')
+  benchmarkTestImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
 
   //spotbugs libs
   compile group: 'com.github.spotbugs', name: 'spotbugs', version: '4.0.1', ext: 'pom'
