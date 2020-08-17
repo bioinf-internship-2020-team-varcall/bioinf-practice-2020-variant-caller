@@ -31,12 +31,12 @@ public class CallerTest {
     callerAlgorithmSpeedTest(100, "cv1.fasta", "cv1_grouped.sam");
   }
 
-  public void callerAlgorithmSpeedTest(int iterations, String fasta, String sam)
+  public void callerAlgorithmSpeedTest(int iterations, String fastaFile, String samFile)
       throws IOException {
-    TestReport testReport = new TestReport(fasta, sam);
+    TestReport testReport = new TestReport(fastaFile, samFile);
     List<Long> timeMeasurements = new ArrayList<>();
     for (int i = 0; i < iterations; i++) {
-      Caller caller = getCaller(fasta, sam);
+      Caller caller = getCaller(fastaFile, samFile);
       Instant start = Instant.now();
       caller.findVariants();
       Instant finish = Instant.now();
@@ -46,8 +46,8 @@ public class CallerTest {
     System.out.println(testReport);
   }
 
-  private static Caller getCaller(String fasta, String sam) {
-    String[] arguments = getArgs(fasta, sam);
+  private static Caller getCaller(String fastaFile, String samFile) {
+    String[] arguments = getArgs(fastaFile, samFile);
     ParsedArguments parsedArguments = CommandLineParser.parse(arguments);
     IndexedFastaSequenceFile fastaSequenceFile =
         new FastaHandler(parsedArguments).getFastaSequenceFile();
@@ -55,10 +55,10 @@ public class CallerTest {
     return new Caller(fastaSequenceFile, samRecords);
   }
 
-  private static String[] getArgs(String fasta, String sam) {
+  private static String[] getArgs(String fastaFile, String samFile) {
     return new String[]{
-        "--fasta", callerTestFilePath(fasta),
-        "--sam", callerTestFilePath(sam)
+        "--fasta", callerTestFilePath(fastaFile),
+        "--sam", callerTestFilePath(samFile)
     };
   }
 
@@ -67,8 +67,8 @@ public class CallerTest {
     public long referenceLength;
     public List<Long> timeMeasurements;
 
-    public TestReport(String fasta, String sam) {
-      String[] arguments = getArgs(fasta, sam);
+    public TestReport(String fastaFile, String samFile) {
+      String[] arguments = getArgs(fastaFile, samFile);
       ParsedArguments parsedArguments = CommandLineParser.parse(arguments);
       IndexedFastaSequenceFile fastaSequenceFile =
           new FastaHandler(parsedArguments).getFastaSequenceFile();
@@ -82,7 +82,7 @@ public class CallerTest {
       }
     }
 
-    public double getAverageTime() {
+    private double getAverageTime() {
       return timeMeasurements.stream().collect(Collectors.averagingLong(Long::longValue));
     }
 
