@@ -3,10 +3,10 @@ import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.handlers.FastaHandler;
 import com.epam.bioinf.variantcaller.handlers.SamHandler;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.samtools.reference.ReferenceSequence;
-import htsjdk.variant.variantcontext.VariantContext;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -31,7 +31,17 @@ public class CallerTest {
     callerAlgorithmSpeedTest(100, "cv1.fasta", "cv1_grouped.sam");
   }
 
-  public void callerAlgorithmSpeedTest(int iterations, String fastaFile, String samFile)
+  @Test
+  public void realDataSpeedTest() throws IOException {
+    callerAlgorithmSpeedTest(1, "ecoli.fasta", "new_ecoli.sam");
+  }
+
+  @Test
+  public void testMemoryConsuption() {
+    callerAlgorithmMemoryConsumptionTest("cv1.fasta", "cv1_grouped.sam");
+  }
+
+  private void callerAlgorithmSpeedTest(int iterations, String fastaFile, String samFile)
       throws IOException {
     TestReport testReport = new TestReport(fastaFile, samFile);
     List<Long> timeMeasurements = new ArrayList<>();
@@ -44,6 +54,18 @@ public class CallerTest {
     }
     testReport.timeMeasurements = timeMeasurements;
     System.out.println(testReport);
+  }
+
+  @SuppressFBWarnings({"DLS_DEAD_LOCAL_STORE", "DM_GC"})
+  private void callerAlgorithmMemoryConsumptionTest(String fastaFile, String samFile) {
+    Runtime runtime = Runtime.getRuntime();
+    Caller caller = getCaller(fastaFile, samFile);
+    System.gc();
+    long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
+    var holderArray = caller.findVariants();
+    System.gc();
+    long memoryAfter = runtime.totalMemory() - runtime.freeMemory();
+    System.err.println(memoryAfter - memoryBefore);
   }
 
   private static Caller getCaller(String fastaFile, String samFile) {

@@ -56,6 +56,7 @@ dependencies {
 
   //https://mvnrepository.com/artifact/com.github.spotbugs/spotbugs-annotations
   compileOnly 'com.github.spotbugs:spotbugs-annotations:4.0.1'
+  benchmarkTestCompileOnly 'com.github.spotbugs:spotbugs-annotations:4.0.1'
 
   //https://mvnrepository.com/artifact/com.github.samtools/htsjdk
   compile group: 'com.github.samtools', name: 'htsjdk', version: '2.21.3'
