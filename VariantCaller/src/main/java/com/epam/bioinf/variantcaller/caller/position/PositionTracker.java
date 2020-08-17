@@ -1,5 +1,6 @@
-package com.epam.bioinf.variantcaller.caller;
+package com.epam.bioinf.variantcaller.caller.position;
 
+import com.epam.bioinf.variantcaller.caller.Caller;
 import htsjdk.samtools.CigarElement;
 
 /**

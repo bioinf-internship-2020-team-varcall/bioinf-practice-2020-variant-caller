@@ -1,10 +1,11 @@
 package com.epam.bioinf.variantcaller.caller;
 
+import com.epam.bioinf.variantcaller.caller.position.PositionTracker;
+import com.epam.bioinf.variantcaller.caller.variant.VariantInfo;
 import com.epam.bioinf.variantcaller.helpers.ProgressBar;
 import htsjdk.samtools.CigarElement;
 import htsjdk.samtools.CigarOperator;
 import htsjdk.samtools.SAMRecord;
-import htsjdk.samtools.SAMTag;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.variant.variantcontext.Allele;
 import htsjdk.variant.variantcontext.VariantContext;
