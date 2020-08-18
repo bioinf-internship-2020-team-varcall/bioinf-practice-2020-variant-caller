@@ -62,7 +62,6 @@ public class SampleMetrics {
     return getPvalueTtest(refMapQs, altMapQs);
   }
 
-
   private double getPvalueTtest(List<Integer> refQs, List<Integer> altQs) {
     if (refQs.size() == 0 || altQs.size() == 0) {
       return Double.NaN;
