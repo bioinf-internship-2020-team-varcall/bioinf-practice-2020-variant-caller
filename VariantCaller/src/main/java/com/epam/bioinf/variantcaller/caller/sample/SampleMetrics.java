@@ -71,9 +71,6 @@ public class SampleMetrics {
     return getPvalueTtest(refMapQs, altMapQs);
   }
 
-  /**
-   * Returns p-value for baseQ bias t-test
-   */
   private double getPvalueTtest(List<Integer> refQs, List<Integer> altQs) {
     if (refQs.size() == 0 || altQs.size() == 0) {
       return Double.NaN;
