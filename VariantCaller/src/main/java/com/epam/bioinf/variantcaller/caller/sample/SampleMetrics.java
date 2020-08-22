@@ -11,6 +11,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Computes metrics of the variants
+ */
 public class SampleMetrics {
 
   private final Integer[] dp4;
@@ -54,14 +57,23 @@ public class SampleMetrics {
         .mapToInt(Integer::intValue).sum();
   }
 
+  /**
+   * Returns p-value for baseQ bias t-test
+   */
   public double getBaseQsTtestP() {
     return getPvalueTtest(refBaseQs, altBaseQs);
   }
 
+  /**
+   * Returns p-value for mapQ bias t-test
+   */
   public double getMapQsTtestP() {
     return getPvalueTtest(refMapQs, altMapQs);
   }
 
+  /**
+   * Returns p-value for baseQ bias t-test
+   */
   private double getPvalueTtest(List<Integer> refQs, List<Integer> altQs) {
     if (refQs.size() == 0 || altQs.size() == 0) {
       return Double.NaN;
@@ -86,6 +98,10 @@ public class SampleMetrics {
     }
   }
 
+  /**
+   * Returns average mapping quality for the current position
+   * among all the reads of the sample
+   */
   public double getAverageMappingQuality() {
     return getAverageValue(
         Stream.concat(refMapQs.stream(), altMapQs.stream())
@@ -93,6 +109,9 @@ public class SampleMetrics {
     );
   }
 
+  /**
+   * Returns p-value for Fischer's exact test
+   */
   public double getFischerExactTestP() {
     List<List<Integer>> list = new ArrayList<>();
     int r1 = dp4[0] + dp4[1];
@@ -118,8 +137,29 @@ public class SampleMetrics {
     }
   }
 
+  /**
+   * Returns the number of reads covering or bridging POS
+   */
   public int getDp() {
     return dp;
+  }
+
+  /**
+   * Number of
+   * 1) forward ref alleles;
+   * 2) reverse ref;
+   * 3) forward non-ref;
+   * 4) reverse non-ref alleles, used in variant calling
+   */
+  public List<Integer> getDp4() {
+    return Arrays.asList(dp4);
+  }
+
+  /**
+   * Returns the map where an allele matches its count
+   */
+  public HashMap<Allele, Integer> getAlleleCnt() {
+    return alleleCnt;
   }
 
   private double getSinglePv(List<Integer> vals) {
@@ -145,13 +185,5 @@ public class SampleMetrics {
 
   private double[] convertIntListToDoubleArray(List<Integer> list) {
     return list.stream().mapToDouble(i -> i).toArray();
-  }
-
-  public List<Integer> getDp4() {
-    return Arrays.asList(dp4);
-  }
-
-  public HashMap<Allele, Integer> getAlleleCnt() {
-    return alleleCnt;
   }
 }
