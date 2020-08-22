@@ -1,5 +1,7 @@
-package com.epam.bioinf.variantcaller.caller;
+package com.epam.bioinf.variantcaller.caller.variant;
 
+import com.epam.bioinf.variantcaller.caller.sample.SampleData;
+import com.epam.bioinf.variantcaller.caller.sample.SampleMetrics;
 import com.epam.bioinf.variantcaller.exceptions.caller.NoGenotypesException;
 import htsjdk.variant.variantcontext.*;
 import htsjdk.variant.vcf.VCFConstants;
@@ -118,20 +120,12 @@ public class VariantContextBuilderWrapper {
 
   private Genotype getGenotypeForSample(String sampleName, Map<String, SampleData> sampleDataMap) {
     SampleData sampleData = sampleDataMap.get(sampleName);
-    HashMap<Allele, Integer> alleleCnt = new HashMap<>();
+    SampleMetrics sampleMetrics = new SampleMetrics(sampleData.getAlleleMap());
     ArrayList<Allele> sampleAlleles = new ArrayList<>();
-    for (Allele allele : sampleData.getAlleleMap().keySet()) {
-      if (allele.isNonReference() && allele.getDisplayString().equals("N")) continue;
-      AlleleCounter alleleCounter = sampleData.getAlleleMap().get(allele);
-      alleleCnt.put(allele, alleleCounter.count());
-    }
     ArrayList<Integer> sampleDepths = new ArrayList<>();
-    int dp = alleleCnt.keySet()
-        .stream()
-        .map(alleleCnt::get)
-        .mapToInt(Integer::intValue).sum();
+    int dp = sampleMetrics.getDp();
     if (dp >= MIN_DEPTH) {
-      for (Map.Entry<Allele, Integer> entry : alleleCnt.entrySet()) {
+      for (Map.Entry<Allele, Integer> entry : sampleMetrics.getAlleleCnt().entrySet()) {
         if ((float) entry.getValue() / (float) dp < MIN_FRACTION) {
           continue;
         }
@@ -147,6 +141,11 @@ public class VariantContextBuilderWrapper {
         return new GenotypeBuilder(sampleName, sampleAlleles)
             .DP(dp)
             .attribute("DPG", sampleDepths)
+            .attribute("DP4", sampleMetrics.getDp4())
+            .attribute("AVG-MAPQ", sampleMetrics.getAverageMappingQuality())
+            .attribute("PV-FISCHER", sampleMetrics.getFischerExactTestP())
+            .attribute("PV-TTEST-BASEQ", sampleMetrics.getBaseQsTtestP())
+            .attribute("PV-TTEST-MAPQ", sampleMetrics.getMapQsTtestP())
             .make();
       }
     }

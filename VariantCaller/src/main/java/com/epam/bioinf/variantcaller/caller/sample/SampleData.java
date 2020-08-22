@@ -1,5 +1,7 @@
-package com.epam.bioinf.variantcaller.caller;
+package com.epam.bioinf.variantcaller.caller.sample;
 
+import com.epam.bioinf.variantcaller.caller.position.PositionStatistics;
+import com.epam.bioinf.variantcaller.caller.variant.VariantInfo;
 import htsjdk.variant.variantcontext.Allele;
 
 import java.util.HashMap;
@@ -11,7 +13,7 @@ import java.util.Map;
  */
 public class SampleData {
   private final VariantInfo owner;
-  private final Map<Allele, AlleleCounter> alleleMap;
+  private final Map<Allele, PositionStatistics> alleleMap;
 
   public SampleData(final VariantInfo owner) {
     this.owner = owner;
@@ -25,14 +27,14 @@ public class SampleData {
    * @param alt - allele that we have seen at the position provided by {@link owner}
    * @return - counter by a given allele
    */
-  public AlleleCounter computeAllele(Allele alt) {
+  public PositionStatistics computeAllele(Allele alt) {
     if (owner.getRefAllele().equals(alt, true)) {
       alt = owner.getRefAllele();
     }
-    return alleleMap.computeIfAbsent(alt, k -> new AlleleCounter());
+    return alleleMap.computeIfAbsent(alt, k -> new PositionStatistics());
   }
 
-  public Map<Allele, AlleleCounter> getAlleleMap() {
+  public Map<Allele, PositionStatistics> getAlleleMap() {
     return alleleMap;
   }
 
