@@ -5,10 +5,14 @@ import com.epam.bioinf.variantcaller.cmdline.CommandLineParser;
 import com.epam.bioinf.variantcaller.cmdline.ParsedArguments;
 import com.epam.bioinf.variantcaller.handlers.FastaHandler;
 import com.epam.bioinf.variantcaller.handlers.SamHandler;
+import com.epam.bioinf.variantcaller.handlers.VcfHandler;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
+import htsjdk.variant.variantcontext.VariantContext;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Class launches program with command line arguments(implementation is
@@ -18,11 +22,12 @@ import java.util.List;
 public class Main {
   public static void main(String[] args) {
     ParsedArguments parsedArguments = CommandLineParser.parse(args);
-    System.out.println("Reading data...");
+    System.err.println("Reading data...");
     IndexedFastaSequenceFile fastaSequenceFile =
         new FastaHandler(parsedArguments).getFastaSequenceFile();
     List<SAMRecord> samRecords = new SamHandler(parsedArguments).getSamRecords();
-    new Caller(fastaSequenceFile, samRecords).findVariants();
-    System.out.println("Success");
+    List<VariantContext> variants = new Caller(fastaSequenceFile, samRecords).findVariants();
+    VcfHandler.writeVcf(parsedArguments.getOutputDirectory(), variants);
+    System.err.println("Success");
   }
 }

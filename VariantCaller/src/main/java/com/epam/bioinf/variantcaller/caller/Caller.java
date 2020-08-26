@@ -49,12 +49,11 @@ public class Caller {
         });
     result.sort(Comparator.comparing(VariantContext::getContig)
         .thenComparing(VariantContext::getStart));
-    result.forEach(el -> System.out.println(el.toString()));
     return result;
   }
 
   private void callVariants() {
-    ProgressBar progressBar = new ProgressBar(samRecords.size(), System.out);
+    ProgressBar progressBar = new ProgressBar(samRecords.size(), System.err);
     samRecords.forEach(samRecord -> {
       processSingleRead(samRecord);
       progressBar.incrementProgress();
