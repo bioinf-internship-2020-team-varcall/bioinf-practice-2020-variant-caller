@@ -1,4 +1,4 @@
-import com.epam.bioinf.variantcaller.caller.VariantInfo;
+import com.epam.bioinf.variantcaller.caller.variant.VariantInfo;
 import htsjdk.variant.variantcontext.Allele;
 import htsjdk.variant.variantcontext.Genotype;
 import htsjdk.variant.variantcontext.VariantContext;
@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class VariantInfoTest {
 

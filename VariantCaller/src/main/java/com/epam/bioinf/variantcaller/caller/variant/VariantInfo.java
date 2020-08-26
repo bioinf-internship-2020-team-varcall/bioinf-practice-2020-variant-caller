@@ -1,5 +1,6 @@
-package com.epam.bioinf.variantcaller.caller;
+package com.epam.bioinf.variantcaller.caller.variant;
 
+import com.epam.bioinf.variantcaller.caller.sample.SampleData;
 import com.epam.bioinf.variantcaller.exceptions.caller.NoGenotypesException;
 import htsjdk.variant.variantcontext.Allele;
 import htsjdk.variant.variantcontext.VariantContext;
