@@ -76,7 +76,7 @@ public class ParsedArguments {
   }
 
   private boolean checkIfDirectoryExists(Optional<Path> path) {
-    return !Files.exists(path.get()) && !Files.isDirectory(path.get());
+    return !Files.exists(path.get()) || !Files.isDirectory(path.get());
   }
 
   private boolean checkIfSomePathDoesNotExist(List<Path> paths) {
