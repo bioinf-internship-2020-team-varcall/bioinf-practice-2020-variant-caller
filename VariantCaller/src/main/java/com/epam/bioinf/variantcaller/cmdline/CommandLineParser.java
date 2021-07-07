@@ -20,6 +20,7 @@ public class CommandLineParser {
   private static final String BED_KEY = "bed";
   private static final String SAM_KEY = "sam";
   private static final String REGION_KEY = "region";
+  private static final String OUTPUT_DIRECTORY_KEY = "output";
 
   private CommandLineParser(String[] args) {
     OptionParser optionParser = new OptionParser() {
@@ -28,12 +29,15 @@ public class CommandLineParser {
         accepts(BED_KEY);
         accepts(SAM_KEY);
         accepts(REGION_KEY);
+        accepts(OUTPUT_DIRECTORY_KEY);
       }
     };
     OptionSpec<Path> fasta = getOptionSpecPathsByParameter(optionParser, FASTA_KEY);
     OptionSpec<Path> bed = getOptionalOptionSpecPathsByParameter(optionParser, BED_KEY);
     OptionSpec<Path> sam = getOptionSpecPathsByParameter(optionParser, SAM_KEY);
     OptionSpec<String> region = getOptionSpecStringByParameter(optionParser, REGION_KEY);
+    OptionSpec<Path> outputDirectory =
+        getOptionalOptionSpecPathsByParameter(optionParser, OUTPUT_DIRECTORY_KEY);
     OptionSet options = optionParser.parse(args);
     if (options.hasArgument(bed) && options.hasArgument(region)) {
       throw new RegionBothIntervalOptionsException();
@@ -42,7 +46,8 @@ public class CommandLineParser {
         options.valuesOf(fasta),
         options.valuesOf(bed),
         options.valuesOf(sam),
-        Optional.ofNullable(options.valueOf(region))
+        Optional.ofNullable(options.valueOf(region)),
+        Optional.ofNullable(options.valueOf(outputDirectory))
     );
   }
 

@@ -1,9 +1,9 @@
 package com.epam.bioinf.variantcaller.cmdline;
 
-import com.epam.bioinf.variantcaller.exceptions.ParserException;
 import com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaArgsSizeException;
 import com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaInvalidExtensionException;
 import com.epam.bioinf.variantcaller.exceptions.parser.fasta.FastaPathNotExistsException;
+import com.epam.bioinf.variantcaller.exceptions.parser.output.OutputDirectoryInvalidException;
 import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionInvalidException;
 import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionInvalidExtensionException;
 import com.epam.bioinf.variantcaller.exceptions.parser.region.RegionPathNotExistsException;
@@ -27,27 +27,29 @@ public class ParsedArguments {
   private final List<Path> bedPaths;
   private final List<Path> samPaths;
   private final Optional<String> regionData;
+  private final Optional<Path> outputDirectory;
   private static final Pattern regionSplit = Pattern.compile(" ");
 
   /**
    * Constructor validates parsed arguments
    */
-  public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths,
-                         List<Path> samPaths, Optional<String> regionData) {
+  public ParsedArguments(List<Path> fastaPaths, List<Path> bedPaths, List<Path> samPaths,
+                         Optional<String> regionData, Optional<Path> outputDirectory) {
     List<Path> processedFasta = withRemovedDuplicates(fastaPaths);
     List<Path> processedBed = withRemovedDuplicates(bedPaths);
     List<Path> processedSam = withRemovedDuplicates(samPaths);
 
-    validate(processedFasta, processedBed, processedSam, regionData);
+    validate(processedFasta, processedBed, processedSam, regionData, outputDirectory);
 
     this.fastaPath = processedFasta.get(0);
     this.bedPaths = processedBed;
     this.samPaths = processedSam;
     this.regionData = regionData;
+    this.outputDirectory = outputDirectory;
   }
 
-  private void validate(List<Path> fastaValues, List<Path> bedValues,
-                        List<Path> samValues, Optional<String> regionData) {
+  private void validate(List<Path> fastaValues, List<Path> bedValues, List<Path> samValues,
+                        Optional<String> regionData, Optional<Path> outputDirectory) {
     if (fastaValues.size() != 1) {
       throw new FastaArgsSizeException();
     } else if (bedValues.isEmpty()) {
@@ -66,7 +68,15 @@ public class ParsedArguments {
       throw new RegionPathNotExistsException();
     } else if (checkIfSomePathDoesNotExist(samValues)) {
       throw new SamPathNotExistsException();
+    } else if (outputDirectory.isPresent()) {
+      if (checkIfDirectoryExists(outputDirectory)) {
+        throw new OutputDirectoryInvalidException();
+      }
     }
+  }
+
+  private boolean checkIfDirectoryExists(Optional<Path> path) {
+    return !Files.exists(path.get()) || !Files.isDirectory(path.get());
   }
 
   private boolean checkIfSomePathDoesNotExist(List<Path> paths) {
@@ -115,6 +125,10 @@ public class ParsedArguments {
 
   public Optional<String> getRegionData() {
     return regionData;
+  }
+
+  public Optional<Path> getOutputDirectory() {
+    return outputDirectory;
   }
 
   /**
