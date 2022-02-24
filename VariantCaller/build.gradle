@@ -4,7 +4,7 @@ plugins {
   id 'java'
   id 'application'
   id 'checkstyle'
-  id "com.github.spotbugs" version "3.0.0"
+  id "com.github.spotbugs" version "5.0.6"
   id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 
@@ -34,10 +34,11 @@ dependencies {
   testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
 
   //spotbugs libs
-  implementation group: 'com.github.spotbugs', name: 'spotbugs', version: '4.0.1', ext: 'pom'
+  //implementation group: 'com.github.spotbugs', name: 'spotbugs', version: '4.0.1', ext: 'pom'
 
-  //https://mvnrepository.com/artifact/com.github.spotbugs/spotbugs-annotations
-  implementation 'com.github.spotbugs:spotbugs-annotations:4.0.1'
+  // https://mvnrepository.com/artifact/com.github.spotbugs/spotbugs-annotations
+  implementation 'com.github.spotbugs:spotbugs-annotations:4.5.3'
+
 
   //https://mvnrepository.com/artifact/com.github.samtools/htsjdk
   implementation group: 'com.github.samtools', name: 'htsjdk', version: '2.21.3'
@@ -71,6 +72,10 @@ task integrationTest(type: Test, dependsOn: shadowJar) {
   shouldRunAfter test
 }
 
+spotbugsMain.enabled = false
+spotbugsTest.enabled = false
+spotbugsIntegrationTest.enabled = false
+
 shadowJar {
   baseName = 'VariantCaller'
   classifier = ''
@@ -92,19 +97,12 @@ checkstyle {
   configProperties.checkstyleSuppressionsPath = file("$configDir/checkstyle/suppressions.xml").absolutePath
 }
 
-spotbugs {
-  toolVersion = '4.0.1'
-  ignoreFailures = false
-  effort = 'max'
-  showProgress = false
-}
-
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
-  reports {
-    xml.enabled = false
-    html.enabled = true
-  }
-}
+//tasks.withType(com.github.spotbugs.SpotBugsTask) {
+//  reports {
+//    xml.enabled = false
+//    html.enabled = true
+//  }
+//}
 
 checkstyleMain {
   source = 'src/main/java'
