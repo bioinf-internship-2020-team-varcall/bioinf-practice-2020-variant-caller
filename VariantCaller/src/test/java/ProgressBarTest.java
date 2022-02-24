@@ -38,7 +38,11 @@ public class ProgressBarTest {
   private static Stream<Arguments> provideArgumentsForMustCorrectlyIncrementProgress() {
     return Stream.of(
         Arguments.of(10, 1, "Processing reads: 10% [=---------](1/10)\r"),
+        Arguments.of(10, 2, "Processing reads: 10% [=---------](1/10)\r"
+                + "Processing reads: 20% [==--------](2/10)\r"),
         Arguments.of(730000, 73000, "Processing reads: 10% [=---------](73000/730000)\r"),
+        Arguments.of(730000, 73001, "Processing reads: 10% [=---------](73000/730000)\r"),
+        Arguments.of(730000, 73002, "Processing reads: 10% [=---------](73000/730000)\r"),
         Arguments.of(730000, 74000, "Processing reads: 10% [=---------](73000/730000)\r"),
         Arguments.of(730000, 7400, ""),
         Arguments.of(11, 11, "Processing reads: 18% [=---------](2/11)\r" +

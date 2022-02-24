@@ -7,6 +7,7 @@ import joptsimple.OptionException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,6 +33,15 @@ public class CommandLineParserTest {
     String[] invalidTestArgs = getArgs("--fasta", "--bed", "--sam", "--region");
     assertThrows(RegionBothIntervalOptionsException.class, () ->
         CommandLineParser.parse(invalidTestArgs)
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideArgumentsParserMustFailWhenRequiredParametersAreNotPresent")
+  public void parserMustFailWhenRequiredParametersAreNotPresent(String[] testParameters) {
+    String[] invalidTestArgs = getArgs(testParameters);
+    assertThrows(OptionException.class, () ->
+            CommandLineParser.parse(invalidTestArgs)
     );
   }
 
@@ -92,6 +102,21 @@ public class CommandLineParserTest {
         Arguments.of((Object) new String[]{"--fasta", "--bed", "--sam"}),
         Arguments.of((Object) new String[]{"--fasta", "--sam"}),
         Arguments.of((Object) new String[]{"--fasta", "--sam", "--region"})
+    );
+  }
+
+  private static Stream<Arguments> provideArgumentsParserMustFailWhenRequiredParametersAreNotPresent() {
+    return Stream.of(
+        Arguments.of((Object) new String[]{"--fasta"}),
+        Arguments.of((Object) new String[]{"--fasta", "--bed"}),
+        Arguments.of((Object) new String[]{"--fasta", "--region"}),
+        Arguments.of((Object) new String[]{"--fasta", "--bed", "--region"}),
+        Arguments.of((Object) new String[]{"--bed"}),
+        Arguments.of((Object) new String[]{"--region"}),
+        Arguments.of((Object) new String[]{"--bed", "--region"}),
+        Arguments.of((Object) new String[]{"--bed", "--sam"}),
+        Arguments.of((Object) new String[]{"--sam"}),
+        Arguments.of((Object) new String[]{"--sam", "--region"})
     );
   }
 

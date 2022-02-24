@@ -6,7 +6,11 @@ import com.epam.bioinf.variantcaller.handlers.SamHandler;
 import htsjdk.samtools.SAMRecord;
 import htsjdk.samtools.reference.IndexedFastaSequenceFile;
 import htsjdk.variant.variantcontext.VariantContext;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,6 +19,7 @@ import java.util.List;
 import static helpers.UnitTestHelper.callerRefFilePath;
 import static helpers.UnitTestHelper.callerTestFilePath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CallerTest {
 
@@ -34,5 +39,19 @@ public class CallerTest {
         "--fasta", callerTestFilePath("short_seq.fasta"),
         "--sam", callerTestFilePath("short_seq.sam")
     };
+  }
+
+  @Nested
+  class CallerTestWithMocks {
+
+    @Mock
+    IndexedFastaSequenceFile indexedFastaSequenceFile;
+
+    @Test
+    public void callerShouldReturnEmptyListIfSAMRecordsAreEmpty() {
+      List<SAMRecord> samRecords = List.of();
+      List<VariantContext> result = new Caller(indexedFastaSequenceFile, samRecords).findVariants();
+      assertThat(result.isEmpty()).isTrue();
+    }
   }
 }
